@@ -657,6 +657,10 @@
                     {
                         "secretName": "${Parameters.ModuleConfigurationParameters.ActiveDirectory.DomainAdminUserName}",
                         "secretValue": "env(DOMAIN_ADMIN_USER_PWD)"
+                    },
+                    {
+                        "secretName": "admin-user-ssh",
+                        "secretValue": "env(ADMIN_USER_SSH)"
                     }
                 ]
             },
@@ -680,6 +684,7 @@
                 "Comments": "Windows VM name cannot exceed 13 characters",
                 "Name": "win-jb-vm",
                 "VMCount": 1,
+                "OSType": "Windows",
                 "VMSize": "Standard_DS2_v2",
                 "OSImage": {
                     "offer": "WindowsServer",
@@ -691,6 +696,7 @@
                 "Comments": "Linux VM name cannot exceed 63 characters",
                 "Name": "linux-jb-vm",
                 "VMCount": 1,
+                "OSType": "Linux",
                 "VMSize": "Standard_D2s_v3",
                 "OSImage": {
                     "publisher": "Canonical",

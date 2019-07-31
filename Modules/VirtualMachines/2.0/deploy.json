@@ -103,7 +103,7 @@
             "minValue": 0,
             "maxValue": 365,
             "metadata": {
-              "description": "Optional. Specifies the number of days that logs will be kept for; a value of 0 will retain data indefinitely"
+                "description": "Optional. Specifies the number of days that logs will be kept for; a value of 0 will retain data indefinitely"
             }
         },
         "artifactsStorageAccountName": {
@@ -183,7 +183,14 @@
         ],
         "linuxConfiguration": {
             "disablePasswordAuthentication": true,
-            "ssh": "[parameters('sshPublicKey')]"
+            "ssh": {
+                "publicKeys": [
+                    {
+                        "path": "[concat('/home/', parameters('adminUsername'), '/.ssh/authorized_keys')]",
+                        "keyData": "[parameters('sshPublicKey')]"
+                    }
+                ]
+            }
         },
         "subnetId": "[concat(parameters('vNetId'), '/subnets/', variables('subnetName'))]",
         "antimalwareExtensionName": "IaaSAntimalware",
@@ -209,7 +216,25 @@
         "webServerWithTls1.1ConfigName": "AuditSecureProtocol",
         "linuxAuditRemoteConnectionWithNoPwdConfigName": "PasswordPolicy_msid110",
         "linuxAuditAccountsWithNoPwdConfigName": "PasswordPolicy_msid232",
-        "linuxAuditEtcPasswdFilePermissionSetTo0644ConfigName": "PasswordPolicy_msid121"
+        "linuxAuditEtcPasswdFilePermissionSetTo0644ConfigName": "PasswordPolicy_msid121",
+        "vmNames": {
+            "copy": [
+                {
+                    "name": "vmNames",
+                    "count": "[parameters('virtualMachineCount')]",
+                    "input": "[concat(parameters('virtualMachineName'), copyIndex('vmNames', parameters('virtualMachineOffset')))]"
+                }
+            ]
+        },
+        "vmResourceIds": {
+            "copy": [
+                {
+                    "name": "vmResourceIds",
+                    "count": "[parameters('virtualMachineCount')]",
+                    "input": "[resourceId('Microsoft.Compute/virtualMachines', concat(parameters('virtualMachineName'), copyIndex('vmResourceIds', parameters('virtualMachineOffset'))))]"
+                }
+            ]
+        }
     },
     "resources": [
         {
@@ -242,7 +267,7 @@
                         "name": "ipconfig1",
                         "properties": {
                             "privateIPAllocationMethod": "[if(empty(parameters('vmIPAddress')), 'Dynamic', 'Static')]",
-                            "privateIPAddress": "[if(empty(parameters('vmIPAddress')), json('null'), parameters('vmIPAddress'))]",
+                            "privateIPAddress": "[if(empty(parameters('vmIPAddress')), json('null'), vdc.nextIP(parameters('vmIPAddress'), copyIndex(parameters('virtualMachineOffset'))))]",
                             "subnet": {
                                 "id": "[variables('subnetId')]"
                             },
@@ -265,19 +290,19 @@
                 "count": "[parameters('virtualMachineCount')]"
             },
             "properties": {
-              "storageAccountId": "[parameters('diagnosticsStorageAccountId')]",
-              "workspaceId": "[parameters('logAnalyticsWorkspaceId')]",
-              "metrics": [
-                {
-                  "category": "AllMetrics",
-                  "timeGrain": null,
-                  "enabled": true,
-                  "retentionPolicy": {
-                    "enabled": true,
-                    "days": "[parameters('diagnosticsLogsRetentionInDays')]"
-                  }
-                }
-              ]
+                "storageAccountId": "[parameters('diagnosticsStorageAccountId')]",
+                "workspaceId": "[parameters('logAnalyticsWorkspaceId')]",
+                "metrics": [
+                    {
+                        "category": "AllMetrics",
+                        "timeGrain": null,
+                        "enabled": true,
+                        "retentionPolicy": {
+                            "enabled": true,
+                            "days": "[parameters('diagnosticsLogsRetentionInDays')]"
+                        }
+                    }
+                ]
             }
         },
         {
@@ -295,7 +320,7 @@
                 "UpdateManagement": "[variables('tagPatching')]"
             },
             "dependsOn": [
-                "nicLoop"
+                "nicDiagnosticLoop"
             ],
             "properties": {
                 "availabilitySet": "[if(not(variables('availabilityZonesEnabled')), variables('availabilitySet'), json('null'))]",
@@ -326,7 +351,7 @@
                 "networkProfile": {
                     "networkInterfaces": [
                         {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(parameters('virtualMachineName'), '-nic'))]"
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(parameters('virtualMachineName'), copyIndex(parameters('virtualMachineOffset')), '-nic'))]"
                         }
                     ]
                 },
@@ -347,19 +372,19 @@
                         "[resourceId('Microsoft.Compute/virtualMachines', concat(parameters('virtualMachineName'), copyIndex(parameters('virtualMachineOffset'))))]"
                     ],
                     "properties": {
-                      "storageAccountId": "[parameters('diagnosticsStorageAccountId')]",
-                      "workspaceId": "[parameters('logAnalyticsWorkspaceId')]",
-                      "metrics": [
-                        {
-                          "category": "AllMetrics",
-                          "enabled": true,
-                          "retentionPolicy": {
-                            "enabled": true,
-                            "days": "[parameters('diagnosticsLogsRetentionInDays')]"
-                          }
-                        }
-                      ],
-                      "logs": []
+                        "storageAccountId": "[parameters('diagnosticsStorageAccountId')]",
+                        "workspaceId": "[parameters('logAnalyticsWorkspaceId')]",
+                        "metrics": [
+                            {
+                                "category": "AllMetrics",
+                                "enabled": true,
+                                "retentionPolicy": {
+                                    "enabled": true,
+                                    "days": "[parameters('diagnosticsLogsRetentionInDays')]"
+                                }
+                            }
+                        ],
+                        "logs": []
                     }
                 },
                 {
@@ -431,7 +456,7 @@
                                 "DiagnosticMonitorConfiguration": {
                                     "overallQuotaInMB": 5120,
                                     "Metrics": {
-                                        "resourceId": "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachineName'))]",
+                                        "resourceId": "[resourceId('Microsoft.Compute/virtualMachines', concat(parameters('virtualMachineName'), copyIndex(parameters('virtualMachineOffset'))))]",
                                         "MetricAggregation": [
                                             {
                                                 "scheduledTransferPeriod": "PT1H"
@@ -765,7 +790,7 @@
                 {
                     "apiVersion": "2018-06-30-preview",
                     "type": "providers/guestConfigurationAssignments",
-                    "name": "[concat('/Microsoft.GuestConfiguration/', variables('pwdMinLengthConfigName'))]",
+                    "name": "[concat('Microsoft.GuestConfiguration/', variables('pwdMinLengthConfigName'))]",
                     "location": "[resourceGroup().location]",
                     "condition": "[equals(parameters('virtualMachineOSType'), 'Windows')]",
                     "dependsOn": [
@@ -782,7 +807,7 @@
                 {
                     "apiVersion": "2018-06-30-preview",
                     "type": "providers/guestConfigurationAssignments",
-                    "name": "[concat('/Microsoft.GuestConfiguration/', variables('pwdMinAgeConfigName'))]",
+                    "name": "[concat('Microsoft.GuestConfiguration/', variables('pwdMinAgeConfigName'))]",
                     "location": "[resourceGroup().location]",
                     "condition": "[equals(parameters('virtualMachineOSType'), 'Windows')]",
                     "dependsOn": [
@@ -799,7 +824,7 @@
                 {
                     "apiVersion": "2018-06-30-preview",
                     "type": "providers/guestConfigurationAssignments",
-                    "name": "[concat('/Microsoft.GuestConfiguration/', variables('pwdNotLast24ConfigMName'))]",
+                    "name": "[concat('Microsoft.GuestConfiguration/', variables('pwdNotLast24ConfigMName'))]",
                     "location": "[resourceGroup().location]",
                     "condition": "[equals(parameters('virtualMachineOSType'), 'Windows')]",
                     "dependsOn": [
@@ -816,7 +841,7 @@
                 {
                     "apiVersion": "2018-06-30-preview",
                     "type": "providers/guestConfigurationAssignments",
-                    "name": "[concat('/Microsoft.GuestConfiguration/', variables('pwdWithoutReversibleEncryptionConfigName'))]",
+                    "name": "[concat('Microsoft.GuestConfiguration/', variables('pwdWithoutReversibleEncryptionConfigName'))]",
                     "location": "[resourceGroup().location]",
                     "condition": "[equals(parameters('virtualMachineOSType'), 'Windows')]",
                     "dependsOn": [
@@ -833,7 +858,7 @@
                 {
                     "apiVersion": "2018-06-30-preview",
                     "type": "providers/guestConfigurationAssignments",
-                    "name": "[concat('/Microsoft.GuestConfiguration/', variables('webServerWithTls1.1ConfigName'))]",
+                    "name": "[concat('Microsoft.GuestConfiguration/', variables('webServerWithTls1.1ConfigName'))]",
                     "location": "[resourceGroup().location]",
                     "condition": "[equals(parameters('virtualMachineOSType'), 'Windows')]",
                     "dependsOn": [
@@ -850,7 +875,7 @@
                 {
                     "apiVersion": "2018-06-30-preview",
                     "type": "providers/guestConfigurationAssignments",
-                    "name": "[concat('/Microsoft.GuestConfiguration/', variables('pwdMaxAgeConfigName'))]",
+                    "name": "[concat('Microsoft.GuestConfiguration/', variables('pwdMaxAgeConfigName'))]",
                     "location": "[resourceGroup().location]",
                     "condition": "[equals(parameters('virtualMachineOSType'), 'Windows')]",
                     "dependsOn": [
@@ -867,7 +892,7 @@
                 {
                     "apiVersion": "2018-06-30-preview",
                     "type": "providers/guestConfigurationAssignments",
-                    "name": "[concat(parameters('virtualMachineName'), '/Microsoft.GuestConfiguration/', variables('pwdComplexityConfigName'))]",
+                    "name": "[concat('Microsoft.GuestConfiguration/', variables('pwdComplexityConfigName'))]",
                     "location": "[resourceGroup().location]",
                     "condition": "[equals(parameters('virtualMachineOSType'), 'Windows')]",
                     "dependsOn": [
@@ -900,7 +925,6 @@
                         "protectedSettings": {}
                     }
                 },
-
                 {
                     "type": "extensions",
                     "name": "[concat('Linux', variables('mmaExtensionName'))]",
@@ -1662,8 +1686,7 @@
                         "autoUpgradeMinorVersion": true
                     }
                 },
-                
-                  {
+                {
                     "type": "providers/guestConfigurationAssignments",
                     "name": "[concat('Microsoft.GuestConfiguration/', variables('linuxAuditRemoteConnectionWithNoPwdConfigName'))]",
                     "apiVersion": "2018-06-30-preview",
@@ -1674,13 +1697,13 @@
                         "[resourceId('Microsoft.Compute/virtualMachines/extensions', concat(parameters('virtualMachineName'), copyIndex(parameters('virtualMachineOffset'))), concat('Linux', variables('mmaExtensionName')))]"
                     ],
                     "properties": {
-                      "guestConfiguration": {
-                        "name": "[variables('linuxAuditRemoteConnectionWithNoPwdConfigName')]",
-                        "version": "1.*"
-                      }
+                        "guestConfiguration": {
+                            "name": "[variables('linuxAuditRemoteConnectionWithNoPwdConfigName')]",
+                            "version": "1.*"
+                        }
                     }
-                  },
-                  {
+                },
+                {
                     "type": "providers/guestConfigurationAssignments",
                     "name": "[concat('Microsoft.GuestConfiguration/', variables('linuxAuditAccountsWithNoPwdConfigName'))]",
                     "apiVersion": "2018-06-30-preview",
@@ -1691,13 +1714,13 @@
                     ],
                     "location": "[resourceGroup().location]",
                     "properties": {
-                      "guestConfiguration": {
-                        "name": "[variables('linuxAuditAccountsWithNoPwdConfigName')]",
-                        "version": "1.*"
-                      }
+                        "guestConfiguration": {
+                            "name": "[variables('linuxAuditAccountsWithNoPwdConfigName')]",
+                            "version": "1.*"
+                        }
                     }
-                  },
-                  {
+                },
+                {
                     "type": "providers/guestConfigurationAssignments",
                     "name": "[concat('Microsoft.GuestConfiguration/', variables('linuxAuditEtcPasswdFilePermissionSetTo0644ConfigName'))]",
                     "apiVersion": "2018-06-30-preview",
@@ -1708,41 +1731,90 @@
                     ],
                     "location": "[resourceGroup().location]",
                     "properties": {
-                      "guestConfiguration": {
-                        "name": "[variables('linuxAuditEtcPasswdFilePermissionSetTo0644ConfigName')]",
-                        "version": "1.*"
-                      }
+                        "guestConfiguration": {
+                            "name": "[variables('linuxAuditEtcPasswdFilePermissionSetTo0644ConfigName')]",
+                            "version": "1.*"
+                        }
                     }
-                  },
-                  {
+                },
+                {
                     "type": "extensions",
                     "name": "AzurePolicyforLinux",
                     "apiVersion": "2015-05-01-preview",
                     "condition": "[equals(parameters('virtualMachineOSType'), 'Linux')]",
                     "location": "[resourceGroup().location]",
                     "dependsOn": [
-                      "[resourceId('Microsoft.Compute/virtualMachines', concat(parameters('virtualMachineName'), copyIndex(parameters('virtualMachineOffset'))))]",
-                      "[concat('Microsoft.Compute/virtualMachines/', concat(parameters('virtualMachineName'), copyIndex(parameters('virtualMachineOffset'))),'/providers/Microsoft.GuestConfiguration/guestConfigurationAssignments/',variables('linuxAuditRemoteConnectionWithNoPwdConfigName'))]",
-                      "[concat('Microsoft.Compute/virtualMachines/', concat(parameters('virtualMachineName'), copyIndex(parameters('virtualMachineOffset'))),'/providers/Microsoft.GuestConfiguration/guestConfigurationAssignments/',variables('linuxAuditAccountsWithNoPwdConfigName'))]",
-                      "[concat('Microsoft.Compute/virtualMachines/', concat(parameters('virtualMachineName'), copyIndex(parameters('virtualMachineOffset'))),'/providers/Microsoft.GuestConfiguration/guestConfigurationAssignments/',variables('linuxAuditEtcPasswdFilePermissionSetTo0644ConfigName'))]",
-                      "[resourceId('Microsoft.Compute/virtualMachines/extensions', concat(parameters('virtualMachineName'), copyIndex(parameters('virtualMachineOffset'))), concat('Linux', variables('mmaExtensionName')))]"
+                        "[resourceId('Microsoft.Compute/virtualMachines', concat(parameters('virtualMachineName'), copyIndex(parameters('virtualMachineOffset'))))]",
+                        "[concat('Microsoft.Compute/virtualMachines/', concat(parameters('virtualMachineName'), copyIndex(parameters('virtualMachineOffset'))),'/providers/Microsoft.GuestConfiguration/guestConfigurationAssignments/',variables('linuxAuditRemoteConnectionWithNoPwdConfigName'))]",
+                        "[concat('Microsoft.Compute/virtualMachines/', concat(parameters('virtualMachineName'), copyIndex(parameters('virtualMachineOffset'))),'/providers/Microsoft.GuestConfiguration/guestConfigurationAssignments/',variables('linuxAuditAccountsWithNoPwdConfigName'))]",
+                        "[concat('Microsoft.Compute/virtualMachines/', concat(parameters('virtualMachineName'), copyIndex(parameters('virtualMachineOffset'))),'/providers/Microsoft.GuestConfiguration/guestConfigurationAssignments/',variables('linuxAuditEtcPasswdFilePermissionSetTo0644ConfigName'))]",
+                        "[resourceId('Microsoft.Compute/virtualMachines/extensions', concat(parameters('virtualMachineName'), copyIndex(parameters('virtualMachineOffset'))), concat('Linux', variables('mmaExtensionName')))]"
                     ],
                     "properties": {
-                      "publisher": "Microsoft.GuestConfiguration",
-                      "type": "ConfigurationforLinux",
-                      "typeHandlerVersion": "1.0",
-                      "autoUpgradeMinorVersion": true
+                        "publisher": "Microsoft.GuestConfiguration",
+                        "type": "ConfigurationforLinux",
+                        "typeHandlerVersion": "1.0",
+                        "autoUpgradeMinorVersion": true
                     }
-                  }
+                }
             ]
         }
     ],
+    "functions": [
+        {
+            "namespace": "vdc",
+            "members": {
+                "nextIP": {
+                    "parameters": [
+                        {
+                            "name": "ip",
+                            "type": "string"
+                        },
+                        {
+                            "name": "operand",
+                            "type": "int"
+                        }
+                    ],
+                    "output": {
+                        "type": "string",
+                        "value": "[concat(split(parameters('ip'), '.')[0], '.' ,split(parameters('ip'), '.')[1], '.' ,split(parameters('ip'), '.')[2], '.', add(int(split(parameters('ip'), '.')[3]), parameters('operand')))]"
+                    }
+                },
+                "splitIP": {
+                    "parameters": [
+                        {
+                            "name": "initialIP",
+                            "type": "string"
+                        }
+                    ],
+                    "output": {
+                        "type": "array",
+                        "value": "[split(parameters('initialIP'), '.')]"
+                    }
+                }
+            }
+        }
+    ],
     "outputs": {
-        "adResourceGroup": {
+        "vmResourceGroup": {
             "type": "string",
             "value": "[resourceGroup().name]",
             "metadata": {
                 "description": "The Resource Group that was deployed to."
+            }
+        },
+        "vmNames": {
+            "type": "array",
+            "value": "[variables('vmNames').vmNames]",
+            "metadata": {
+                "description": "The name of the VMs provisioned."
+            }
+        },
+        "vmResourceIds": {
+            "type": "array",
+            "value": "[variables('vmResourceIds').vmResourceIds]",
+            "metadata": {
+                "description": "The resource identifier of the VMs provisioned."
             }
         }
     }

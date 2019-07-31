@@ -473,8 +473,8 @@
             }
         },
         {
-            "Name": "Jumpbox",
-            "ModuleDefinitionName": "Jumpbox",
+            "Name": "WindowsJumpbox",
+            "ModuleDefinitionName": "VirtualMachines",
             "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.Jumpbox.ResourceGroup}",
             "DependsOn":[
                 "VirtualNetwork", 
@@ -485,20 +485,41 @@
                 "KeyVault", 
                 "ArtifactsStorageAccount"
             ],
-            "Comments": "Creates Windows and Linux Jumpboxes",
+            "Comments": "Creates Windows Jumpbox",
             "Deployment": {
                 "OverrideParameters": {
-                    "windowsVirtualMachineName": {
+                    "virtualMachineName": {
                         "value": "${Parameters.ModuleConfigurationParameters.Jumpbox.Windows.Name}"
                     },
-                    "linuxVirtualMachineName": {
-                        "value": "${Parameters.ModuleConfigurationParameters.Jumpbox.Linux.Name}"
+                    "virtualMachineSize": {
+                        "value": "${Parameters.ModuleConfigurationParameters.Jumpbox.Windows.VMSize}"
+                    },
+                    "virtualMachineOSImage": {
+                        "value": "${Parameters.ModuleConfigurationParameters.Jumpbox.Windows.OSImage}"
+                    },
+                    "virtualMachineOSType": {
+                        "value": "${Parameters.ModuleConfigurationParameters.Jumpbox.Windows.OSType}"
+                    },
+                    "virtualMachineCount": {
+                        "value": "${Parameters.ModuleConfigurationParameters.Jumpbox.Windows.VMCount}"
                     },
                     "workspaceId": {
                         "value": "reference(LogAnalytics.logAnalyticsWorkspaceId)"
                     },
+                    "logAnalyticsWorkspaceId": {
+                        "value": "reference(LogAnalytics.logAnalyticsWorkspaceResourceId)"
+                    },
                     "logAnalyticsWorkspacePrimarySharedKey": {
                         "value": "reference(LogAnalytics.logAnalyticsPrimarySharedKey)"
+                    },
+                    "diagnosticsStorageAccountId": {
+                        "value": "reference(DiagnosticStorageAccount.storageAccountResourceId)"
+                    },
+                    "diagnosticsStorageAccountName": {
+                        "value": "reference(DiagnosticStorageAccount.storageAccountName)"
+                    },
+                    "diagnosticsStorageAccountSasToken": {
+                        "value": "reference(DiagnosticStorageAccount.storageAccountSasToken)"
                     },
                     "artifactsStorageAccountKey": {
                         "value": "reference(ArtifactsStorageAccount.storageAccountAccessKey)"
@@ -509,11 +530,11 @@
                     "vNetId": {
                         "value": "reference(VirtualNetwork.vNetResourceId)"
                     },
-                    "jumpboxAsgId": {
-                        "value": "reference(JumpboxASG.applicationSecurityGroupResourceId)"
-                    },
                     "subnetName": {
                         "value": "${Parameters.ModuleConfigurationParameters.Jumpbox.SubnetName}"
+                    },
+                    "applicationSecurityGroupId": {
+                        "value": "reference(JumpboxASG.applicationSecurityGroupResourceId)"
                     },
                     "adminUsername": {
                         "value": "${Parameters.ModuleConfigurationParameters.Jumpbox.AdminUsername}"
@@ -525,30 +546,84 @@
                             },
                             "secretName": "${Parameters.ModuleConfigurationParameters.KeyVault.SecretsObject.Secrets[0].secretName}"
                         }
+                    }
+                }
+            }
+        },
+        {
+            "Name": "LinuxJumpbox",
+            "ModuleDefinitionName": "VirtualMachines",
+            "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.Jumpbox.ResourceGroup}",
+            "DependsOn":[
+                "VirtualNetwork", 
+                "DiagnosticStorageAccount", 
+                "LogAnalytics", 
+                "ActiveDirectory", 
+                "EnableDNSServerOnVirtualNetwork", 
+                "KeyVault", 
+                "ArtifactsStorageAccount"
+            ],
+            "Comments": "Creates Linux Jumpbox",
+            "Deployment": {
+                "OverrideParameters": {
+                    "virtualMachineName": {
+                        "value": "${Parameters.ModuleConfigurationParameters.Jumpbox.Linux.Name}"
                     },
-                    "windowsVirtualMachineCount": {
-                        "value": "${Parameters.ModuleConfigurationParameters.Jumpbox.Windows.VMCount}"
-                    },
-                    "windowsVirtualMachineSize": {
-                        "value": "${Parameters.ModuleConfigurationParameters.Jumpbox.Windows.VMSize}"
-                    },
-                    "windowsOSImage": {
-                        "value": "${Parameters.ModuleConfigurationParameters.Jumpbox.Windows.OSImage}"
-                    },
-                    "linuxVirtualMachineCount": {
-                        "value": "${Parameters.ModuleConfigurationParameters.Jumpbox.Linux.VMCount}"
-                    },
-                    "linuxVirtualMachineSize": {
+                    "virtualMachineSize": {
                         "value": "${Parameters.ModuleConfigurationParameters.Jumpbox.Linux.VMSize}"
                     },
-                    "linuxOSImage": {
+                    "virtualMachineOSImage": {
                         "value": "${Parameters.ModuleConfigurationParameters.Jumpbox.Linux.OSImage}"
+                    },
+                    "virtualMachineOSType": {
+                        "value": "${Parameters.ModuleConfigurationParameters.Jumpbox.Linux.OSType}"
+                    },
+                    "virtualMachineCount": {
+                        "value": "${Parameters.ModuleConfigurationParameters.Jumpbox.Linux.VMCount}"
+                    },
+                    "workspaceId": {
+                        "value": "reference(LogAnalytics.logAnalyticsWorkspaceId)"
+                    },
+                    "logAnalyticsWorkspaceId": {
+                        "value": "reference(LogAnalytics.logAnalyticsWorkspaceResourceId)"
+                    },
+                    "logAnalyticsWorkspacePrimarySharedKey": {
+                        "value": "reference(LogAnalytics.logAnalyticsPrimarySharedKey)"
+                    },
+                    "diagnosticsStorageAccountId": {
+                        "value": "reference(DiagnosticStorageAccount.storageAccountResourceId)"
                     },
                     "diagnosticsStorageAccountName": {
                         "value": "reference(DiagnosticStorageAccount.storageAccountName)"
                     },
                     "diagnosticsStorageAccountSasToken": {
                         "value": "reference(DiagnosticStorageAccount.storageAccountSasToken)"
+                    },
+                    "artifactsStorageAccountKey": {
+                        "value": "reference(ArtifactsStorageAccount.storageAccountAccessKey)"
+                    },
+                    "artifactsStorageAccountName": {
+                        "value": "reference(ArtifactsStorageAccount.storageAccountName)"
+                    },
+                    "vNetId": {
+                        "value": "reference(VirtualNetwork.vNetResourceId)"
+                    },
+                    "subnetName": {
+                        "value": "${Parameters.ModuleConfigurationParameters.Jumpbox.SubnetName}"
+                    },
+                    "applicationSecurityGroupId": {
+                        "value": "reference(JumpboxASG.applicationSecurityGroupResourceId)"
+                    },
+                    "adminUsername": {
+                        "value": "${Parameters.ModuleConfigurationParameters.Jumpbox.AdminUsername}"
+                    },
+                    "sshPublicKey": {
+                        "reference": {
+                            "keyVault": {
+                                "id": "reference(KeyVault.keyVaultResourceId)"
+                            },
+                            "secretName": "${Parameters.ModuleConfigurationParameters.KeyVault.SecretsObject.Secrets[2].secretName}"
+                        }
                     }
                 }
             }

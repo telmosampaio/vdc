@@ -70,6 +70,7 @@ Describe "Template: $template - Storage Accounts" -Tags Unit {
             'parameters',
             'variables',
 			'resources',
+			'functions',
 			'outputs' | Sort-Object
 			$templateProperties = (Get-Content (Join-Path "$here" "$TemplateFile") `
 									| ConvertFrom-Json -ErrorAction SilentlyContinue) `
