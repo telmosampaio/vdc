@@ -740,10 +740,16 @@
                 },
                 "secretName": "${Parameters.ModuleConfigurationParameters.KeyVault.SecretsObject.Secrets[0].secretName}"
             },
+            "Kek": {
+                "Name": "AddsKek",
+                "Comments": "Destination can be HSM or Software. Use HSM to create Production keys.",
+                "Destination": "HSM"
+            },
             "DomainAdminUsername": "${Parameters.ModuleConfigurationParameters.ActiveDirectory.DomainAdminUsername}",
             "DomainAdminPassword": "${Parameters.ModuleConfigurationParameters.ActiveDirectory.DomainAdminPassword}",
             "VMCount": 2,
             "VMSize": "Standard_DS3_v2",
+            "OSType": "Windows",
             "OSImage": {
                 "offer": "WindowsServer",
                 "publisher": "MicrosoftWindowsServer",
@@ -754,7 +760,12 @@
             "PrimaryDomainControllerIP": "${Parameters.ModuleConfigurationParameters.ActiveDirectory.PrimaryDomainControllerIP}",
             "ADSitename": "${Parameters.ModuleConfigurationParameters.ActiveDirectory.ADSitename}",
             "DomaincontrollerDriveLetter": "F",
-            "SubnetName": "${Parameters.ModuleConfigurationParameters.VirtualNetwork.Subnets[0].name}"
+            "SubnetName": "${Parameters.ModuleConfigurationParameters.VirtualNetwork.Subnets[0].name}",
+            "DataDisks": [
+                {
+                    "size": 127
+                }
+            ]
         }
     }
 }

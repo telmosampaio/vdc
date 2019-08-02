@@ -5,7 +5,7 @@
             "Name": "DiagnosticStorageAccount",
             "ModuleDefinitionName": "StorageAccounts",
             "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.DiagnosticStorageAccount.ResourceGroup}",
-            "Comments": "Storage Account that is used for ...",
+            "Comments": "Storage Account that is used to store diagnostic information as raw logs",
             "Version": "2.0",
             "Policies": {
                 "Comments": "Optional - If no object is specified, no Policies deployment will occur",
@@ -22,7 +22,7 @@
                 }
             },
             "Deployment": {
-                "Comments": "We need the 'update' module instance to lock this resource after the Virtual Network got created",
+                "Comments": "TemplatePath and ParametersPath are optional, if specified, the engine will use the relative path specified instead of deriving one for you.",
                 "TemplatePath": "../../Modules/StorageAccounts/2.0/deploy.json",
                 "OverrideParameters": {
                     "storageAccountName": {
@@ -339,7 +339,34 @@
                     },
                     "workspaceId": {
                         "value": "reference(LogAnalytics.logAnalyticsWorkspaceResourceId)"
-                    },
+                    }
+                }
+            }
+        },
+        {
+            "Name": "ActiveDirectoryDomainServicesKek",
+            "Script": {
+                "Command": "../../Modules/KeyVault/2.0/Scripts/create.keys.ps1",
+                "Arguments": {
+                    "VaultName": "reference(KeyVault.keyVaultName)",
+                    "KeyName": "${Parameters.ModuleConfigurationParameters.ActiveDirectoryDomainServices.Kek.Name}",
+                    "Destination": "${Parameters.ModuleConfigurationParameters.ActiveDirectoryDomainServices.Kek.Destination}"
+                }
+            }
+        },
+        {
+            "Name": "EnableServiceEndpointOnKeyVault",
+            "ModuleDefinitionName": "KeyVault",
+            "Updates": "KeyVault",
+            "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.KeyVault.ResourceGroup}",
+            "DependsOn":[
+                "VirtualNetwork", 
+                "DiagnosticStorageAccount", 
+                "LogAnalytics",
+                "KeyVault"
+            ],
+            "Deployment": {
+                "OverrideParameters": {
                     "networkAcls": {
                         "value": "${Parameters.ModuleConfigurationParameters.KeyVault.NetworkAcls}"
                     },
@@ -629,7 +656,86 @@
             }
         },
         {
-            "Name": "ActiveDirectoryDomainServices",
+            "Name": "ActiveDirectoryDomainServicesVMs",
+            "ModuleDefinitionName": "VirtualMachines",
+            "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.ActiveDirectoryDomainServices.ResourceGroup}",
+            "DependsOn":[
+                "VirtualNetwork", 
+                "DiagnosticStorageAccount", 
+                "LogAnalytics", 
+                "ActiveDirectory", 
+                "EnableDNSServerOnVirtualNetwork", 
+                "KeyVault", 
+                "ArtifactsStorageAccount"
+            ],
+            "Comments": "Creates Active Directory Domain Services VMs",
+            "Deployment": {
+                "OverrideParameters": {
+                    "virtualMachineName": {
+                        "value": "${Parameters.ModuleConfigurationParameters.ActiveDirectoryDomainServices.Name}"
+                    },
+                    "virtualMachineSize": {
+                        "value": "${Parameters.ModuleConfigurationParameters.ActiveDirectoryDomainServices.VMSize}"
+                    },
+                    "virtualMachineOSImage": {
+                        "value": "${Parameters.ModuleConfigurationParameters.ActiveDirectoryDomainServices.OSImage}"
+                    },
+                    "virtualMachineOSType": {
+                        "value": "${Parameters.ModuleConfigurationParameters.ActiveDirectoryDomainServices.OSType}"
+                    },
+                    "virtualMachineCount": {
+                        "value": "${Parameters.ModuleConfigurationParameters.ActiveDirectoryDomainServices.VMCount}"
+                    },
+                    "virtualMachineDataDisks": {
+                        "value": "${Parameters.ModuleConfigurationParameters.ActiveDirectoryDomainServices.DataDisks}"
+                    },
+                    "workspaceId": {
+                        "value": "reference(LogAnalytics.logAnalyticsWorkspaceId)"
+                    },
+                    "logAnalyticsWorkspaceId": {
+                        "value": "reference(LogAnalytics.logAnalyticsWorkspaceResourceId)"
+                    },
+                    "logAnalyticsWorkspacePrimarySharedKey": {
+                        "value": "reference(LogAnalytics.logAnalyticsPrimarySharedKey)"
+                    },
+                    "diagnosticsStorageAccountId": {
+                        "value": "reference(DiagnosticStorageAccount.storageAccountResourceId)"
+                    },
+                    "diagnosticsStorageAccountName": {
+                        "value": "reference(DiagnosticStorageAccount.storageAccountName)"
+                    },
+                    "diagnosticsStorageAccountSasToken": {
+                        "value": "reference(DiagnosticStorageAccount.storageAccountSasToken)"
+                    },
+                    "artifactsStorageAccountKey": {
+                        "value": "reference(ArtifactsStorageAccount.storageAccountAccessKey)"
+                    },
+                    "artifactsStorageAccountName": {
+                        "value": "reference(ArtifactsStorageAccount.storageAccountName)"
+                    },
+                    "vNetId": {
+                        "value": "reference(VirtualNetwork.vNetResourceId)"
+                    },
+                    "subnetName": {
+                        "value": "${Parameters.ModuleConfigurationParameters.ActiveDirectoryDomainServices.SubnetName}"
+                    },
+                    "vmIPAddress": {
+                        "value": "${Parameters.ModuleConfigurationParameters.ActiveDirectoryDomainServices.AddsIPAddressStart}"
+                    },
+                    "applicationSecurityGroupId": {
+                        "value": "reference(JumpboxASG.applicationSecurityGroupResourceId)"
+                    },
+                    "adminUsername": {
+                        "value": "${Parameters.ModuleConfigurationParameters.ActiveDirectoryDomainServices.AdminUsername}"
+                    },
+                    "adminPassword": {
+                        "reference": "${Parameters.ModuleConfigurationParameters.ActiveDirectoryDomainServices.AdminPassword}"
+                    }
+                }
+            }
+        },
+        {
+            "Name": "InstallActiveDirectoryDomainServices",
             "ModuleDefinitionName": "ActiveDirectoryDomainServices",
             "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.ActiveDirectoryDomainServices.ResourceGroup}",
             "DependsOn":[

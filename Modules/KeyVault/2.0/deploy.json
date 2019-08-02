@@ -56,6 +56,13 @@
                 "description": "Optional. Specifies if the azure platform has access to the vault for enabling disk encryption scenarios."
             }
         },
+        "lockForDeletion": {
+            "type": "bool",
+            "defaultValue": true,
+            "metadata": {
+                "description": "Optional. Switch to lock Key Vault from deletion."
+            }
+        },
         "logsRetentionInDays": {
             "type": "int",
             "defaultValue": 365,
@@ -89,14 +96,16 @@
         },
         "networkAcls": {
             "type": "object",
+            "defaultValue": {},
             "metadata": {
-                "description": "Required. Service endpoint object information"
+                "description": "Optional. Service endpoint object information"
             }
         },
         "vNetId": {
             "type": "string",
+            "defaultValue": "",
             "metadata": {
-                "description": "Required. Virtual Network resource identifier"
+                "description": "Optional. Virtual Network resource identifier, if networkAcls is passed, this value must be passed as well"
             }
         }
     },
@@ -118,7 +127,7 @@
     "resources": [
         {
             "type": "Microsoft.KeyVault/vaults",
-            "apiVersion": "2016-10-01",
+            "apiVersion": "2018-02-14",
             "name": "[parameters('keyVaultName')]",
             "location": "[resourceGroup().location]",
             "tags": {
@@ -130,7 +139,7 @@
                 "enabledForDiskEncryption": "[parameters('enableVaultForDiskEncryption')]",
                 "enableSoftDelete": true,
                 "tenantId": "[subscription().tenantId]",
-                "accessPolicies": "[parameters('AccessPolicies')]",
+                "accessPolicies": "[parameters('accessPolicies')]",
                 "sku": {
                     "name": "[parameters('vaultSku')]",
                     "family": "A"
@@ -143,6 +152,19 @@
                 }
             },
             "resources": [
+                {
+                    "type": "providers/locks",
+                    "apiVersion": "2016-09-01",
+                    "condition": "[parameters('lockForDeletion')]",
+                    "name": "Microsoft.Authorization/keyVaultDoNotDelete",
+                    "dependsOn": [
+                        "[concat('Microsoft.KeyVault/vaults/', parameters('keyVaultName'))]"
+                    ],
+                    "comments": "Resource lock on Azure Key Vault",
+                    "properties": {
+                        "level": "CannotDelete"
+                    }
+                },
                 {
                     "type": "Microsoft.KeyVault/vaults/providers/diagnosticsettings",
                     "apiVersion": "2016-09-01",

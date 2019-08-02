@@ -47,6 +47,13 @@
                 "description": "Optional. This value will be used as start VM count. Specify a value if you want to create VMs starting at a specific number, this is useful when you want to append more VMs."
             }
         },
+        "virtualMachineDataDisks": {
+            "type": "array",
+            "defaultValue": [],
+            "metadata": {
+                "description": "Optional. Array of objects with the following expected format: [{ 'size': 120 }, { 'size': 130 }], this array indicates that two data disks will be created."
+            }
+        },
         "availabilitySetId": {
             "type": "string",
             "defaultValue": "",
@@ -234,6 +241,22 @@
                     "input": "[resourceId('Microsoft.Compute/virtualMachines', concat(parameters('virtualMachineName'), copyIndex('vmResourceIds', parameters('virtualMachineOffset'))))]"
                 }
             ]
+        },
+        "dataDisks": {
+            "copy": [
+                {
+                    "name": "dataDisks",
+                    "count": "[if(empty(parameters('virtualMachineDataDisks')), 1, length(parameters('virtualMachineDataDisks')))]",
+                    "input": 
+                    {
+                        "lun": "[if(empty(parameters('virtualMachineDataDisks')), 0, copyIndex('dataDisks'))]",
+                        "name": "[if(empty(parameters('virtualMachineDataDisks')), 'dummy', replace(toLower(substring(concat(parameters('virtualMachineName'), copyindex('dataDisks', parameters('virtualMachineOffset')), '-dsk', copyindex('dataDisks', parameters('virtualMachineOffset')), '-', replace(concat(variables('uniqueString'), variables('uniqueString')), '-', '')), 0, 30)), '-', ''))]",
+                        "diskSizeGB": "[if(empty(parameters('virtualMachineDataDisks')), 100, parameters('virtualMachineDataDisks')[copyIndex('dataDisks')].size)]",
+                        "createOption": "Empty",
+                        "caching": "None"
+                    }
+                }
+            ]
         }
     },
     "resources": [
@@ -342,11 +365,26 @@
                         "version": "latest"
                     },
                     "osDisk": {
-                        "name": "[replace(toLower(substring(concat(parameters('virtualMachineName'), '-osdisk', '-', replace(concat(variables('uniqueString'), variables('uniqueString')), '-', '')), 0, 30)), '-', '')]",
+                        "name": "[replace(toLower(substring(concat(parameters('virtualMachineName'), copyIndex(parameters('virtualMachineOffset')), '-osdisk', '-', replace(concat(variables('uniqueString'), variables('uniqueString')), '-', '')), 0, 30)), '-', '')]",
                         "osType": "[parameters('virtualMachineOSType')]",
                         "createOption": "FromImage",
                         "diskSizeGB": 256
-                    }
+                    },
+                    "copy": [
+                        {
+                            "name": "dataDisks",
+                            "condition": "[not(empty(parameters('virtualMachineDataDisks')))]",
+                            "count": "[if(empty(parameters('virtualMachineDataDisks')), 1, length(parameters('virtualMachineDataDisks')))]",
+                            "input": 
+                            {
+                                "lun": "[if(empty(parameters('virtualMachineDataDisks')), 0, copyIndex('dataDisks'))]",
+                                "name": "[if(empty(parameters('virtualMachineDataDisks')), 'dummy', replace(toLower(substring(concat(parameters('virtualMachineName'), copyIndex('vmLoop', parameters('virtualMachineOffset')), '-dsk', copyindex('dataDisks', parameters('virtualMachineOffset')), '-', replace(concat(variables('uniqueString'), variables('uniqueString')), '-', '')), 0, 30)), '-', ''))]",
+                                "diskSizeGB": "[if(empty(parameters('virtualMachineDataDisks')), 100, parameters('virtualMachineDataDisks')[copyIndex('dataDisks')].size)]",
+                                "createOption": "Empty",
+                                "caching": "None"
+                            }
+                        }
+                    ]
                 },
                 "networkProfile": {
                     "networkInterfaces": [
