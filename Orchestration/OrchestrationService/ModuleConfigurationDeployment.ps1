@@ -115,6 +115,8 @@ Function New-Deployment {
                 -ArchetypeInstanceName $ArchetypeInstanceName `
                 -Operation @{ "False" = "deploy"; "True" = "validate"; }[$Validate.ToString()];;
 
+        Write-Host (ConvertTo-Json $moduleConfiguration) -ForegroundColor Green;
+
         if ($null -eq $moduleConfiguration) {
             throw "Module configuration not found for module name: $moduleConfigurationName";
         }

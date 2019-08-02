@@ -162,19 +162,19 @@
     }
   ],
   "outputs": {
-    "ServiceBusConnectionString": {
+    "serviceBusConnectionString": {
       "type": "string",
       "value": "[listkeys(variables('defaultAuthRuleResourceId'), variables('sbVersion')).primaryConnectionString]"
     },
-    "ServiceBusPrimaryKey": {
+    "serviceBusPrimaryKey": {
       "type": "string",
       "value": "[listkeys(variables('defaultAuthRuleResourceId'), variables('sbVersion')).primaryKey]"
     },
-    "ServiceBusSendListenConnectionString": {
+    "serviceBusSendListenConnectionString": {
       "type": "string",
       "value": "[listkeys(variables('SendListenAuthRuleResourceId'), variables('sbVersion')).primaryConnectionString]"
     },
-    "ServiceBusSendListenPrimaryKey": {
+    "serviceBusSendListenPrimaryKey": {
       "type": "string",
       "value": "[listkeys(variables('SendListenAuthRuleResourceId'), variables('sbVersion')).primaryKey]"
     }

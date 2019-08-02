@@ -1,0 +1,14 @@
+{
+    "location": {
+        "value": "westus"
+    },
+    "acrName": {
+        "value": "org-aks-acr"
+    },
+    "acrAdminUserEnabled": {
+        "value": false
+    },
+    "acrSku": {
+        "value": "Basic"
+    }
+}

@@ -1,0 +1,67 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "type": "string",
+            "metadata": {
+                "description": "The location of AKS resource."
+            }
+        },
+        "acrName": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 50,
+            "metadata": {
+              "description": "Name of your Azure Container Registry"
+            }
+        },
+        "acrAdminUserEnabled": {
+            "type": "bool",
+            "defaultValue": false,
+            "metadata": {
+              "description": "Enable admin user that have push / pull permission to the registry."
+            }
+        },
+        "acrSku": {
+            "type": "string",
+            "metadata": {
+              "description": "Tier of your Azure Container Registry."
+            },
+            "defaultValue": "Basic",
+            "allowedValues": [
+              "Basic",
+              "Standard",
+              "Premium"
+            ]
+        }
+    },
+    "variables": {
+      "acrName": "[replace(parameters('acrName'), '-', '')]"
+    },
+    "resources": [
+        {
+            "name": "[variables('acrName')]",
+            "type": "Microsoft.ContainerRegistry/registries",
+            "apiVersion": "2017-10-01",
+            "location": "[parameters('location')]",
+            "comments": "Container registry for storing docker images",
+            "tags": {
+              "displayName": "[concat(parameters('acrName'))]"
+            },
+            "sku": {
+              "name": "[parameters('acrSku')]",
+              "tier": "[parameters('acrSku')]"
+            },
+            "properties": {
+              "adminUserEnabled": "[parameters('acrAdminUserEnabled')]"
+            }
+        }
+    ],
+    "outputs": {
+        "acrLoginServer": {
+            "value": "[reference(resourceId('Microsoft.ContainerRegistry/registries',variables('acrName')),'2017-10-01').loginServer]",
+            "type": "string"
+        }
+    }
+}

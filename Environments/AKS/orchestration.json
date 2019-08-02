@@ -1,0 +1,419 @@
+{
+    "ModuleConfigurationsPath": "../../Modules",
+    "ModuleConfigurations": [
+        {
+            "Name": "DiagnosticsStorageAccount",
+            "ModuleDefinitionName": "StorageAccounts",
+            "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.DiagnosticStorageAccount.ResourceGroup}",
+            "Comments": "Storage Account that is used for ...",
+            "Version": "2.0",
+            "Policies": {
+                "Comments": "Optional - If no object is specified, no Policies deployment will occur",
+                "OverrideParameters": {
+                    "effect": {
+                        "value": "${Parameters.ModuleConfigurationParameters.DiagnosticStorageAccount.Policies.Effect}"
+                    },
+                    "resourceGroup": {
+                        "value": "${Parameters.ModuleConfigurationParameters.DiagnosticStorageAccount.ResourceGroup}"
+                    },
+                    "resourceGroupLocation": {
+                        "value": "${Parameters.ModuleConfigurationParameters.DiagnosticStorageAccount.Location}"
+                    }
+                }
+            },
+            "Deployment": {
+                "Comments": "We need the 'update' module instance to lock this resource after the Virtual Network got created",
+                "TemplatePath": "../../Modules/StorageAccounts/2.0/deploy.json",
+                "OverrideParameters": {
+                    "storageAccountName": {
+                        "value": "${Parameters.ModuleConfigurationParameters.DiagnosticStorageAccount.Name}"
+                    },
+                    "storageAccountSku": {
+                        "value": "${Parameters.ModuleConfigurationParameters.DiagnosticStorageAccount.Sku}"
+                    },
+                    "location": {
+                        "value": "${Parameters.ModuleConfigurationParameters.DiagnosticStorageAccount.Location}"
+                    }
+                }
+            }
+        },
+        {
+            "Name": "LogAnalytics",
+            "ModuleDefinitionName": "LogAnalytics",
+            "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.LogAnalytics.ResourceGroup}",
+            "Deployment": {
+                "OverrideParameters": {
+                    "logAnalyticsWorkspaceName": {
+                        "value": "${Parameters.ModuleConfigurationParameters.LogAnalytics.Name}"
+                    },
+                    "diagnosticStorageAccountName": {
+                        "value": "reference(DiagnosticsStorageAccount.storageAccountName)"
+                    },
+                    "diagnosticStorageAccountId": {
+                        "value": "reference(DiagnosticsStorageAccount.storageAccountResourceId)"
+                    },
+                    "diagnosticStorageAccountAccessKey": {
+                        "value": "reference(DiagnosticsStorageAccount.storageAccountAccessKey)"
+                    },
+                    "location": {
+                        "value": "${Parameters.ModuleConfigurationParameters.LogAnalytics.Location}"
+                    }
+                }
+            }
+        },
+        {
+            "Name": "SecurityCenter",
+            "ModuleDefinitionName": "SecurityCenter",
+            "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.SecurityCenter.ResourceGroup}",
+            "Deployment": {
+                "OverrideParameters": {
+                    "logAnalyticsResourceId": {
+                        "value": "reference(LogAnalytics.logAnalyticsWorkspaceResourceId)"
+                    }
+                }
+            }
+        },
+        {
+            "Name": "EventHub",
+            "ModuleDefinitionName": "EventHub",
+            "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.EventHub.ResourceGroup}",
+            "Deployment": {
+                "OverrideParameters": {
+                    "location": {
+                        "value": "${Parameters.ModuleConfigurationParameters.LogAnalytics.Location}"
+                    },
+                    "eventHubName": {
+                        "value": "${Parameters.ModuleConfigurationParameters.EventHub.Name}"
+                    },
+                    "eventHubSku": {
+                        "value": "Standard"
+                    },
+                    "namespaceName": {
+                        "value": "${Parameters.ModuleConfigurationParameters.EventHub.Namespace}"
+                    },
+                    "consumerGroupName": {
+                        "value": "${Parameters.ModuleConfigurationParameters.EventHub.ConsumerGroupName}"
+                    }
+                }
+            }
+        },
+        {
+            "Name": "NetworkSecurityGroups",
+            "ModuleDefinitionName": "NetworkSecurityGroups",
+            "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.Network.ResourceGroup}",
+            "Deployment": {
+                "OverrideParameters": {
+                    "workspaceId": {
+                        "value": "reference(LogAnalytics.logAnalyticsWorkspaceResourceId)"
+                    },
+                    "diagnosticStorageAccountId": {
+                        "value": "reference(DiagnosticsStorageAccount.storageAccountResourceId)"
+                    },
+                    "networkSecurityGroupName": {
+                        "value": "${Parameters.ModuleConfigurationParameters.Network.NetworkSecurityGroups[0].Name}"
+                    },
+                    "networkSecurityGroupSecurityRules": {
+                        "value": "${Parameters.ModuleConfigurationParameters.Network.NetworkSecurityGroups[0].Rules}"
+                    }
+                }
+            }
+        },
+        {
+            "Name": "AKSRouteTable",
+            "ModuleDefinitionName": "RouteTables",
+            "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.Network.ResourceGroup}",
+            "Deployment": {
+                "OverrideParameters": {
+                    "routeTableName": {
+                        "value": "${Parameters.ModuleConfigurationParameters.Network.UserDefinedRoutes[0].Name}"
+                    },
+                    "routes": {
+                        "value": "${Parameters.ModuleConfigurationParameters.Network.UserDefinedRoutes[0].Routes}"
+                    }
+                }
+            }
+        },
+        {
+            "Name": "VirtualNetwork",
+            "ModuleDefinitionName": "vNet",
+            "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.Network.ResourceGroup}",
+            "Deployment": {
+                "OverrideParameters": {
+                    "vnetName": {
+                        "value": "${Parameters.ModuleConfigurationParameters.Network.Name}"
+                    },
+                    "vnetAddressPrefixes": {
+                        "value": "${Parameters.ModuleConfigurationParameters.Network.AddressPrefixes}"
+                    },
+                    "dnsServers": {
+                        "value": "${Parameters.ModuleConfigurationParameters.Network.DnsServers}"
+                    },
+                    "subnets": {
+                        "value": "${Parameters.ModuleConfigurationParameters.Network.Subnets}"
+                    },
+                    "enableDdosProtection": {
+                        "value": "${Parameters.ModuleConfigurationParameters.Network.EnableDdosProtection}"
+                    },
+                    "enableVmProtection": {
+                        "value": "${Parameters.ModuleConfigurationParameters.Network.EnableVmProtection}"
+                    }
+                }
+            }
+        },
+        {
+            "Name": "VirtualNetworkPeeringToAKS",
+            "ModuleDefinitionName": "vNetPeering",
+            "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.Network.ResourceGroup}",
+            "Deployment": {
+                "OverrideParameters": {
+                     "localVnetName": {
+                        "value": "${Parameters.ModuleConfigurationParameters.Network.Name}"
+                    },
+                    "peeringName": {
+                        "value": "aks-shared-peering"
+                    },
+                    "remoteVirtualNetworkId": {
+                        "value": "${Parameters.ModuleConfigurationParameters.SharedServices.Network.Id}"
+                    },
+                    "useRemoteGateways": {
+                        "value": false
+                    }
+                }
+            }
+        },
+        {
+            "Name": "VirtualNetworkPeeringFromAKS",
+            "ModuleDefinitionName": "vNetPeering",
+            "Subscription": "SharedServices",
+            "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.SharedServices.Network.ResourceGroupName}",
+            "Deployment": {
+                "OverrideParameters": {
+                     "localVnetName": {
+                        "value": "${Parameters.ModuleConfigurationParameters.SharedServices.Network.Name}"
+                    },
+                    "peeringName": {
+                        "value": "shared-aks-peering"
+                    },
+                    "remoteVirtualNetworkId": {
+                        "value": "reference(VirtualNetwork.vNetResourceId)"
+                    },
+                    "useRemoteGateways": {
+                        "value": false
+                    }
+                }
+            }
+        },
+        {
+            "Name": "EnableServiceEndPointOnDiagnosticStorageAccount",
+            "ModuleDefinitionName": "StorageAccounts",
+            "Updates": "DiagnosticsStorageAccount",
+            "Comments": "Enables Service endpoint on the Storage Account",
+            "Deployment": {
+                "OverrideParameters": {
+                    "networkAcls": {
+                        "value": "${Parameters.ModuleConfigurationParameters.DiagnosticStorageAccount.NetworkAcls}"
+                    },
+                    "vNetId": {
+                        "value": "reference(VirtualNetwork.vNetResourceId)"
+                    }
+                }
+            }
+        },
+        {
+            "Name": "KeyVault",
+            "ModuleDefinitionName": "KeyVault",
+            "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.KeyVault.ResourceGroup}",
+            "Deployment": {
+                "OverrideParameters": {
+                    "keyVaultName": {
+                        "value": "${Parameters.ModuleConfigurationParameters.KeyVault.Name}"
+                    },
+                    "accessPolicies": {
+                        "value": "${Parameters.ModuleConfigurationParameters.KeyVault.AccessPolicies}"
+                    },
+                    "secretsObject": {
+                        "value": {
+                            "secrets": "${Parameters.ModuleConfigurationParameters.KeyVault.SecretsObject.Secrets}"
+                        }
+                    },
+                    "enableVaultForDeployment": {
+                        "value": "${Parameters.ModuleConfigurationParameters.KeyVault.EnableVaultForDeployment}"
+                    },
+                    "enableVaultForDiskEncryption": {
+                        "value": "${Parameters.ModuleConfigurationParameters.KeyVault.EnableVaultForDiskEncryption}"
+                    },
+                    "enableVaultForTemplateDeployment": {
+                        "value": "${Parameters.ModuleConfigurationParameters.KeyVault.EnableVaultForTemplateDeployment}"
+                    },
+                    "vaultSku": {
+                        "value": "${Parameters.ModuleConfigurationParameters.KeyVault.Sku}"
+                    },
+                    "diagnosticStorageAccountId": {
+                        "value": "reference(DiagnosticsStorageAccount.storageAccountResourceId)"
+                    },
+                    "workspaceId": {
+                        "value": "reference(LogAnalytics.logAnalyticsWorkspaceResourceId)"
+                    },
+                    "networkAcls": {
+                        "value": "${Parameters.ModuleConfigurationParameters.KeyVault.NetworkAcls}"
+                    },
+                    "vNetId": {
+                        "value": "reference(VirtualNetwork.vNetResourceId)"
+                    }
+                }
+            }
+        },
+        {
+            "Name": "ACR",
+            "ModuleDefinitionName": "ACR",
+            "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.ACR.ResourceGroup}",
+            "Comments": "Storage Account that is used for ...",
+            "Version": "2.0",
+            "Deployment": {
+                "Comments": "We need the 'update' module instance to lock this resource after the Virtual Network got created",
+                "TemplatePath": "../../Modules/ACR/2.0/deploy.json",
+                "OverrideParameters": {
+                    "location": {
+                        "value": "westus"
+                    },
+                    "acrName": {
+                        "value": "${Parameters.ModuleConfigurationParameters.ACR.Name}"
+                    }
+                }
+            }
+        },
+        {
+            "Name": "AKSCluster",
+            "ModuleDefinitionName": "KubernetesAKS",
+            "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.Kubernetes.ResourceGroup}",
+            "Comments": "Storage Account that is used for ...",
+            "Version": "2.0",
+            "Deployment": {
+                "Comments": "We need the 'update' module instance to lock this resource after the Virtual Network got created",
+                "TemplatePath": "../../Modules/KubernetesAKS/2.0/deploy.json",
+                "OverrideParameters": {
+                    "aksClusterName": {
+                        "value": "${Parameters.ModuleConfigurationParameters.Kubernetes.ClusterName}"
+                    },
+                    "azureFirewallResourceGroupName": {
+                        "value": "${Parameters.ModuleConfigurationParameters.SharedServices.Network.ResourceGroupName}"
+                    },
+                    "azureFirewallName": {
+                        "value": "${Parameters.ModuleConfigurationParameters.SharedServices.Network.NetworkVirtualAppliance.AzureFirewall.Name}"
+                    },
+                    "location": {
+                        "value": "${Parameters.ModuleConfigurationParameters.Region}"
+                    },
+                    "dnsPrefix": {
+                        "value": "${Parameters.ModuleConfigurationParameters.DnsPrefix}"
+                    },
+                    "servicePrincipalClientId": {
+                        "value": "${Parameters.ModuleConfigurationParameters.Kubernetes.ServicePrincipalClientId}"
+                    },
+                    "servicePrincipalClientSecret": {
+                        "value": "${Parameters.ModuleConfigurationParameters.Kubernetes.ServicePrincipalClientSecret}"
+                    },
+                    "osType": {
+                        "value": "${Parameters.ModuleConfigurationParameters.Kubernetes.OsType}"
+                    },
+                    "kubernetesVersion": {
+                        "value": "${Parameters.ModuleConfigurationParameters.Kubernetes.KubernetesVersion}"
+                    },
+                    "networkPlugin": {
+                        "value": "${Parameters.ModuleConfigurationParameters.Kubernetes.NetworkPlugin}"
+                    },
+                    "enableRBAC": {
+                        "value": "${Parameters.ModuleConfigurationParameters.Kubernetes.EnableRbac}"
+                    },
+                    "vNetSubnetId": {
+                        "value": "reference(VirtualNetwork.vNetResourceId)/subnets/default"
+                    },
+                    "serviceCIDR": {
+                        "value": "${Parameters.ModuleConfigurationParameters.Kubernetes.ServiceCIDR}"
+                    },
+                    "dnsServiceIp": {
+                        "value": "${Parameters.ModuleConfigurationParameters.Kubernetes.DnsServiceIp}"
+                    },
+                    "dockerBridgeCIDR": {
+                        "value": "${Parameters.ModuleConfigurationParameters.Kubernetes.DockerBridgeCIDR}"
+                    },
+                    "logAnalyticsResourceId": {
+                        "value": "reference(LogAnalytics.logAnalyticsWorkspaceResourceId)"
+                    },
+                    "diagnosticsEventHubName": {
+                        "value": "reference(EventHub.diagnosticEventHubName)"
+                    },
+                    "diagnosticsEventHubAuthRuleId": {
+                        "value": "reference(EventHub.diagnosticsEventHubAuthRuleId)"
+                    },
+                    "diagnosticsStorageId": {
+                        "value": "reference(DiagnosticsStorageAccount.storageAccountResourceId)"
+                    },
+                    "rbacServerAppId": {
+                        "value":"${Parameters.ModuleConfigurationParameters.Kubernetes.RbacServerAppid}"
+                    },
+                    "rbacServerSecret": {
+                        "value":"${Parameters.ModuleConfigurationParameters.Kubernetes.RbacServerSecret}"
+                    },
+                    "rbacClientAppId": {
+                        "value":"${Parameters.ModuleConfigurationParameters.Kubernetes.RbacClientAppId}"
+                    },
+                    "rbacTenant": {
+                        "value":"${Parameters.ModuleConfigurationParameters.Kubernetes.RbacTenant}"
+                    },	    
+                    "azureFirewallApplicationRuleCollection": {
+                        "value": "${Parameters.ModuleConfigurationParameters.Network.AzureFirewallApplicationRuleCollection}"
+                    },
+                    "azureFirewallNetworkRuleCollection": {
+                        "value": "${Parameters.ModuleConfigurationParameters.Network.AzureFirewallNetworkRuleCollection}"
+                    },
+                    "azureFirewallSubscriptionId": {
+                        "value": "${Subscriptions.SharedServices.SubscriptionId}"
+                    }
+                }
+            }
+        },
+        {
+            "Name": "PermissionsScriptsPreReqs",
+            "Comments": "Some Comments",
+            "Script": {
+                "Command": "chmod +x scripts/aks/install-kubectl.sh",
+                "Arguments" : {}            }
+        },
+        {
+            "Name": "ScriptsPreReqs",
+            "Comments": "Some Comments",
+            "Script": {
+                "Command": "../../Scripts/AKS/install-kubectl.sh",
+                "Arguments" : {}
+            }
+        },
+        {
+            "Name": "CreateCACertificate",
+            "Comments": "Some Comments",
+            "Script": {
+                "Command": "../../Scripts/AKS/create-and-upload-ca-cert.sh",
+                "Arguments" : {
+                    "1_KEY_VAULT_NAME" : "${Parameters.ModuleConfigurationParameters.KeyVault.Name}",
+                    "2_CA_CERT_KEY_NAME" : "${Parameters.ModuleConfigurationParameters.Kubernetes.CaCertKeyName}",
+                    "3_CA_NAME" : "${Parameters.ModuleConfigurationParameters.Kubernetes.CaName}"
+                }
+            }
+        },
+        {
+            "Name": "CreateClusterRBACRoleBindings",
+            "Comments": "Some Comments",
+            "Script": {
+                "Command": "../../Scripts/AKS/create-cluster-rbac-role-bindings.sh",
+                "Arguments" : {
+                    "1_CLUSTER_NAME" : "${Parameters.ModuleConfigurationParameters.Kubernetes.ClusterName}",
+                    "2_CLUSTER_RG" : "${Parameters.ModuleConfigurationParameters.Kubernetes.ClusterResourceGroupName}",
+                    "3_RBAC_CLUSTER_ADMIN_AD_GROUP" : "${Parameters.ModuleConfigurationParameters.Kubernetes.ClusterAdminGroupId}",
+                    "4_RBAC_CLUSTER_VIEW_AD_GROUP" : "${Parameters.ModuleConfigurationParameters.Kubernetes.NocUserGroupId}",
+                    "5_RBAC_EXTEND_VIEW_CLUSTER_ROLE" : "Y",
+                    "6_RBAC_ENABLE_READ_ONLY_DASHBOARD" : "Y"
+                }
+            }
+        }
+    ]
+}
