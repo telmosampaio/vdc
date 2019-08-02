@@ -285,7 +285,8 @@
         {
             "Name": "AzureFirewallApplicationRule",
             "ModuleDefinitionName": "AzureFirewallApplicationRule",
-            "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.ACR.ResourceGroup}",
+            "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.SharedServices.Network.ResourceGroupName}",
+            "Subscription": "SharedServices",
             "Comments": "Storage Account that is used for ...",
             "Version": "2.0",
             "Deployment": {
