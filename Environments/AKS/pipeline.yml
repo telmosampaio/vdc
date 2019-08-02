@@ -43,7 +43,7 @@ stages:
         azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "DiagnosticsStorageAccount" -Validate'
+        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "DiagnosticsStorageAccount" -Validate'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -58,7 +58,7 @@ stages:
         azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "EnableServiceEndPointOnDiagnosticStorageAccount" -Validate'
+        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "EnableServiceEndPointOnDiagnosticStorageAccount" -Validate'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -88,7 +88,7 @@ stages:
         azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "LogAnalytics" -Validate'
+        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "LogAnalytics" -Validate'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -103,7 +103,7 @@ stages:
         azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "LinkLogAnalyticsWithAutomationAccount" -Validate'
+        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "LinkLogAnalyticsWithAutomationAccount" -Validate'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -133,7 +133,7 @@ stages:
         azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "SecurityCenter" -Validate'
+        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "SecurityCenter" -Validate'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -163,7 +163,7 @@ stages:
         azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "EventHub" -Validate'
+        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "EventHub" -Validate'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -193,7 +193,7 @@ stages:
         azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "NetworkSecurityGroups" -Validate'
+        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "NetworkSecurityGroups" -Validate'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -223,7 +223,7 @@ stages:
         azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "AKSRouteTable" -Validate'
+        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "AKSRouteTable" -Validate'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -253,7 +253,7 @@ stages:
         azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "VirtualNetwork" -Validate'
+        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "VirtualNetwork" -Validate'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -283,7 +283,7 @@ stages:
         azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "VirtualNetworkPeeringToAKS" -Validate'
+        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "VirtualNetworkPeeringToAKS" -Validate'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -298,7 +298,7 @@ stages:
         azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "VirtualNetworkPeeringFromAKS" -Validate'
+        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "VirtualNetworkPeeringFromAKS" -Validate'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -328,7 +328,7 @@ stages:
         azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "KeyVault" -Validate'
+        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "KeyVault" -Validate'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -358,7 +358,7 @@ stages:
         azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "ACR" -Validate'
+        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "ACR" -Validate'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -388,7 +388,7 @@ stages:
         azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "AKSCluster" -Validate'
+        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "AKSCluster" -Validate'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -423,7 +423,7 @@ stages:
         azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "DiagnosticsStorageAccount"'
+        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "DiagnosticsStorageAccount"'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -438,7 +438,7 @@ stages:
         azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "LogAnalytics"'
+        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "LogAnalytics"'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -453,7 +453,7 @@ stages:
         azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "SecurityCenter"'
+        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "SecurityCenter"'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -468,7 +468,7 @@ stages:
         azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "EventHub"'
+        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "EventHub"'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -483,7 +483,7 @@ stages:
         azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "NetworkSecurityGroups"'
+        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "NetworkSecurityGroups"'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -498,7 +498,7 @@ stages:
         azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "AKSRouteTable"'
+        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "AKSRouteTable"'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -513,7 +513,7 @@ stages:
         azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "VirtualNetwork"'
+        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "VirtualNetwork"'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -528,7 +528,7 @@ stages:
         azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "VirtualNetworkPeeringToAKS"'
+        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "VirtualNetworkPeeringToAKS"'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -543,7 +543,7 @@ stages:
         azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "VirtualNetworkPeeringFromAKS"'
+        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "VirtualNetworkPeeringFromAKS"'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -558,7 +558,7 @@ stages:
         azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "EnableServiceEndPointOnDiagnosticStorageAccount"'
+        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "EnableServiceEndPointOnDiagnosticStorageAccount"'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -573,7 +573,7 @@ stages:
         azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "EnableServiceEndpointOnDiagnosticStorageAccount"'
+        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "EnableServiceEndpointOnDiagnosticStorageAccount"'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -588,7 +588,7 @@ stages:
         azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "KeyVault"'
+        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "KeyVault"'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -603,7 +603,7 @@ stages:
         azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "ACR"'
+        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "ACR"'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -618,7 +618,7 @@ stages:
         azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "AKSCluster"'
+        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "AKSCluster"'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -633,7 +633,7 @@ stages:
         azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "PermissionsScriptsPreReqs"'
+        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "PermissionsScriptsPreReqs"'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -648,7 +648,7 @@ stages:
         azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "ScriptsPreReqs"'
+        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "ScriptsPreReqs"'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -663,7 +663,7 @@ stages:
         azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "CreateCACertificate"'
+        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "CreateCACertificate"'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -678,7 +678,7 @@ stages:
         azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "CreateClusterRBACRoleBindings"'
+        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "CreateClusterRBACRoleBindings"'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
