@@ -202,7 +202,6 @@ stages:
         ADMIN_USER_PWD: $(ADMIN_USER_PWD)
         DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
         TENANT_ID: $(TENANT_ID)
-    
   - job: RouteTables
     pool:
       name: 'vdc-self-hosted'
@@ -401,7 +400,7 @@ stages:
   - job: TearDownValidationResourceGroup
     pool: 
       name: 'vdc-self-hosted'
-    dependsOn: [ DiagnosticsStorageAccount, LogAnalytics, SecurityCenter, EventHub, NetworkSecurityGroups, AKSRouteTable, VirtualNetwork, VirtualNetworkPeeringToAKS, VirtualNetworkPeeringFromAKS, EnableServiceEndPointOnDiagnosticStorageAccount, KeyVault, ACR, AKSCluster ]
+    dependsOn: [ StorageAccounts, LogAnalytics, SecurityCenter, EventHub, NetworkSecurityGroups, RouteTables, vNet, VirtualNetworkPeering, KeyVault, ACR, AKSCluster ]
     steps:
     - task: AzurePowerShell@4
       displayName: "Teardown Validation Resource Group"
