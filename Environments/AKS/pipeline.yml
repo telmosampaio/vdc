@@ -401,7 +401,7 @@ stages:
   - job: TearDownValidationResourceGroup
     pool: 
       name: 'vdc-self-hosted'
-    dependsOn: [ StorageAccounts, LogAnalytics, AutomationAccounts, ApplicationSecurityGroups, NetworkSecurityGroups, RouteTables, vNet, VirtualNetworkGateway, VirtualNetworkGatewayConnection, AzureFirewall, Jumpbox, ActiveDirectoryDomainServices ]
+    dependsOn: [ DiagnosticsStorageAccount, LogAnalytics, SecurityCenter, EventHub, NetworkSecurityGroups, AKSRouteTable, VirtualNetwork, VirtualNetworkPeeringToAKS, VirtualNetworkPeeringFromAKS, EnableServiceEndPointOnDiagnosticStorageAccount, KeyVault, ACR, AKSCluster ]
     steps:
     - task: AzurePowerShell@4
       displayName: "Teardown Validation Resource Group"
