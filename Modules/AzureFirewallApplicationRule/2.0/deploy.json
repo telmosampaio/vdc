@@ -1,0 +1,54 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "type": "string",
+            "metadata": {
+                "description": "Azure Firewall Location."
+            }
+        },
+        "azureFirewallName": {
+            "type": "string",
+            "metadata": {
+                "description": "Azure Firewall Name."
+            }
+        },
+        "newAzureFirewallName": {
+            "type": "string",
+            "metadata": {
+                "description": "Azure Firewall Name."
+            }
+        },
+        "azureFirewallApplicationRuleCollection": {
+            "type": "array",
+            "metadata": {
+                "description": "Array containing AKS specific Azure Firewall application rule collections"
+            }
+        },
+        "azureFirewallNetworkRuleCollection": {
+            "type": "array",
+            "metadata": {
+                "description": "Array containing AKS specific Azure Firewall network rule collections"
+            }
+        }
+    },
+    "variables": {
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Network/azureFirewalls",
+            "apiVersion": "2018-08-01",
+            "location": "[parameters('location')]",
+            "name": "[variables('newAzureFirewallName')]",
+            "properties": {
+                "ipConfigurations": "[reference(resourceId('Microsoft.Network/azureFirewalls', parameters('azureFirewallName')), '2018-08-01').ipConfigurations]",
+                "natRuleCollections": "[reference(resourceId('Microsoft.Network/azureFirewalls', parameters('azureFirewallName')), '2018-08-01').natRuleCollections]",
+                "applicationRuleCollections": "[concat(reference(resourceId('Microsoft.Network/azureFirewalls', parameters('azureFirewallName')), '2018-08-01').applicationRuleCollections, parameters('azureFirewallApplicationRuleCollection'))]",
+                "networkRuleCollections": "[concat(reference(resourceId('Microsoft.Network/azureFirewalls', parameters('azureFirewallName')), '2018-08-01').networkRuleCollections, parameters('azureFirewallNetworkRuleCollection'))]"
+            }
+        }
+    ],
+    "outputs": {
+    }
+}

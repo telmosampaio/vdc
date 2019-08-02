@@ -3,19 +3,13 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "aksClusterName": {
-            "value": "org-contoso-k8s"
-        },
-        "azureFirewallResourceGroupName": {
-            "value": "org-contoso-net-rg}"
-        },
-        "azureFirewallName": {
-            "value": "org-contoso-azfw"
+            "value": "org-aks-k8s"
         },
         "location": {
-            "value": "westus"
+            "value": "westus2"
         },
         "dnsPrefix": {
-            "value": "${workload.dns-prefix}"
+            "value": "aks"
         },
         "osDiskSizeGb": {
             "value": 30
@@ -27,67 +21,58 @@
             "value": "Standard_DS3_v2"
         },
         "servicePrincipalClientId": {
-            "value": "${workload.kubernetes.service-principal-client-id}"
+            "value": "6b85ca02-521f-49da-ae67-6882c98a3dd0"
         },
         "servicePrincipalClientSecret": {
-            "value": "${workload.kubernetes.service-principal-client-secret}"
+            "value": ""
         },
         "osType": {
-            "value": "${workload.kubernetes.os-type}"
+            "value": "Linux"
         },
         "kubernetesVersion": {
-            "value": "${workload.kubernetes.kubernetes-version}"
+            "value": "1.13.5"
         },
         "networkPlugin": {
-            "value": "${workload.kubernetes.network-plugin}"
+            "value": "azure"
         },
         "enableRBAC": {
             "value": true
         },
         "vNetSubnetId": {
-            "value": "/subscriptions/${general.workload.subscription-id}/resourceGroups/${workload.resource-group-prefix}-net-rg/providers/Microsoft.Network/virtualNetworks/${workload.resource-group-prefix}-vnet/subnets/default"
+            "value": "/subscriptions/dc6e7f5d-e2cd-41df-b079-b99a20de7c6d/resourceGroups/knvdc-aks-network-rg/providers/Microsoft.Network/virtualNetworks/knvdc-aks-vnet/subnets/default"
         },
         "serviceCIDR": {
-            "value": "${workload.kubernetes.service-cidr}"
+            "value": "10.0.0.0/16"
         },
         "dnsServiceIp": {
-            "value": "${workload.kubernetes.dns-service-ip}"
+            "value": "10.0.0.10"
         },
         "dockerBridgeCIDR": {
-            "value": "${workload.kubernetes.docker-bridge-cidr}"
+            "value": "172.17.0.1/16"
         },
         "logAnalyticsResourceId": {
-        "value": ""
+        "value": "/subscriptions/dc6e7f5d-e2cd-41df-b079-b99a20de7c6d/resourceGroups/knvdc-aks-diagnostics-rg/providers/Microsoft.OperationalInsights/workspaces/knvdc-aks-la"
         },
         "diagnosticsEventHubName": {
-        "value": ""
+        "value": "org-diagnostics-eventhub"
         },
         "diagnosticsEventHubAuthRuleId": {
-        "value": ""
+        "value": "/subscriptions/dc6e7f5d-e2cd-41df-b079-b99a20de7c6d/resourceGroups/knvdc-aks-diagnostics-rg/providers/Microsoft.EventHub/namespaces/knvdceventhubnamespace/AuthorizationRules/RootManageSharedAccessKey"
         },
         "diagnosticsStorageId": {
-        "value": ""
+        "value": "/subscriptions/dc6e7f5d-e2cd-41df-b079-b99a20de7c6d/resourceGroups/knvdc-aks-diagnostics-rg/providers/Microsoft.Storage/storageAccounts/knvdcaksdiag01"
         },
         "rbacServerAppId": {
-            "value":"${workload.kubernetes.rbac-server-appid}"
+            "value":"6b85ca02-521f-49da-ae67-6882c98a3dd0"
         },
         "rbacServerSecret": {
-            "value":"${workload.kubernetes.rbac-server-secret}"
+            "value":"mlCHR45pr8y/YVIcH57Ni75tIgWZ/ZiehKy4DijvzPg="
         },
         "rbacClientAppId": {
-            "value":"${workload.kubernetes.rbac-client-appid}"
+            "value":"5b94cf88-0a30-4bcf-bdc7-ee403290ffc6"
         },
         "rbacTenant": {
-            "value":"${workload.kubernetes.rbac-tenant}"
-        },	    
-        "azureFirewallApplicationRuleCollection": {
-            "value": "${workload.network.azure-firewall-application-rule-collection}"
-        },
-        "azureFirewallNetworkRuleCollection": {
-            "value": "${workload.network.azure-firewall-network-rule-collection}"
-        },
-        "azureFirewallSubscriptionId": {
-            "value": ""
+            "value":"068ad735-3223-4ff6-9ffb-a9924821aad2"
         }
     }
 }
