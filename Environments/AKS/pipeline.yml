@@ -17,7 +17,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "Setup Validation Resource Group"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ValidationResourceGroupSetup.ps1'
         ScriptArguments: '-ResourceGroupName vdc-validation-rg -SetupResourceGroup'
@@ -40,7 +40,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "ARM Validation - Diagnostic Storage Account"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "DiagnosticsStorageAccount" -Validate'
@@ -55,7 +55,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "ARM Validation - Enable Service EndPoint On Diagnostic Storage Account"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "EnableServiceEndPointOnDiagnosticStorageAccount" -Validate'
@@ -85,7 +85,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "ARM Validation - Log Analytics"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "LogAnalytics" -Validate'
@@ -100,7 +100,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "ARM Validation - Link Log Analytics With Automation Account"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "LinkLogAnalyticsWithAutomationAccount" -Validate'
@@ -130,7 +130,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "ARM Validation - Security Center"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "SecurityCenter" -Validate'
@@ -160,7 +160,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "ARM Validation - EventHub"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "EventHub" -Validate'
@@ -190,7 +190,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "ARM Validation - Network Security Groups"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "NetworkSecurityGroups" -Validate'
@@ -220,7 +220,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "ARM Validation - RouteTables"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "AKSRouteTable" -Validate'
@@ -250,7 +250,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "ARM Validation - Virtual Network"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "VirtualNetwork" -Validate'
@@ -280,7 +280,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "ARM Validation - VirtualNetwork Peering To AKS"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "VirtualNetworkPeeringToAKS" -Validate'
@@ -295,7 +295,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "ARM Validation - VirtualNetwork Peering From AKS"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "VirtualNetworkPeeringFromAKS" -Validate'
@@ -325,7 +325,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "ARM Validation - KeyVault"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "KeyVault" -Validate'
@@ -355,7 +355,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "ARM Validation - ACR"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "ACR" -Validate'
@@ -385,7 +385,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "ARM Validation - AKS Cluster"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "AKSCluster" -Validate'
@@ -405,7 +405,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "Teardown Validation Resource Group"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ValidationResourceGroupSetup.ps1'
         ScriptArguments: '-TearDownResourceGroup'
@@ -420,7 +420,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "Diagnostics Storage Account" 
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "DiagnosticsStorageAccount"'
@@ -435,7 +435,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "Log Analytics"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "LogAnalytics"'
@@ -450,7 +450,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "Security Center"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "SecurityCenter"'
@@ -465,7 +465,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "EventHub"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "EventHub"'
@@ -480,7 +480,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "NetworkSecurityGroups"
       inputs: 
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "NetworkSecurityGroups"'
@@ -495,7 +495,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "Route Tables"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "AKSRouteTable"'
@@ -510,7 +510,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "Virtual Network"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "VirtualNetwork"'
@@ -525,7 +525,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "Virtual Network Peering To AKS"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "VirtualNetworkPeeringToAKS"'
@@ -540,7 +540,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "Virtual Network Peering From AKS"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "VirtualNetworkPeeringFromAKS"'
@@ -555,7 +555,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "Enable Service EndPoint On Diagnostic Storage Account"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "EnableServiceEndPointOnDiagnosticStorageAccount"'
@@ -570,7 +570,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "Enable Service Endpoint On Diagnostic Storage Account"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "EnableServiceEndpointOnDiagnosticStorageAccount"'
@@ -585,7 +585,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "KeyVault"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "KeyVault"'
@@ -600,7 +600,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "ACR"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "ACR"'
@@ -615,7 +615,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "AKS Cluster"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "AKSCluster"'
@@ -630,7 +630,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "Permissions Scripts Pre Reqs"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "PermissionsScriptsPreReqs"'
@@ -645,7 +645,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "Scripts Pre Reqs"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "ScriptsPreReqs"'
@@ -660,7 +660,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "Create CA Certificate"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "CreateCACertificate"'
@@ -675,7 +675,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "Create Cluster RBAC Role Bindings"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "CreateClusterRBACRoleBindings"'
