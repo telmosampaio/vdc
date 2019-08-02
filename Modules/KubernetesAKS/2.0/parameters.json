@@ -1,89 +1,93 @@
 {
-    "aksClusterName": {
-        "value": "org-contoso-k8s"
-    },
-    "azureFirewallResourceGroupName": {
-        "value": "org-contoso-net-rg}"
-    },
-    "azureFirewallName": {
-        "value": "org-contoso-azfw"
-    },
-    "location": {
-        "value": "westus"
-    },
-    "dnsPrefix": {
-        "value": "${workload.dns-prefix}"
-    },
-    "osDiskSizeGb": {
-        "value": 30
-    },
-    "agentCount": {
-        "value": 3
-    },
-    "agentVMSize": {
-        "value": "Standard_DS3_v2"
-    },
-    "servicePrincipalClientId": {
-        "value": "${workload.kubernetes.service-principal-client-id}"
-    },
-    "servicePrincipalClientSecret": {
-        "value": "${workload.kubernetes.service-principal-client-secret}"
-    },
-    "osType": {
-        "value": "${workload.kubernetes.os-type}"
-    },
-    "kubernetesVersion": {
-        "value": "${workload.kubernetes.kubernetes-version}"
-    },
-    "networkPlugin": {
-        "value": "${workload.kubernetes.network-plugin}"
-    },
-    "enableRBAC": {
-        "value": true
-    },
-    "vNetSubnetId": {
-        "value": "/subscriptions/${general.workload.subscription-id}/resourceGroups/${workload.resource-group-prefix}-net-rg/providers/Microsoft.Network/virtualNetworks/${workload.resource-group-prefix}-vnet/subnets/default"
-    },
-    "serviceCIDR": {
-        "value": "${workload.kubernetes.service-cidr}"
-    },
-    "dnsServiceIp": {
-        "value": "${workload.kubernetes.dns-service-ip}"
-    },
-    "dockerBridgeCIDR": {
-        "value": "${workload.kubernetes.docker-bridge-cidr}"
-    },
-    "logAnalyticsResourceId": {
-      "value": ""
-    },
-    "diagnosticsEventHubName": {
-      "value": ""
-    },
-    "diagnosticsEventHubAuthRuleId": {
-      "value": ""
-    },
-    "diagnosticsStorageId": {
-      "value": ""
-    },
-    "rbacServerAppId": {
-        "value":"${workload.kubernetes.rbac-server-appid}"
-    },
-    "rbacServerSecret": {
-        "value":"${workload.kubernetes.rbac-server-secret}"
-    },
-    "rbacClientAppId": {
-        "value":"${workload.kubernetes.rbac-client-appid}"
-    },
-    "rbacTenant": {
-        "value":"${workload.kubernetes.rbac-tenant}"
-    },	    
-    "azureFirewallApplicationRuleCollection": {
-        "value": "${workload.network.azure-firewall-application-rule-collection}"
-    },
-    "azureFirewallNetworkRuleCollection": {
-        "value": "${workload.network.azure-firewall-network-rule-collection}"
-    },
-    "azureFirewallSubscriptionId": {
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "aksClusterName": {
+            "value": "org-contoso-k8s"
+        },
+        "azureFirewallResourceGroupName": {
+            "value": "org-contoso-net-rg}"
+        },
+        "azureFirewallName": {
+            "value": "org-contoso-azfw"
+        },
+        "location": {
+            "value": "westus"
+        },
+        "dnsPrefix": {
+            "value": "${workload.dns-prefix}"
+        },
+        "osDiskSizeGb": {
+            "value": 30
+        },
+        "agentCount": {
+            "value": 3
+        },
+        "agentVMSize": {
+            "value": "Standard_DS3_v2"
+        },
+        "servicePrincipalClientId": {
+            "value": "${workload.kubernetes.service-principal-client-id}"
+        },
+        "servicePrincipalClientSecret": {
+            "value": "${workload.kubernetes.service-principal-client-secret}"
+        },
+        "osType": {
+            "value": "${workload.kubernetes.os-type}"
+        },
+        "kubernetesVersion": {
+            "value": "${workload.kubernetes.kubernetes-version}"
+        },
+        "networkPlugin": {
+            "value": "${workload.kubernetes.network-plugin}"
+        },
+        "enableRBAC": {
+            "value": true
+        },
+        "vNetSubnetId": {
+            "value": "/subscriptions/${general.workload.subscription-id}/resourceGroups/${workload.resource-group-prefix}-net-rg/providers/Microsoft.Network/virtualNetworks/${workload.resource-group-prefix}-vnet/subnets/default"
+        },
+        "serviceCIDR": {
+            "value": "${workload.kubernetes.service-cidr}"
+        },
+        "dnsServiceIp": {
+            "value": "${workload.kubernetes.dns-service-ip}"
+        },
+        "dockerBridgeCIDR": {
+            "value": "${workload.kubernetes.docker-bridge-cidr}"
+        },
+        "logAnalyticsResourceId": {
         "value": ""
+        },
+        "diagnosticsEventHubName": {
+        "value": ""
+        },
+        "diagnosticsEventHubAuthRuleId": {
+        "value": ""
+        },
+        "diagnosticsStorageId": {
+        "value": ""
+        },
+        "rbacServerAppId": {
+            "value":"${workload.kubernetes.rbac-server-appid}"
+        },
+        "rbacServerSecret": {
+            "value":"${workload.kubernetes.rbac-server-secret}"
+        },
+        "rbacClientAppId": {
+            "value":"${workload.kubernetes.rbac-client-appid}"
+        },
+        "rbacTenant": {
+            "value":"${workload.kubernetes.rbac-tenant}"
+        },	    
+        "azureFirewallApplicationRuleCollection": {
+            "value": "${workload.network.azure-firewall-application-rule-collection}"
+        },
+        "azureFirewallNetworkRuleCollection": {
+            "value": "${workload.network.azure-firewall-network-rule-collection}"
+        },
+        "azureFirewallSubscriptionId": {
+            "value": ""
+        }
     }
 }
