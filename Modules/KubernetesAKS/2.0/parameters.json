@@ -21,10 +21,10 @@
             "value": "Standard_DS3_v2"
         },
         "servicePrincipalClientId": {
-            "value": "6b85ca02-521f-49da-ae67-6882c98a3dd0"
+            "value": "00000000-0000-0000-0000-000000000000"
         },
         "servicePrincipalClientSecret": {
-            "value": ""
+            "value": "secret"
         },
         "osType": {
             "value": "Linux"
@@ -39,7 +39,7 @@
             "value": true
         },
         "vNetSubnetId": {
-            "value": "/subscriptions/dc6e7f5d-e2cd-41df-b079-b99a20de7c6d/resourceGroups/knvdc-aks-network-rg/providers/Microsoft.Network/virtualNetworks/knvdc-aks-vnet/subnets/default"
+            "value": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/org-aks-network-rg/providers/Microsoft.Network/virtualNetworks/org-aks-vnet/subnets/default"
         },
         "serviceCIDR": {
             "value": "10.0.0.0/16"
@@ -51,28 +51,95 @@
             "value": "172.17.0.1/16"
         },
         "logAnalyticsResourceId": {
-        "value": "/subscriptions/dc6e7f5d-e2cd-41df-b079-b99a20de7c6d/resourceGroups/knvdc-aks-diagnostics-rg/providers/Microsoft.OperationalInsights/workspaces/knvdc-aks-la"
+        "value": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/org-aks-diagnostics-rg/providers/Microsoft.OperationalInsights/workspaces/org-aks-la"
         },
         "diagnosticsEventHubName": {
         "value": "org-diagnostics-eventhub"
         },
         "diagnosticsEventHubAuthRuleId": {
-        "value": "/subscriptions/dc6e7f5d-e2cd-41df-b079-b99a20de7c6d/resourceGroups/knvdc-aks-diagnostics-rg/providers/Microsoft.EventHub/namespaces/knvdceventhubnamespace/AuthorizationRules/RootManageSharedAccessKey"
+        "value": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/org-aks-diagnostics-rg/providers/Microsoft.EventHub/namespaces/orgeventhubnamespace/AuthorizationRules/RootManageSharedAccessKey"
         },
         "diagnosticsStorageId": {
-        "value": "/subscriptions/dc6e7f5d-e2cd-41df-b079-b99a20de7c6d/resourceGroups/knvdc-aks-diagnostics-rg/providers/Microsoft.Storage/storageAccounts/knvdcaksdiag01"
+        "value": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/org-aks-diagnostics-rg/providers/Microsoft.Storage/storageAccounts/orgaksdiag01"
         },
         "rbacServerAppId": {
-            "value":"6b85ca02-521f-49da-ae67-6882c98a3dd0"
+            "value":"00000000-0000-0000-0000-000000000000"
         },
         "rbacServerSecret": {
-            "value":"mlCHR45pr8y/YVIcH57Ni75tIgWZ/ZiehKy4DijvzPg="
+            "value":"secret"
         },
         "rbacClientAppId": {
-            "value":"5b94cf88-0a30-4bcf-bdc7-ee403290ffc6"
+            "value":"00000000-0000-0000-0000-000000000000"
         },
         "rbacTenant": {
-            "value":"068ad735-3223-4ff6-9ffb-a9924821aad2"
+            "value":"00000000-0000-0000-0000-000000000000"
+        },
+        "azureFirewallName": {
+            "value": "org-shrdsvcs-azfw"
+        },
+        "azureFirewallResourceGroupName": {
+            "value": "org-shrdsvcs-network-rg"
+        },
+        "azureFirewallSubscriptionId": {
+            "value": "00000000-0000-0000-0000-000000000000"
+        },
+        "azureFirewallApplicationRuleCollection": {
+            "value": [
+                {
+                    "name":"aks-cluster-01",
+                    "properties":
+                        {
+                            "rules": [
+                                {
+                                    "name":"cluster",
+                                    "protocols": [
+                                        {
+                                            "protocolType":"Http",
+                                            "port":80
+                                        },
+                                        {
+                                            "protocolType":"Https",
+                                            "port":443
+                                        }
+                                    ],
+                                    "targetFqdns": [ "*" ], 
+                                    "fqdnTags": [],
+                                    "sourceAddresses": [ "10.2.0.0/17" ] 
+                                }
+                            ],
+                            "priority":500,
+                            "action": 
+                                {
+                                    "type":"Allow"
+                                }
+                        }
+                }
+            ]
+        },
+        "azureFirewallNetworkRuleCollection": {
+            "value": [
+                {
+                    "name":"aks-cluster-nrc-01",
+                    "properties":
+                        {
+                            "rules": [
+                                {
+                                    "sourceAddresses": [ "10.2.0.0/17" ],
+                                    "name":"allow-ssh-access",
+                                    "destinationAddresses": [ "*" ],
+                                    "protocols": [ "TCP" ],
+                                    "description": "Allows outbound SSH access",
+                                    "destinationPorts": [ "22" ] 
+                                }
+                            ],
+                            "priority":"500",
+                            "action":
+                                {
+                                    "type":"Allow"
+                                }
+                        }
+                }
+            ]
         }
     }
 }

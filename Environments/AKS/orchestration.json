@@ -283,35 +283,6 @@
             }
         },
         {
-            "Name": "AzureFirewallApplicationRule",
-            "ModuleDefinitionName": "AzureFirewallApplicationRule",
-            "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.SharedServices.Network.ResourceGroupName}",
-            "Subscription": "SharedServices",
-            "Comments": "Storage Account that is used for ...",
-            "Version": "2.0",
-            "Deployment": {
-                "Comments": "We need the 'update' module instance to lock this resource after the Virtual Network got created",
-                "TemplatePath": "../../Modules/AzureFirewallApplicationRule/2.0/deploy.json",
-                "OverrideParameters": {
-                    "location": {
-                        "value": "${Parameters.ModuleConfigurationParameters.Region}"
-                    },
-                    "azureFirewallName": {
-                        "value": "${Parameters.ModuleConfigurationParameters.SharedServices.Network.ResourceGroupName}"
-                    },
-                    "newAzureFirewallName": {
-                        "value": "${Parameters.ModuleConfigurationParameters.SharedServices.Network.NetworkVirtualAppliance.AzureFirewall.Name}"
-                    },
-                    "azureFirewallApplicationRuleCollection": {
-                        "value": "${Parameters.ModuleConfigurationParameters.Network.AzureFirewallApplicationRuleCollection}"
-                    },
-                    "azureFirewallNetworkRuleCollection": {
-                        "value": "${Parameters.ModuleConfigurationParameters.Network.AzureFirewallNetworkRuleCollection}"
-                    }
-                }
-            }
-        },
-        {
             "Name": "AKSCluster",
             "ModuleDefinitionName": "KubernetesAKS",
             "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.Kubernetes.ResourceGroup}",
@@ -383,6 +354,21 @@
                     },
                     "rbacTenant": {
                         "value":"${Parameters.ModuleConfigurationParameters.Kubernetes.RbacTenant}"
+                    },
+                    "azureFirewallName": {
+                        "value": "${Parameters.ModuleConfigurationParameters.SharedServices.Network.NetworkVirtualAppliance.AzureFirewall.Name}"
+                    },
+                    "azureFirewallResourceGroupName": {
+                        "value": "${Parameters.ModuleConfigurationParameters.SharedServices.Network.ResourceGroupName}"
+                    },
+                    "azureFirewallSubscriptionId": {
+                        "value": "${Subscriptions.SharedServices.SubscriptionId}"
+                    },
+                    "azureFirewallApplicationRuleCollection": {
+                        "value": "${Parameters.ModuleConfigurationParameters.Network.AzureFirewallApplicationRuleCollection}"
+                    },
+                    "azureFirewallNetworkRuleCollection": {
+                        "value": "${Parameters.ModuleConfigurationParameters.Network.AzureFirewallNetworkRuleCollection}"
                     }
                 }
             }
