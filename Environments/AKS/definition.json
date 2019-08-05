@@ -1,5 +1,6 @@
 {
     "Subscriptions": "env(VDC_SUBSCRIPTIONS)",
     "Parameters": "file(./parameters.json)",
-    "Orchestration": "file(./orchestration.json)"
+    "Orchestration": "file(./orchestration.json)",
+    "demo": "env(RBAC_CLIENT_APP_ID)"
 }

@@ -5,6 +5,7 @@
 # Set variables once
 variables:
 - group: VDC_SECRETS_Copy
+- group: VDC_AKS_SECRETS
 trigger:
 - master
 stages:
