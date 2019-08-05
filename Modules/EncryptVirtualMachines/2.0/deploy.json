@@ -8,18 +8,6 @@
                 "description": "Name of the virtual machine"
             }
         },
-        "keyVaultName": {
-            "type": "string",
-            "metadata": {
-                "description": "Name of the KeyVault to place the volume encryption key"
-            }
-        },
-        "keyVaultResourceGroup": {
-            "type": "string",
-            "metadata": {
-                "description": "Resource group of the KeyVault"
-            }
-        },
         "keyEncryptionKeyURL": {
             "type": "string",
             "defaultValue": "",
@@ -60,8 +48,7 @@
         "extensionName": "AzureDiskEncryption",
         "extensionVersion": "2.2",
         "encryptionOperation": "EnableEncryption",
-        "keyEncryptionAlgorithm": "RSA-OAEP",
-        "keyVaultResourceID": "[resourceId(parameters('keyVaultResourceGroup'), 'Microsoft.KeyVault/vaults/', parameters('keyVaultName'))]"
+        "keyEncryptionAlgorithm": "RSA-OAEP"
     },
     "resources": [
         {
@@ -77,10 +64,10 @@
                 "forceUpdateTag": "[parameters('forceUpdateTag')]",
                 "settings": {
                     "EncryptionOperation": "[variables('encryptionOperation')]",
-                    "KeyVaultURL": "[reference(variables('keyVaultResourceId'),'2016-10-01').vaultUri]",
-                    "KeyVaultResourceId": "[variables('keyVaultResourceID')]",
+                    "KeyVaultURL": "[parameters('keyVaultUri')]",
+                    "KeyVaultResourceId": "[parameters('keyVaultResourceID')]",
                     "KeyEncryptionKeyURL": "[parameters('keyEncryptionKeyURL')]",
-                    "KekVaultResourceId": "[variables('keyVaultResourceID')]",
+                    "KekVaultResourceId": "[parameters('keyVaultResourceID')]",
                     "KeyEncryptionAlgorithm": "[variables('keyEncryptionAlgorithm')]",
                     "VolumeType": "[parameters('volumeType')]",
                     "ResizeOSDisk": "[parameters('resizeOSDisk')]"
