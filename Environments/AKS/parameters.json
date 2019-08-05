@@ -332,9 +332,9 @@
             "AksClusterAdminRbacRoleId": "0ab0b1a8-8aac-4efd-b8c2-3ee1fb270be8",
             "AksClusterUserRbacRoleId": "4abbcc35-e782-43d8-92c5-2d3f1bd2253f",
             "ReaderRbacRoleId": "acdd72a7-3385-48ef-bd42-f606fba81ae7",
-            "ClusterAdminGroupId": "6899b6cf-3f98-4e6a-9575-4551a388bc4c",
-            "NocUserGroupId": "6f55a76f-29d7-468e-989e-bb18332deda7",
-            "DevUserGroupId": "3c4d59df-feee-435f-b4ee-db35e9d410c4",
+            "ClusterAdminGroupId": "env(CLUSTER_ADMIN_GROUP_ID)",
+            "NocUserGroupId": "env(NOC_USER_GROUP_ID)",
+            "DevUserGroupId": "env(DEV_USER_GROUP_ID)",
         },
         "Rbac": {
             "ResourceGroupAssignments": [
