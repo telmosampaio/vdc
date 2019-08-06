@@ -241,12 +241,15 @@ Function New-Deployment {
                     -ArchetypeInstanceName $ArchetypeInstanceName `
                     -ModuleConfiguration $moduleConfiguration;
                 Write-Debug "Resource Group is: $moduleConfigurationResourceGroupName";
-        
-            New-ResourceGroup `
-                -ResourceGroupName $moduleConfigurationResourceGroupName `
-                -ResourceGroupLocation $subscriptionInformation.Location `
-                -Validate:$($Validate.IsPresent);
-            Write-Debug "Resource Group successfully created";
+
+            if($null -eq $moduleConfiguration.Script) {
+                # For Script executions, do not create a resource group
+                New-ResourceGroup `
+                    -ResourceGroupName $moduleConfigurationResourceGroupName `
+                    -ResourceGroupLocation $subscriptionInformation.Location `
+                    -Validate:$($Validate.IsPresent);
+                Write-Debug "Resource Group successfully created";
+            }
 
             $moduleConfigurationPolicyDeploymentTemplate = `
             Get-PolicyDeploymentTemplateFileContents `

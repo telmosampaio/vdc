@@ -263,7 +263,7 @@
                 }
             }
         },
-         {
+        {
             "Name": "AddRulesToAzureFirewall",
             "ModuleDefinitionName": "UpdateAzureFirewall",
             "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.Kubernetes.ResourceGroup}",
