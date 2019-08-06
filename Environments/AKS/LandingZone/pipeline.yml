@@ -119,7 +119,7 @@ stages:
         azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "SecurityCenter" -Validate'
+        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "AzureSecurityCenter" -Validate'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -158,7 +158,7 @@ stages:
         ADMIN_USER_PWD: $(ADMIN_USER_PWD)
         DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
         TENANT_ID: $(TENANT_ID)
-  - job: NetworkSecurityGroups
+  - job: NetworkSecurityGroup
     pool:
       name: 'vdc-self-hosted'
     dependsOn: SetupValidationResourceGroup
@@ -179,7 +179,7 @@ stages:
         azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "NetworkSecurityGroups" -Validate'
+        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "DefaultNSG" -Validate'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -188,7 +188,7 @@ stages:
         ADMIN_USER_PWD: $(ADMIN_USER_PWD)
         DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
         TENANT_ID: $(TENANT_ID)
-  - job: RouteTables
+  - job: RouteTable
     pool:
       name: 'vdc-self-hosted'
     dependsOn: SetupValidationResourceGroup
@@ -209,7 +209,7 @@ stages:
         azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "AKSRouteTable" -Validate'
+        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "DefaultRouteTable" -Validate'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -323,70 +323,10 @@ stages:
         ADMIN_USER_PWD: $(ADMIN_USER_PWD)
         DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
         TENANT_ID: $(TENANT_ID)
-  - job: ACR
-    pool:
-      name: 'vdc-self-hosted'
-    dependsOn: SetupValidationResourceGroup
-    steps:
-    - task: PowerShell@2
-      displayName: "Pester Tests for Module - ACR"
-      inputs:
-        targetType: 'inline'
-        script: '# Write your powershell commands here.
-          
-          Invoke-Pester -Script "./Modules/ACR/2.0/Tests";
-          
-          # Use the environment variables input below to pass secret variables to this script.'
-        pwsh: true
-    - task: AzurePowerShell@4
-      displayName: "ARM Validation - ACR"
-      inputs:
-        azureSubscription: 'Kunachim Azure SC'
-        ScriptType: 'FilePath'
-        ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "ACR" -Validate'
-        azurePowerShellVersion: 'LatestVersion'
-      env:
-        VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
-        VDC_TOOLKIT_SUBSCRIPTION: $(VDC_TOOLKIT_SUBSCRIPTION)
-        DEPLOYMENT_USER_ID: $(DEPLOYMENT_USER_ID)
-        ADMIN_USER_PWD: $(ADMIN_USER_PWD)
-        DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
-        TENANT_ID: $(TENANT_ID)
-  - job: AKSCluster
-    pool:
-      name: 'vdc-self-hosted'
-    dependsOn: SetupValidationResourceGroup
-    steps:
-    - task: PowerShell@2
-      displayName: "Pester Tests for Module - AKS Cluster"
-      inputs:
-        targetType: 'inline'
-        script: '# Write your powershell commands here.
-          
-          Invoke-Pester -Script "./Modules/KubernetesAKS/2.0/Tests";
-          
-          # Use the environment variables input below to pass secret variables to this script.'
-        pwsh: true
-    - task: AzurePowerShell@4
-      displayName: "ARM Validation - AKS Cluster"
-      inputs:
-        azureSubscription: 'Kunachim Azure SC'
-        ScriptType: 'FilePath'
-        ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "AKSCluster" -Validate'
-        azurePowerShellVersion: 'LatestVersion'
-      env:
-        VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
-        VDC_TOOLKIT_SUBSCRIPTION: $(VDC_TOOLKIT_SUBSCRIPTION)
-        DEPLOYMENT_USER_ID: $(DEPLOYMENT_USER_ID)
-        ADMIN_USER_PWD: $(ADMIN_USER_PWD)
-        DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
-        TENANT_ID: $(TENANT_ID)
   - job: TearDownValidationResourceGroup
     pool: 
       name: 'vdc-self-hosted'
-    dependsOn: [ StorageAccounts, LogAnalytics, SecurityCenter, EventHub, NetworkSecurityGroups, RouteTables, vNet, VirtualNetworkPeering, KeyVault, ACR, AKSCluster ]
+    dependsOn: [ StorageAccounts, LogAnalytics, SecurityCenter, EventHub, NetworkSecurityGroup, RouteTable, vNet, VirtualNetworkPeering, KeyVault ]
     steps:
     - task: AzurePowerShell@4
       displayName: "Teardown Validation Resource Group"
@@ -469,7 +409,7 @@ stages:
         azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "NetworkSecurityGroups"'
+        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "DefaultNSG"'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -484,7 +424,7 @@ stages:
         azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "AKSRouteTable"'
+        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "DefaultRouteTable"'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -560,96 +500,6 @@ stages:
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "KeyVault"'
-        azurePowerShellVersion: 'LatestVersion'
-      env:
-        VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
-        VDC_TOOLKIT_SUBSCRIPTION: $(VDC_TOOLKIT_SUBSCRIPTION)
-        DEPLOYMENT_USER_ID: $(DEPLOYMENT_USER_ID)
-        ADMIN_USER_PWD: $(ADMIN_USER_PWD)
-        DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
-        TENANT_ID: $(TENANT_ID)
-    - task: AzurePowerShell@4
-      displayName: "ACR"
-      inputs:
-        azureSubscription: 'Kunachim Azure SC'
-        ScriptType: 'FilePath'
-        ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "ACR"'
-        azurePowerShellVersion: 'LatestVersion'
-      env:
-        VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
-        VDC_TOOLKIT_SUBSCRIPTION: $(VDC_TOOLKIT_SUBSCRIPTION)
-        DEPLOYMENT_USER_ID: $(DEPLOYMENT_USER_ID)
-        ADMIN_USER_PWD: $(ADMIN_USER_PWD)
-        DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
-        TENANT_ID: $(TENANT_ID)
-    - task: AzurePowerShell@4
-      displayName: "AKS Cluster"
-      inputs:
-        azureSubscription: 'Kunachim Azure SC'
-        ScriptType: 'FilePath'
-        ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "AKSCluster"'
-        azurePowerShellVersion: 'LatestVersion'
-      env:
-        VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
-        VDC_TOOLKIT_SUBSCRIPTION: $(VDC_TOOLKIT_SUBSCRIPTION)
-        DEPLOYMENT_USER_ID: $(DEPLOYMENT_USER_ID)
-        ADMIN_USER_PWD: $(ADMIN_USER_PWD)
-        DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
-        TENANT_ID: $(TENANT_ID)
-    - task: AzurePowerShell@4
-      displayName: "Permissions Scripts Pre Reqs"
-      inputs:
-        azureSubscription: 'Kunachim Azure SC'
-        ScriptType: 'FilePath'
-        ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "PermissionsScriptsPreReqs"'
-        azurePowerShellVersion: 'LatestVersion'
-      env:
-        VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
-        VDC_TOOLKIT_SUBSCRIPTION: $(VDC_TOOLKIT_SUBSCRIPTION)
-        DEPLOYMENT_USER_ID: $(DEPLOYMENT_USER_ID)
-        ADMIN_USER_PWD: $(ADMIN_USER_PWD)
-        DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
-        TENANT_ID: $(TENANT_ID)
-    - task: AzurePowerShell@4
-      displayName: "Scripts Pre Reqs"
-      inputs:
-        azureSubscription: 'Kunachim Azure SC'
-        ScriptType: 'FilePath'
-        ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "ScriptsPreReqs"'
-        azurePowerShellVersion: 'LatestVersion'
-      env:
-        VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
-        VDC_TOOLKIT_SUBSCRIPTION: $(VDC_TOOLKIT_SUBSCRIPTION)
-        DEPLOYMENT_USER_ID: $(DEPLOYMENT_USER_ID)
-        ADMIN_USER_PWD: $(ADMIN_USER_PWD)
-        DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
-        TENANT_ID: $(TENANT_ID)
-    - task: AzurePowerShell@4
-      displayName: "Create CA Certificate"
-      inputs:
-        azureSubscription: 'Kunachim Azure SC'
-        ScriptType: 'FilePath'
-        ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "CreateCACertificate"'
-        azurePowerShellVersion: 'LatestVersion'
-      env:
-        VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
-        VDC_TOOLKIT_SUBSCRIPTION: $(VDC_TOOLKIT_SUBSCRIPTION)
-        DEPLOYMENT_USER_ID: $(DEPLOYMENT_USER_ID)
-        ADMIN_USER_PWD: $(ADMIN_USER_PWD)
-        DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
-        TENANT_ID: $(TENANT_ID)
-    - task: AzurePowerShell@4
-      displayName: "Create Cluster RBAC Role Bindings"
-      inputs:
-        azureSubscription: 'Kunachim Azure SC'
-        ScriptType: 'FilePath'
-        ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "CreateClusterRBACRoleBindings"'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)

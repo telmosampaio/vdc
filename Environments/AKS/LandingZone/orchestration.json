@@ -62,7 +62,7 @@
             }
         },
         {
-            "Name": "SecurityCenter",
+            "Name": "AzureSecurityCenter",
             "ModuleDefinitionName": "SecurityCenter",
             "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.SecurityCenter.ResourceGroup}",
             "Deployment": {
@@ -98,7 +98,7 @@
             }
         },
         {
-            "Name": "NetworkSecurityGroups",
+            "Name": "DefaultNSG",
             "ModuleDefinitionName": "NetworkSecurityGroups",
             "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.Network.ResourceGroup}",
             "Deployment": {
@@ -119,7 +119,7 @@
             }
         },
         {
-            "Name": "AKSRouteTable",
+            "Name": "DefaultRouteTable",
             "ModuleDefinitionName": "RouteTables",
             "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.Network.ResourceGroup}",
             "Deployment": {
@@ -260,158 +260,6 @@
                     "vNetId": {
                         "value": "reference(VirtualNetwork.vNetResourceId)"
                     }
-                }
-            }
-        },
-        {
-            "Name": "ACR",
-            "ModuleDefinitionName": "ACR",
-            "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.ACR.ResourceGroup}",
-            "Comments": "Storage Account that is used for ...",
-            "Version": "2.0",
-            "Deployment": {
-                "Comments": "We need the 'update' module instance to lock this resource after the Virtual Network got created",
-                "TemplatePath": "../../Modules/ACR/2.0/deploy.json",
-                "OverrideParameters": {
-                    "location": {
-                        "value": "westus"
-                    },
-                    "acrName": {
-                        "value": "${Parameters.ModuleConfigurationParameters.ACR.Name}"
-                    }
-                }
-            }
-        },
-        {
-            "Name": "AKSCluster",
-            "ModuleDefinitionName": "KubernetesAKS",
-            "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.Kubernetes.ResourceGroup}",
-            "Comments": "Storage Account that is used for ...",
-            "Version": "2.0",
-            "Deployment": {
-                "Comments": "We need the 'update' module instance to lock this resource after the Virtual Network got created",
-                "TemplatePath": "../../Modules/KubernetesAKS/2.0/deploy.json",
-                "OverrideParameters": {
-                    "aksClusterName": {
-                        "value": "${Parameters.ModuleConfigurationParameters.Kubernetes.ClusterName}"
-                    },
-                    "location": {
-                        "value": "${Parameters.ModuleConfigurationParameters.Region}"
-                    },
-                    "dnsPrefix": {
-                        "value": "${Parameters.ModuleConfigurationParameters.DnsPrefix}"
-                    },
-                    "servicePrincipalClientId": {
-                        "value": "${Parameters.ModuleConfigurationParameters.Kubernetes.ServicePrincipalClientId}"
-                    },
-                    "servicePrincipalClientSecret": {
-                        "value": "${Parameters.ModuleConfigurationParameters.Kubernetes.ServicePrincipalClientSecret}"
-                    },
-                    "osType": {
-                        "value": "${Parameters.ModuleConfigurationParameters.Kubernetes.OsType}"
-                    },
-                    "kubernetesVersion": {
-                        "value": "${Parameters.ModuleConfigurationParameters.Kubernetes.KubernetesVersion}"
-                    },
-                    "networkPlugin": {
-                        "value": "${Parameters.ModuleConfigurationParameters.Kubernetes.NetworkPlugin}"
-                    },
-                    "enableRBAC": {
-                        "value": "${Parameters.ModuleConfigurationParameters.Kubernetes.EnableRbac}"
-                    },
-                    "vNetSubnetId": {
-                        "value": "reference(VirtualNetwork.vNetResourceId)/subnets/default"
-                    },
-                    "serviceCIDR": {
-                        "value": "${Parameters.ModuleConfigurationParameters.Kubernetes.ServiceCIDR}"
-                    },
-                    "dnsServiceIp": {
-                        "value": "${Parameters.ModuleConfigurationParameters.Kubernetes.DnsServiceIp}"
-                    },
-                    "dockerBridgeCIDR": {
-                        "value": "${Parameters.ModuleConfigurationParameters.Kubernetes.DockerBridgeCIDR}"
-                    },
-                    "logAnalyticsResourceId": {
-                        "value": "reference(LogAnalytics.logAnalyticsWorkspaceResourceId)"
-                    },
-                    "diagnosticsEventHubName": {
-                        "value": "reference(EventHub.diagnosticEventHubName)"
-                    },
-                    "diagnosticsEventHubAuthRuleId": {
-                        "value": "reference(EventHub.diagnosticsEventHubAuthRuleId)"
-                    },
-                    "diagnosticsStorageId": {
-                        "value": "reference(DiagnosticsStorageAccount.storageAccountResourceId)"
-                    },
-                    "rbacServerAppId": {
-                        "value":"${Parameters.ModuleConfigurationParameters.Kubernetes.RbacServerAppid}"
-                    },
-                    "rbacServerSecret": {
-                        "value":"${Parameters.ModuleConfigurationParameters.Kubernetes.RbacServerSecret}"
-                    },
-                    "rbacClientAppId": {
-                        "value":"${Parameters.ModuleConfigurationParameters.Kubernetes.RbacClientAppId}"
-                    },
-                    "rbacTenant": {
-                        "value":"${Parameters.ModuleConfigurationParameters.Kubernetes.RbacTenant}"
-                    },
-                    "azureFirewallName": {
-                        "value": "${Parameters.ModuleConfigurationParameters.SharedServices.Network.NetworkVirtualAppliance.AzureFirewall.Name}"
-                    },
-                    "azureFirewallResourceGroupName": {
-                        "value": "${Parameters.ModuleConfigurationParameters.SharedServices.Network.ResourceGroupName}"
-                    },
-                    "azureFirewallSubscriptionId": {
-                        "value": "${Subscriptions.SharedServices.SubscriptionId}"
-                    },
-                    "azureFirewallApplicationRuleCollection": {
-                        "value": "${Parameters.ModuleConfigurationParameters.Network.AzureFirewallApplicationRuleCollection}"
-                    },
-                    "azureFirewallNetworkRuleCollection": {
-                        "value": "${Parameters.ModuleConfigurationParameters.Network.AzureFirewallNetworkRuleCollection}"
-                    }
-                }
-            }
-        },
-        {
-            "Name": "PermissionsScriptsPreReqs",
-            "Comments": "Some Comments",
-            "Script": {
-                "Command": "chmod +x scripts/aks/install-kubectl.sh",
-                "Arguments" : {}            }
-        },
-        {
-            "Name": "ScriptsPreReqs",
-            "Comments": "Some Comments",
-            "Script": {
-                "Command": "../../Scripts/AKS/install-kubectl.sh",
-                "Arguments" : {}
-            }
-        },
-        {
-            "Name": "CreateCACertificate",
-            "Comments": "Some Comments",
-            "Script": {
-                "Command": "../../Scripts/AKS/create-and-upload-ca-cert.sh",
-                "Arguments" : {
-                    "1_KEY_VAULT_NAME" : "${Parameters.ModuleConfigurationParameters.KeyVault.Name}",
-                    "2_CA_CERT_KEY_NAME" : "${Parameters.ModuleConfigurationParameters.Kubernetes.CaCertKeyName}",
-                    "3_CA_NAME" : "${Parameters.ModuleConfigurationParameters.Kubernetes.CaName}"
-                }
-            }
-        },
-        {
-            "Name": "CreateClusterRBACRoleBindings",
-            "Comments": "Some Comments",
-            "Script": {
-                "Command": "../../Scripts/AKS/create-cluster-rbac-role-bindings.sh",
-                "Arguments" : {
-                    "1_CLUSTER_NAME" : "${Parameters.ModuleConfigurationParameters.Kubernetes.ClusterName}",
-                    "2_CLUSTER_RG" : "${Parameters.ModuleConfigurationParameters.Kubernetes.ClusterResourceGroupName}",
-                    "3_RBAC_CLUSTER_ADMIN_AD_GROUP" : "${Parameters.ModuleConfigurationParameters.Kubernetes.ClusterAdminGroupId}",
-                    "4_RBAC_CLUSTER_VIEW_AD_GROUP" : "${Parameters.ModuleConfigurationParameters.Kubernetes.NocUserGroupId}",
-                    "5_RBAC_EXTEND_VIEW_CLUSTER_ROLE" : "Y",
-                    "6_RBAC_ENABLE_READ_ONLY_DASHBOARD" : "Y"
                 }
             }
         }

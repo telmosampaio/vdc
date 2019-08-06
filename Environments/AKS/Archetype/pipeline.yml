@@ -1,0 +1,195 @@
+# VDC Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+# Set variables once
+variables:
+- group: VDC_SECRETS_Copy
+- group: VDC_AKS_SECRETS
+trigger:
+- master
+stages:
+- stage: Validate
+  jobs:
+  - job: SetupValidationResourceGroup
+    pool: 
+      name: 'vdc-self-hosted'
+    steps:
+    - task: AzurePowerShell@4
+      displayName: "Setup Validation Resource Group"
+      inputs:
+        azureSubscription: 'Kunachim Azure SC'
+        ScriptType: 'FilePath'
+        ScriptPath: 'Orchestration/OrchestrationService/ValidationResourceGroupSetup.ps1'
+        ScriptArguments: '-ResourceGroupName vdc-validation-rg -SetupResourceGroup'
+        azurePowerShellVersion: 'LatestVersion'
+  - job: ACR
+    pool:
+      name: 'vdc-self-hosted'
+    dependsOn: SetupValidationResourceGroup
+    steps:
+    - task: PowerShell@2
+      displayName: "Pester Tests for Module - ACR"
+      inputs:
+        targetType: 'inline'
+        script: '# Write your powershell commands here.
+          
+          Invoke-Pester -Script "./Modules/ACR/2.0/Tests";
+          
+          # Use the environment variables input below to pass secret variables to this script.'
+        pwsh: true
+    - task: AzurePowerShell@4
+      displayName: "ARM Validation - ACR"
+      inputs:
+        azureSubscription: 'Kunachim Azure SC'
+        ScriptType: 'FilePath'
+        ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
+        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "ACR" -Validate'
+        azurePowerShellVersion: 'LatestVersion'
+      env:
+        VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
+        VDC_TOOLKIT_SUBSCRIPTION: $(VDC_TOOLKIT_SUBSCRIPTION)
+        DEPLOYMENT_USER_ID: $(DEPLOYMENT_USER_ID)
+        ADMIN_USER_PWD: $(ADMIN_USER_PWD)
+        DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
+        TENANT_ID: $(TENANT_ID)
+  - job: AKSCluster
+    pool:
+      name: 'vdc-self-hosted'
+    dependsOn: SetupValidationResourceGroup
+    steps:
+    - task: PowerShell@2
+      displayName: "Pester Tests for Module - AKS Cluster"
+      inputs:
+        targetType: 'inline'
+        script: '# Write your powershell commands here.
+          
+          Invoke-Pester -Script "./Modules/KubernetesAKS/2.0/Tests";
+          
+          # Use the environment variables input below to pass secret variables to this script.'
+        pwsh: true
+    - task: AzurePowerShell@4
+      displayName: "ARM Validation - AKS Cluster"
+      inputs:
+        azureSubscription: 'Kunachim Azure SC'
+        ScriptType: 'FilePath'
+        ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
+        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "AKSCluster" -Validate'
+        azurePowerShellVersion: 'LatestVersion'
+      env:
+        VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
+        VDC_TOOLKIT_SUBSCRIPTION: $(VDC_TOOLKIT_SUBSCRIPTION)
+        DEPLOYMENT_USER_ID: $(DEPLOYMENT_USER_ID)
+        ADMIN_USER_PWD: $(ADMIN_USER_PWD)
+        DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
+        TENANT_ID: $(TENANT_ID)
+  - job: TearDownValidationResourceGroup
+    pool: 
+      name: 'vdc-self-hosted'
+    dependsOn: [ ACR, AKSCluster ]
+    steps:
+    - task: AzurePowerShell@4
+      displayName: "Teardown Validation Resource Group"
+      inputs:
+        azureSubscription: 'Kunachim Azure SC'
+        ScriptType: 'FilePath'
+        ScriptPath: 'Orchestration/OrchestrationService/ValidationResourceGroupSetup.ps1'
+        ScriptArguments: '-TearDownResourceGroup'
+        azurePowerShellVersion: 'LatestVersion'
+- stage: Deploy
+  jobs:
+  - job: Deployment
+    timeoutInMinutes: 0
+    pool:
+      name: 'vdc-self-hosted'
+    steps:
+    - task: AzurePowerShell@4
+      displayName: "ACR"
+      inputs:
+        azureSubscription: 'Kunachim Azure SC'
+        ScriptType: 'FilePath'
+        ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
+        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "ACR"'
+        azurePowerShellVersion: 'LatestVersion'
+      env:
+        VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
+        VDC_TOOLKIT_SUBSCRIPTION: $(VDC_TOOLKIT_SUBSCRIPTION)
+        DEPLOYMENT_USER_ID: $(DEPLOYMENT_USER_ID)
+        ADMIN_USER_PWD: $(ADMIN_USER_PWD)
+        DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
+        TENANT_ID: $(TENANT_ID)
+    - task: AzurePowerShell@4
+      displayName: "AKS Cluster"
+      inputs:
+        azureSubscription: 'Kunachim Azure SC'
+        ScriptType: 'FilePath'
+        ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
+        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "AKSCluster"'
+        azurePowerShellVersion: 'LatestVersion'
+      env:
+        VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
+        VDC_TOOLKIT_SUBSCRIPTION: $(VDC_TOOLKIT_SUBSCRIPTION)
+        DEPLOYMENT_USER_ID: $(DEPLOYMENT_USER_ID)
+        ADMIN_USER_PWD: $(ADMIN_USER_PWD)
+        DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
+        TENANT_ID: $(TENANT_ID)
+    - task: AzurePowerShell@4
+      displayName: "Permissions Scripts Pre Reqs"
+      inputs:
+        azureSubscription: 'Kunachim Azure SC'
+        ScriptType: 'FilePath'
+        ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
+        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "PermissionsScriptsPreReqs"'
+        azurePowerShellVersion: 'LatestVersion'
+      env:
+        VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
+        VDC_TOOLKIT_SUBSCRIPTION: $(VDC_TOOLKIT_SUBSCRIPTION)
+        DEPLOYMENT_USER_ID: $(DEPLOYMENT_USER_ID)
+        ADMIN_USER_PWD: $(ADMIN_USER_PWD)
+        DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
+        TENANT_ID: $(TENANT_ID)
+    - task: AzurePowerShell@4
+      displayName: "Scripts Pre Reqs"
+      inputs:
+        azureSubscription: 'Kunachim Azure SC'
+        ScriptType: 'FilePath'
+        ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
+        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "ScriptsPreReqs"'
+        azurePowerShellVersion: 'LatestVersion'
+      env:
+        VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
+        VDC_TOOLKIT_SUBSCRIPTION: $(VDC_TOOLKIT_SUBSCRIPTION)
+        DEPLOYMENT_USER_ID: $(DEPLOYMENT_USER_ID)
+        ADMIN_USER_PWD: $(ADMIN_USER_PWD)
+        DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
+        TENANT_ID: $(TENANT_ID)
+    - task: AzurePowerShell@4
+      displayName: "Create CA Certificate"
+      inputs:
+        azureSubscription: 'Kunachim Azure SC'
+        ScriptType: 'FilePath'
+        ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
+        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "CreateCACertificate"'
+        azurePowerShellVersion: 'LatestVersion'
+      env:
+        VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
+        VDC_TOOLKIT_SUBSCRIPTION: $(VDC_TOOLKIT_SUBSCRIPTION)
+        DEPLOYMENT_USER_ID: $(DEPLOYMENT_USER_ID)
+        ADMIN_USER_PWD: $(ADMIN_USER_PWD)
+        DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
+        TENANT_ID: $(TENANT_ID)
+    - task: AzurePowerShell@4
+      displayName: "Create Cluster RBAC Role Bindings"
+      inputs:
+        azureSubscription: 'Kunachim Azure SC'
+        ScriptType: 'FilePath'
+        ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
+        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "CreateClusterRBACRoleBindings"'
+        azurePowerShellVersion: 'LatestVersion'
+      env:
+        VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
+        VDC_TOOLKIT_SUBSCRIPTION: $(VDC_TOOLKIT_SUBSCRIPTION)
+        DEPLOYMENT_USER_ID: $(DEPLOYMENT_USER_ID)
+        ADMIN_USER_PWD: $(ADMIN_USER_PWD)
+        DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
+        TENANT_ID: $(TENANT_ID)
