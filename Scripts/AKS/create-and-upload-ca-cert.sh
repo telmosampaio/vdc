@@ -10,10 +10,14 @@ PGM=$(basename $0)
 # PRIVATE_DNS_ZONE
 # CA_CERT_KEY_NAME
 # CA_NAME
+SP_ID=$1
+SP_SECRET=$2
+TENANT=$3
+KEY_VAULT_NAME=$4
+CA_CERT_KEY_NAME=$5
+CA_NAME=$6
 
-KEY_VAULT_NAME=$1
-CA_CERT_KEY_NAME=$2
-CA_NAME=$3
+az login --service-principal -u $SP_ID -p $SP_SECRET --tenant $TENANT
 
 # keyvault appears to need pkc8
 KEY_CONTENT=$(openssl genpkey \

@@ -4,7 +4,7 @@
     "InstanceName": "${Parameters.Organization}-${Parameters.DeploymentName}",
     "Subscription": "AKS",
     "ModuleConfigurationParameters": {
-        "DeploymentUserId": "env(DEPLOYMENT_USER_ID)",
+        "DeploymentUserId": "env(SCRIPT_EXECUTION_SP_ID)",
         "ResourceGroupPrefix": "${Parameters.Organization}-${Parameters.DeploymentName}",
         "Region": "westus2",
         "DnsPrefix": "aks",

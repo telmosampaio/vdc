@@ -98,14 +98,14 @@
         },
         {
             "Name": "PermissionsScriptsPreReqs",
-            "Comments": "Some Comments",
+            "Comments": "PermissionsScriptsPreReqs",
             "Script": {
                 "Command": "chmod +x scripts/aks/install-kubectl.sh",
                 "Arguments" : {}            }
         },
         {
             "Name": "ScriptsPreReqs",
-            "Comments": "Some Comments",
+            "Comments": "ScriptsPreReqs",
             "Script": {
                 "Command": "../../../Scripts/AKS/install-kubectl.sh",
                 "Arguments" : {}
@@ -113,28 +113,34 @@
         },
         {
             "Name": "CreateCACertificate",
-            "Comments": "Some Comments",
+            "Comments": "CreateCACertificate",
             "Script": {
                 "Command": "../../../Scripts/AKS/create-and-upload-ca-cert.sh",
                 "Arguments" : {
-                    "1_KEY_VAULT_NAME" : "${Parameters.ModuleConfigurationParameters.KeyVault.Name}",
-                    "2_CA_CERT_KEY_NAME" : "${Parameters.ModuleConfigurationParameters.Kubernetes.CaCertKeyName}",
-                    "3_CA_NAME" : "${Parameters.ModuleConfigurationParameters.Kubernetes.CaName}"
+                    "1_SCRIPT_EXECUTION_SP_ID": "env(SCRIPT_EXECUTION_SP_ID)",
+                    "2_SCRIPT_EXECUTION_SP_KEY": "env(SCRIPT_EXECUTION_SP_KEY)",
+                    "3_TENANT": "${Subscriptions.AKS.TenantId}",
+                    "4_KEY_VAULT_NAME" : "${Parameters.ModuleConfigurationParameters.KeyVault.Name}",
+                    "5_CA_CERT_KEY_NAME" : "${Parameters.ModuleConfigurationParameters.Kubernetes.CaCertKeyName}",
+                    "6_CA_NAME" : "${Parameters.ModuleConfigurationParameters.Kubernetes.CaName}"
                 }
             }
         },
         {
             "Name": "CreateClusterRBACRoleBindings",
-            "Comments": "Some Comments",
+            "Comments": "CreateClusterRBACRoleBindings",
             "Script": {
                 "Command": "../../../Scripts/AKS/create-cluster-rbac-role-bindings.sh",
                 "Arguments" : {
-                    "1_CLUSTER_NAME" : "${Parameters.ModuleConfigurationParameters.Kubernetes.ClusterName}",
-                    "2_CLUSTER_RG" : "${Parameters.ModuleConfigurationParameters.Kubernetes.ClusterResourceGroupName}",
-                    "3_RBAC_CLUSTER_ADMIN_AD_GROUP" : "${Parameters.ModuleConfigurationParameters.Kubernetes.ClusterAdminGroupId}",
-                    "4_RBAC_CLUSTER_VIEW_AD_GROUP" : "${Parameters.ModuleConfigurationParameters.Kubernetes.NocUserGroupId}",
-                    "5_RBAC_EXTEND_VIEW_CLUSTER_ROLE" : "Y",
-                    "6_RBAC_ENABLE_READ_ONLY_DASHBOARD" : "Y"
+                    "1_SCRIPT_EXECUTION_SP_ID": "env(SCRIPT_EXECUTION_SP_ID)",
+                    "2_SCRIPT_EXECUTION_SP_KEY": "env(SCRIPT_EXECUTION_SP_KEY)",
+                    "3_TENANT": "${Subscriptions.AKS.TenantId}",
+                    "4_CLUSTER_NAME" : "${Parameters.ModuleConfigurationParameters.Kubernetes.ClusterName}",
+                    "5_CLUSTER_RG" : "${Parameters.ModuleConfigurationParameters.Kubernetes.ClusterResourceGroupName}",
+                    "6_RBAC_CLUSTER_ADMIN_AD_GROUP" : "${Parameters.ModuleConfigurationParameters.Kubernetes.ClusterAdminGroupId}",
+                    "7_RBAC_CLUSTER_VIEW_AD_GROUP" : "${Parameters.ModuleConfigurationParameters.Kubernetes.NocUserGroupId}",
+                    "8_RBAC_EXTEND_VIEW_CLUSTER_ROLE" : "Y",
+                    "9_RBAC_ENABLE_READ_ONLY_DASHBOARD" : "Y"
                 }
             }
         }
