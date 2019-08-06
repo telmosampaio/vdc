@@ -1,5 +1,5 @@
 {
-    "ModuleConfigurationsPath": "../../Modules",
+    "ModuleConfigurationsPath": "../../../Modules",
     "ModuleConfigurations": [
         {
             "Name": "ACR",
@@ -9,7 +9,7 @@
             "Version": "2.0",
             "Deployment": {
                 "Comments": "We need the 'update' module instance to lock this resource after the Virtual Network got created",
-                "TemplatePath": "../../Modules/ACR/2.0/deploy.json",
+                "TemplatePath": "../../../Modules/ACR/2.0/deploy.json",
                 "OverrideParameters": {
                     "location": {
                         "value": "westus"
@@ -28,7 +28,7 @@
             "Version": "2.0",
             "Deployment": {
                 "Comments": "We need the 'update' module instance to lock this resource after the Virtual Network got created",
-                "TemplatePath": "../../Modules/KubernetesAKS/2.0/deploy.json",
+                "TemplatePath": "../../../Modules/KubernetesAKS/2.0/deploy.json",
                 "OverrideParameters": {
                     "aksClusterName": {
                         "value": "${Parameters.ModuleConfigurationParameters.Kubernetes.ClusterName}"
@@ -122,7 +122,7 @@
             "Name": "ScriptsPreReqs",
             "Comments": "Some Comments",
             "Script": {
-                "Command": "../../Scripts/AKS/install-kubectl.sh",
+                "Command": "../../../Scripts/AKS/install-kubectl.sh",
                 "Arguments" : {}
             }
         },
@@ -130,7 +130,7 @@
             "Name": "CreateCACertificate",
             "Comments": "Some Comments",
             "Script": {
-                "Command": "../../Scripts/AKS/create-and-upload-ca-cert.sh",
+                "Command": "../../../Scripts/AKS/create-and-upload-ca-cert.sh",
                 "Arguments" : {
                     "1_KEY_VAULT_NAME" : "${Parameters.ModuleConfigurationParameters.KeyVault.Name}",
                     "2_CA_CERT_KEY_NAME" : "${Parameters.ModuleConfigurationParameters.Kubernetes.CaCertKeyName}",
@@ -142,7 +142,7 @@
             "Name": "CreateClusterRBACRoleBindings",
             "Comments": "Some Comments",
             "Script": {
-                "Command": "../../Scripts/AKS/create-cluster-rbac-role-bindings.sh",
+                "Command": "../../../Scripts/AKS/create-cluster-rbac-role-bindings.sh",
                 "Arguments" : {
                     "1_CLUSTER_NAME" : "${Parameters.ModuleConfigurationParameters.Kubernetes.ClusterName}",
                     "2_CLUSTER_RG" : "${Parameters.ModuleConfigurationParameters.Kubernetes.ClusterResourceGroupName}",

@@ -1,5 +1,5 @@
 {
-    "Organization": "file(../_Common/organizationName.txt)",
+    "Organization": "file(../../_Common/organizationName.txt)",
     "DeploymentName": "aks",
     "InstanceName": "${Parameters.Organization}-${Parameters.DeploymentName}",
     "Subscription": "AKS",
