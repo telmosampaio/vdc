@@ -44,7 +44,7 @@ stages:
         azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "ACR" -Validate'
+        ScriptArguments: '-DefinitionPath "Environments/AKS/Archetype/definition.json" -ModuleConfigurationName "ACR" -Validate'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -74,7 +74,7 @@ stages:
         azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "AKSCluster" -Validate'
+        ScriptArguments: '-DefinitionPath "Environments/AKS/Archetype/definition.json" -ModuleConfigurationName "AKSCluster" -Validate'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -109,7 +109,7 @@ stages:
         azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "ACR"'
+        ScriptArguments: '-DefinitionPath "Environments/AKS/Archetype/definition.json" -ModuleConfigurationName "ACR"'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -124,7 +124,7 @@ stages:
         azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "AKSCluster"'
+        ScriptArguments: '-DefinitionPath "Environments/AKS/Archetype/definition.json" -ModuleConfigurationName "AKSCluster"'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -139,7 +139,7 @@ stages:
         azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "PermissionsScriptsPreReqs"'
+        ScriptArguments: '-DefinitionPath "Environments/AKS/Archetype/definition.json" -ModuleConfigurationName "PermissionsScriptsPreReqs"'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -154,7 +154,7 @@ stages:
         azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "ScriptsPreReqs"'
+        ScriptArguments: '-DefinitionPath "Environments/AKS/Archetype/definition.json" -ModuleConfigurationName "ScriptsPreReqs"'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -169,7 +169,7 @@ stages:
         azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "CreateCACertificate"'
+        ScriptArguments: '-DefinitionPath "Environments/AKS/Archetype/definition.json" -ModuleConfigurationName "CreateCACertificate"'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -184,7 +184,7 @@ stages:
         azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/AKS/definition.json" -ModuleConfigurationName "CreateClusterRBACRoleBindings"'
+        ScriptArguments: '-DefinitionPath "Environments/AKS/Archetype/definition.json" -ModuleConfigurationName "CreateClusterRBACRoleBindings"'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
