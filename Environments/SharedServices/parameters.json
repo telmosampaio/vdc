@@ -676,6 +676,10 @@
             }
         },
         "ArtifactsStorageAccount": "file(../_Common/artifactsStorageAccount.json)",
+        "AzureBastion": {
+            "Name": "sharedsvcs-bastion",
+            "ResourceGroup": "${Parameters.ModuleConfigurationParameters.VirtualNetwork.ResourceGroup}",
+        },
         "Jumpbox": {
             "ResourceGroup": "${Parameters.InstanceName}-jumpbox-rg",
             "AdminUsername": "${Parameters.ModuleConfigurationParameters.KeyVault.SecretsObject.Secrets[0].secretName}",
@@ -741,7 +745,7 @@
                 "secretName": "${Parameters.ModuleConfigurationParameters.KeyVault.SecretsObject.Secrets[0].secretName}"
             },
             "Kek": {
-                "Name": "AddsKek",
+                "Name": "AddsKey5",
                 "Comments": "Destination can be HSM or Software. Use HSM to create Production keys.",
                 "Destination": "HSM"
             },
@@ -763,7 +767,9 @@
             "SubnetName": "${Parameters.ModuleConfigurationParameters.VirtualNetwork.Subnets[0].name}",
             "DataDisks": [
                 {
-                    "size": 127
+                    "size": 127,
+                    "driveLetter": "F",
+                    "diskId": 2
                 }
             ]
         }

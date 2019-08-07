@@ -5,16 +5,16 @@
 
 		File:		module.tests.ps1
 
-		Purpose:	Pester - Test Key Vault ARM Templates
+		Purpose:	Pester - Test ADDS ARM Templates
 
 		Version: 	1.0.0.0 - 1st April 2019 - Azure Virtual Datacenter Development Team
 		==============================================================================================
 
 	.SYNOPSIS
-		This script contains functionality used to test Key Vault ARM template synatax.
+		This script contains functionality used to test Azure Storage Account ARM template synatax.
 
 	.DESCRIPTION
-		This script contains functionality used to test Key Vault ARM template synatax.
+		This script contains functionality used to test Azure Storage Account ARM template synatax.
 
 		Deployment steps of the script are outlined below.
         1) Test Template File Syntax
@@ -70,6 +70,7 @@ Describe "Template: $template - Storage Accounts" -Tags Unit {
             'parameters',
             'variables',
 			'resources',
+			'functions',
 			'outputs' | Sort-Object
 			$templateProperties = (Get-Content (Join-Path "$here" "$TemplateFile") `
 									| ConvertFrom-Json -ErrorAction SilentlyContinue) `
@@ -83,7 +84,7 @@ Describe "Template: $template - Storage Accounts" -Tags Unit {
     Context "Parameter File Syntax" {
 	   
 		It "Parameter file does not contains the expected properties" -TestCases $ParameterFileTestCases {
-			Param( $ParameterFile )
+            Param( $ParameterFile )
             $expectedProperties = '$schema',
             'contentVersion',
             'parameters' | Sort-Object

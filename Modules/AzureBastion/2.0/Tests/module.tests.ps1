@@ -5,16 +5,16 @@
 
 		File:		module.tests.ps1
 
-		Purpose:	Pester - Test Key Vault ARM Templates
+		Purpose:	Pester - Test AppServicesEnvironmentsWebApp Templates
 
 		Version: 	1.0.0.0 - 1st April 2019 - Azure Virtual Datacenter Development Team
 		==============================================================================================
 
 	.SYNOPSIS
-		This script contains functionality used to test Key Vault ARM template synatax.
+		This script contains functionality used to test Application Service Environment Web App ARM template synatax.
 
 	.DESCRIPTION
-		This script contains functionality used to test Key Vault ARM template synatax.
+		This script contains functionality used to test Application Service Environment Web App ARM template synatax.
 
 		Deployment steps of the script are outlined below.
         1) Test Template File Syntax

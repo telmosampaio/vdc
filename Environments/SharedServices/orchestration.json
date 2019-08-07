@@ -500,6 +500,24 @@
             }
         },
         {
+            "Name": "AzureBastion",
+            "ModuleDefinitionName": "AzureBastion",
+            "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.AzureBastion.ResourceGroup}",
+            "DependsOn":[ 
+                "VirtualNetwork"
+            ],
+            "Deployment": {
+                "OverrideParameters": {
+                    "azureBastionName": {
+                        "value": "${Parameters.ModuleConfigurationParameters.AzureBastion.Name}"
+                    },
+                    "vNetId": {
+                        "value": "reference(VirtualNetwork.vNetResourceId)"
+                    }
+                }
+            }
+        },
+        {
             "Name": "WindowsJumpbox",
             "ModuleDefinitionName": "VirtualMachines",
             "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.Jumpbox.ResourceGroup}",
@@ -510,7 +528,8 @@
                 "ActiveDirectory", 
                 "EnableDNSServerOnVirtualNetwork", 
                 "KeyVault", 
-                "ArtifactsStorageAccount"
+                "ArtifactsStorageAccount",
+                "AzureBastion"
             ],
             "Comments": "Creates Windows Jumpbox",
             "Deployment": {
@@ -554,6 +573,9 @@
                     "artifactsStorageAccountName": {
                         "value": "reference(ArtifactsStorageAccount.storageAccountName)"
                     },
+                    "artifactsStorageAccountSasKey": {
+                        "value": "reference(ArtifactsStorageAccount.storageAccountSasToken)"
+                    },
                     "vNetId": {
                         "value": "reference(VirtualNetwork.vNetResourceId)"
                     },
@@ -578,6 +600,43 @@
             }
         },
         {
+            "Name": "EncryptWindowsJumpbox",
+            "ModuleDefinitionName": "VirtualMachineKEKEncryption",
+            "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.Jumpbox.ResourceGroup}",
+            "DependsOn":[
+                "VirtualNetwork", 
+                "DiagnosticStorageAccount", 
+                "LogAnalytics", 
+                "ActiveDirectory", 
+                "EnableDNSServerOnVirtualNetwork", 
+                "KeyVault", 
+                "ArtifactsStorageAccount",
+                "ActiveDirectoryDomainServicesVMs",
+                "WindowsJumpbox",
+                "AzureBastion"
+            ],
+            "Comments": "Encrypts Active Directory Domain Services VMs using bitlocker",
+            "Deployment": {
+                "OverrideParameters": {
+                    "virtualMachineName": {
+                        "value": "${Parameters.ModuleConfigurationParameters.Jumpbox.Windows.Name}"
+                    },
+                    "virtualMachineOSType": {
+                        "value": "${Parameters.ModuleConfigurationParameters.Jumpbox.Windows.OSType}"
+                    },
+                    "keyEncryptionKeyURL": {
+                        "value": "reference(ActiveDirectoryDomainServicesKek.Output)"
+                    },
+                    "keyVaultUri": {
+                        "value": "reference(KeyVault.keyVaultUrl)"
+                    },
+                    "keyVaultId": {
+                        "value": "reference(KeyVault.keyVaultResourceId)"
+                    }
+                }
+            }
+        },
+        {
             "Name": "LinuxJumpbox",
             "ModuleDefinitionName": "VirtualMachines",
             "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.Jumpbox.ResourceGroup}",
@@ -588,7 +647,8 @@
                 "ActiveDirectory", 
                 "EnableDNSServerOnVirtualNetwork", 
                 "KeyVault", 
-                "ArtifactsStorageAccount"
+                "ArtifactsStorageAccount",
+                "AzureBastion"
             ],
             "Comments": "Creates Linux Jumpbox",
             "Deployment": {
@@ -632,6 +692,9 @@
                     "artifactsStorageAccountName": {
                         "value": "reference(ArtifactsStorageAccount.storageAccountName)"
                     },
+                    "artifactsStorageAccountSasKey": {
+                        "value": "reference(ArtifactsStorageAccount.storageAccountSasToken)"
+                    },
                     "vNetId": {
                         "value": "reference(VirtualNetwork.vNetResourceId)"
                     },
@@ -651,6 +714,43 @@
                             },
                             "secretName": "${Parameters.ModuleConfigurationParameters.KeyVault.SecretsObject.Secrets[2].secretName}"
                         }
+                    }
+                }
+            }
+        },
+        {
+            "Name": "EncryptLinuxJumpbox",
+            "ModuleDefinitionName": "VirtualMachineKEKEncryption",
+            "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.Jumpbox.ResourceGroup}",
+            "DependsOn":[
+                "VirtualNetwork", 
+                "DiagnosticStorageAccount", 
+                "LogAnalytics", 
+                "ActiveDirectory", 
+                "EnableDNSServerOnVirtualNetwork", 
+                "KeyVault", 
+                "ArtifactsStorageAccount",
+                "ActiveDirectoryDomainServicesVMs",
+                "LinuxJumpbox",
+                "AzureBastion"
+            ],
+            "Comments": "Encrypts Active Directory Domain Services VMs using bitlocker",
+            "Deployment": {
+                "OverrideParameters": {
+                    "virtualMachineName": {
+                        "value": "${Parameters.ModuleConfigurationParameters.Jumpbox.Linux.Name}"
+                    },
+                    "virtualMachineOSType": {
+                        "value": "${Parameters.ModuleConfigurationParameters.Jumpbox.Linux.OSType}"
+                    },
+                    "keyEncryptionKeyURL": {
+                        "value": "reference(ActiveDirectoryDomainServicesKek.Output)"
+                    },
+                    "keyVaultUri": {
+                        "value": "reference(KeyVault.keyVaultUrl)"
+                    },
+                    "keyVaultId": {
+                        "value": "reference(KeyVault.keyVaultResourceId)"
                     }
                 }
             }
@@ -735,6 +835,41 @@
             }
         },
         {
+            "Name": "KEKEncryptActiveDirectoryDomainServicesVMs",
+            "ModuleDefinitionName": "VirtualMachineKEKEncryption",
+            "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.ActiveDirectoryDomainServices.ResourceGroup}",
+            "DependsOn":[
+                "VirtualNetwork", 
+                "DiagnosticStorageAccount", 
+                "LogAnalytics", 
+                "ActiveDirectory", 
+                "EnableDNSServerOnVirtualNetwork", 
+                "KeyVault", 
+                "ArtifactsStorageAccount",
+                "ActiveDirectoryDomainServicesVMs"
+            ],
+            "Comments": "Encrypts Active Directory Domain Services VMs using bitlocker",
+            "Deployment": {
+                "OverrideParameters": {
+                    "virtualMachineName": {
+                        "value": "${Parameters.ModuleConfigurationParameters.ActiveDirectoryDomainServices.Name}"
+                    },
+                    "virtualMachineCount": {
+                        "value": "${Parameters.ModuleConfigurationParameters.ActiveDirectoryDomainServices.VMCount}"
+                    },
+                    "keyEncryptionKeyURL": {
+                        "value": "https://fontoso-shrdsvcs-kv03.vault.azure.net/keys/AddsKek/7a2fb3c8bda942bdbf71de39f8d7e0b8"
+                    },
+                    "keyVaultUri": {
+                        "value": "reference(KeyVault.keyVaultUrl)"
+                    },
+                    "keyVaultId": {
+                        "value": "reference(KeyVault.keyVaultResourceId)"
+                    }
+                }
+            }
+        },
+        {
             "Name": "InstallActiveDirectoryDomainServices",
             "ModuleDefinitionName": "ActiveDirectoryDomainServices",
             "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.ActiveDirectoryDomainServices.ResourceGroup}",
@@ -746,7 +881,8 @@
                 "DiagnosticStorageAccount", 
                 "LogAnalytics", 
                 "KeyVault", 
-                "ArtifactsStorageAccount"
+                "ArtifactsStorageAccount",
+                "KEKEncryptActiveDirectoryDomainServicesVMs"
             ],
             "Comments": "Creates Active Directory Domain Services VMs",
             "Deployment": {

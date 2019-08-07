@@ -13,11 +13,9 @@
 if ($null -eq $Destination) {
     $Destination = "HSM";
 }
-$result = Add-AzKeyVaultKey `
+$result = (Add-AzKeyVaultKey `
     -VaultName $VaultName `
     -Name $KeyName `
-    -Destination $Destination;
+    -Destination $Destination).Id;
 
-return @{
-    KekUrl = $result.Id
-}
+return $result
