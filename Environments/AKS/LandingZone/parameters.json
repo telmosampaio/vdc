@@ -4,7 +4,7 @@
     "InstanceName": "${Parameters.Organization}-${Parameters.DeploymentName}",
     "Subscription": "AKS",
     "ModuleConfigurationParameters": {
-        "DeploymentUserId": "env(SCRIPT_EXECUTION_SP_ID)",
+        "DeploymentUserId": "env(DEPLOYMENT_USER_ID)",
         "ResourceGroupPrefix": "${Parameters.Organization}-${Parameters.DeploymentName}",
         "Region": "westus2",
         "DnsPrefix": "aks",
@@ -37,7 +37,23 @@
             "EnableVaultForDeployment": true,
             "EnableVaultForDiskEncryption": true,
             "EnableVaultForTemplateDeployment": true,
-            "AccessPolicies": [],
+            "AccessPolicies": [
+                {
+                    "tenantId": "${Subscriptions.AKS.TenantId}",
+                    "objectId": "${Parameters.ModuleConfigurationParameters.DeploymentUserId}",
+                    "permissions": {
+                        "certificates": [
+                            "All"
+                        ],
+                        "keys": [
+                            "All"
+                        ],
+                        "secrets": [
+                            "All"
+                        ]
+                    }
+                }
+            ],
             "SecretsObject": {
                 "Comments": "Creating an object so we can use a secretsobject parameter type in our ARM template",
                 "Secrets": [
@@ -283,8 +299,8 @@
                     "name": "default",
                     "addressPrefix": "10.2.0.0/17",
                     "networkSecurityGroupName": "${Parameters.ModuleConfigurationParameters.Network.NetworkSecurityGroups[0].Name}",
-                    "userDefinedRoute": "${Parameters.ModuleConfigurationParameters.Network.UserDefinedRoutes[0].Name}",
-                    "routeTableName": "",
+                    "userDefinedRoute": "",
+                    "routeTableName": "${Parameters.ModuleConfigurationParameters.Network.UserDefinedRoutes[0].Name}",
                     "serviceEndpoints": [
                         {
                             "Service": "Microsoft.EventHub"
