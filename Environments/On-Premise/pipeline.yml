@@ -268,7 +268,7 @@ stages:
       name: 'vdc-self-hosted'
     steps:
     - task: AzurePowerShell@4
-      displayName: [ "Diagnostic Storage Account" ]
+      displayName: "Diagnostic Storage Account"
       inputs:
         azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
@@ -328,7 +328,6 @@ stages:
     timeoutInMinutes: 0
     pool:
       name: 'vdc-self-hosted'
-    dependsOn: []
     steps:
     - task: AzurePowerShell@4
       displayName: "Application Security Group"
@@ -349,7 +348,7 @@ stages:
     timeoutInMinutes: 0
     pool:
       name: 'vdc-self-hosted'
-    dependsOn: [OnPremisesNSG]
+    dependsOn: OnPremisesNSG
     steps:
     - task: AzurePowerShell@4
       displayName: "Virtual Network"
@@ -370,7 +369,7 @@ stages:
     timeoutInMinutes: 0
     pool:
       name: 'vdc-self-hosted'
-    dependsOn: [VirtualNetwork]
+    dependsOn: VirtualNetwork
     steps:
     - task: AzurePowerShell@4
       displayName: "Virtual Network Gateway"
@@ -391,7 +390,6 @@ stages:
     timeoutInMinutes: 0
     pool:
       name: 'vdc-self-hosted'
-    dependsOn: [ ]
     steps:
     - task: AzurePowerShell@4
       displayName: "Artifacts Storage Account"
