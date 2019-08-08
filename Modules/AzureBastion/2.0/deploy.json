@@ -34,8 +34,8 @@
             }
         },
         {
-            "name": "string",
             "type": "Microsoft.Network/bastionHosts",
+            "name": "[parameters('azureBastionName')]",
             "apiVersion": "2019-04-01",
             "location": "[parameters('location')]",
             "dependsOn": [

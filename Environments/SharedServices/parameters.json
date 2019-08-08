@@ -694,6 +694,11 @@
                     "offer": "WindowsServer",
                     "publisher": "MicrosoftWindowsServer",
                     "sku": "2016-Datacenter"
+                },
+                "Kek": {
+                    "Name": "WindowsJumpboxKey",
+                    "Comments": "Destination can be HSM or Software. Use HSM to create Production keys.",
+                    "Destination": "HSM"
                 }
             },
             "Linux": {
@@ -707,6 +712,11 @@
                     "offer": "UbuntuServer",
                     "sku": "18.04-LTS",
                     "version": "latest"
+                },
+                "Kek": {
+                    "Name": "LinuxJumpboxKey",
+                    "Comments": "Destination can be HSM or Software. Use HSM to create Production keys.",
+                    "Destination": "HSM"
                 }
             }
         },
@@ -731,6 +741,12 @@
                 "publisher": "MicrosoftWindowsServer",
                 "sku": "2016-Datacenter"
             },
+            "OSType": "Windows",
+            "Kek": {
+                "Name": "AdKey",
+                "Comments": "Destination can be HSM or Software. Use HSM to create Production keys.",
+                "Destination": "HSM"
+            },
             "SubnetName": "${Parameters.ModuleConfigurationParameters.VirtualNetwork.Subnets[0].name}"
         },
         "ActiveDirectoryDomainServices": {
@@ -745,7 +761,7 @@
                 "secretName": "${Parameters.ModuleConfigurationParameters.KeyVault.SecretsObject.Secrets[0].secretName}"
             },
             "Kek": {
-                "Name": "AddsKey5",
+                "Name": "AddsKey",
                 "Comments": "Destination can be HSM or Software. Use HSM to create Production keys.",
                 "Destination": "HSM"
             },

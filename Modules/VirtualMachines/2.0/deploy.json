@@ -219,7 +219,7 @@
         "MMAExtensionName": "OMSExtension",
         "DSCExtensionName": "DSCExtension",
         "tagPatching": "3rdSat7pm",
-        "windowsPasswordPoliciesExtensionName": "PwdPolicies",
+        "windowsPasswordPoliciesExtensionName": "PwshExtension",
         "windowsDependencyExtensionName": "DependencyAgent",
         "windowsDependencyExtensionPublisher": "Microsoft.Azure.Monitoring.DependencyAgent",
         "windowsDependencyExtensionType": "DependencyAgentWindows",

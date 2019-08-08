@@ -543,11 +543,12 @@ Function New-CustomScripts {
             
             $tmpOutput = $null;
             $type = '';
+
             # We have to do a .ToString() to force Powershell to set the original returned 
             # value otherwise Powershell detects that $scriptOutput is an object and 
             # will preserve it which results in having a $deploymentOutputs.Output
             # equals to an object instead of the desired returned string
-            if ($scriptOutput.GetType() -eq "System.String") {
+            if ($scriptOutput.GetType().ToString().ToLower() -like "*string") {
                 $tmpOutput = $scriptOutput.ToString();
                 $type = "String";
             }
@@ -558,7 +559,6 @@ Function New-CustomScripts {
             }
 
             if($null -ne $tmpOutput) {
-
                 $deploymentOutputs = `
                     @{
                         "output" = @{
