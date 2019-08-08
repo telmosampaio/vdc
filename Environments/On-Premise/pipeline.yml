@@ -1,0 +1,431 @@
+# VDC Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+# Set variables once
+variables:
+- group: VDC_SECRETS_Copy
+trigger:
+- master
+stages:
+- stage: Validate
+  jobs:
+  - job: SetupValidationResourceGroup
+    pool: 
+      name: 'vdc-self-hosted'
+    steps:
+    - task: AzurePowerShell@4
+      displayName: "Setup Validation Resource Group"
+      inputs:
+        azureSubscription: 'Kunachim Azure SC'
+        ScriptType: 'FilePath'
+        ScriptPath: 'Orchestration/OrchestrationService/ValidationResourceGroupSetup.ps1'
+        ScriptArguments: '-ResourceGroupName vdc-validation-rg -SetupResourceGroup'
+        azurePowerShellVersion: 'LatestVersion'
+  - job: StorageAccounts
+    pool:
+      name: 'vdc-self-hosted'
+    dependsOn: SetupValidationResourceGroup
+    steps:
+    - task: PowerShell@2
+      displayName: "Pester Tests for Module - Storage Accounts"
+      inputs:
+        targetType: 'inline'
+        script: '# Write your powershell commands here.
+          
+          Invoke-Pester -Script "./Modules/StorageAccounts/2.0/Tests";
+          
+          # Use the environment variables input below to pass secret variables to this script.'
+        pwsh: true
+    - task: AzurePowerShell@4
+      displayName: "ARM Validation - Diagnostic Storage Account"
+      inputs:
+        azureSubscription: 'Kunachim Azure SC'
+        ScriptType: 'FilePath'
+        ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
+        ScriptArguments: '-DefinitionPath "Environments/On-Premise/definition.json" -ModuleConfigurationName "DiagnosticStorageAccount" -Validate'
+        azurePowerShellVersion: 'LatestVersion'
+      env:
+        VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
+        VDC_TOOLKIT_SUBSCRIPTION: $(VDC_TOOLKIT_SUBSCRIPTION)
+        DEPLOYMENT_USER_ID: $(DEPLOYMENT_USER_ID)
+        ADMIN_USER_PWD: $(ADMIN_USER_PWD)
+        DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
+        TENANT_ID: $(TENANT_ID)
+    - task: AzurePowerShell@4
+      displayName: "ARM Validation - Artifacts Storage Account"
+      inputs:
+        azureSubscription: 'Kunachim Azure SC'
+        ScriptType: 'FilePath'
+        ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
+        ScriptArguments: '-DefinitionPath "Environments/On-Premise/definition.json" -ModuleConfigurationName "ArtifactsStorageAccount" -Validate'
+        azurePowerShellVersion: 'LatestVersion'
+      env:
+        VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
+        VDC_TOOLKIT_SUBSCRIPTION: $(VDC_TOOLKIT_SUBSCRIPTION)
+        DEPLOYMENT_USER_ID: $(DEPLOYMENT_USER_ID)
+        ADMIN_USER_PWD: $(ADMIN_USER_PWD)
+        DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
+        TENANT_ID: $(TENANT_ID)
+  - job: LogAnalytics
+    pool:
+      name: 'vdc-self-hosted'
+    dependsOn: SetupValidationResourceGroup
+    steps:
+    - task: PowerShell@2
+      displayName: "Pester Tests for Module - Log Analytics"
+      inputs:
+        targetType: 'inline'
+        script: '# Write your powershell commands here.
+          
+          Invoke-Pester -Script "./Modules/LogAnalytics/2.0/Tests";
+          
+          # Use the environment variables input below to pass secret variables to this script.'
+        pwsh: true
+    - task: AzurePowerShell@4
+      displayName: "ARM Validation - Log Analytics"
+      inputs:
+        azureSubscription: 'Kunachim Azure SC'
+        ScriptType: 'FilePath'
+        ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
+        ScriptArguments: '-DefinitionPath "Environments/On-Premise/definition.json" -ModuleConfigurationName "LogAnalytics" -Validate'
+        azurePowerShellVersion: 'LatestVersion'
+      env:
+        VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
+        VDC_TOOLKIT_SUBSCRIPTION: $(VDC_TOOLKIT_SUBSCRIPTION)
+        DEPLOYMENT_USER_ID: $(DEPLOYMENT_USER_ID)
+        ADMIN_USER_PWD: $(ADMIN_USER_PWD)
+        DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
+        TENANT_ID: $(TENANT_ID)
+  - job: NetworkSecurityGroups
+    pool:
+      name: 'vdc-self-hosted'
+    dependsOn: SetupValidationResourceGroup
+    steps:
+    - task: PowerShell@2
+      displayName: "Pester Tests for Module - Network Security Groups"
+      inputs:
+        targetType: 'inline'
+        script: '# Write your powershell commands here.
+          
+          Invoke-Pester -Script "./Modules/NetworkSecurityGroups/2.0/Tests";
+          
+          # Use the environment variables input below to pass secret variables to this script.'
+        pwsh: true
+    - task: AzurePowerShell@4
+      displayName: "ARM Validation - On-Premises NSG"
+      inputs:
+        azureSubscription: 'Kunachim Azure SC'
+        ScriptType: 'FilePath'
+        ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
+        ScriptArguments: '-DefinitionPath "Environments/On-Premise/definition.json" -ModuleConfigurationName "OnPremisesNSG" -Validate'
+        azurePowerShellVersion: 'LatestVersion'
+      env:
+        VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
+        VDC_TOOLKIT_SUBSCRIPTION: $(VDC_TOOLKIT_SUBSCRIPTION)
+        DEPLOYMENT_USER_ID: $(DEPLOYMENT_USER_ID)
+        ADMIN_USER_PWD: $(ADMIN_USER_PWD)
+        DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
+        TENANT_ID: $(TENANT_ID)
+  - job: ApplicationSecurityGroups
+    pool:
+      name: 'vdc-self-hosted'
+    dependsOn: SetupValidationResourceGroup
+    steps:
+    - task: PowerShell@2
+      displayName: "Pester Tests for Module - Application Security Groups"
+      inputs:
+        targetType: 'inline'
+        script: '# Write your powershell commands here.
+          
+          Invoke-Pester -Script "./Modules/ApplicationSecurityGroups/2.0/Tests";
+          
+          # Use the environment variables input below to pass secret variables to this script.'
+        pwsh: true
+    - task: AzurePowerShell@4
+      displayName: "ARM Validation - Domain Controller ASG"
+      inputs:
+        azureSubscription: 'Kunachim Azure SC'
+        ScriptType: 'FilePath'
+        ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
+        ScriptArguments: '-DefinitionPath "Environments/On-Premise/definition.json" -ModuleConfigurationName "DomainControllerASG" -Validate'
+        azurePowerShellVersion: 'LatestVersion'
+      env:
+        VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
+        VDC_TOOLKIT_SUBSCRIPTION: $(VDC_TOOLKIT_SUBSCRIPTION)
+        DEPLOYMENT_USER_ID: $(DEPLOYMENT_USER_ID)
+        ADMIN_USER_PWD: $(ADMIN_USER_PWD)
+        DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
+        TENANT_ID: $(TENANT_ID)
+  - job: vNet
+    pool:
+      name: 'vdc-self-hosted'
+    dependsOn: SetupValidationResourceGroup
+    steps:
+    - task: PowerShell@2
+      displayName: "Pester Tests for Module - vNet"
+      inputs:
+        targetType: 'inline'
+        script: '# Write your powershell commands here.
+          
+          Invoke-Pester -Script "./Modules/vNet/2.0/Tests";
+          
+          # Use the environment variables input below to pass secret variables to this script.'
+        pwsh: true
+    - task: AzurePowerShell@4
+      displayName: "ARM Validation - Virtual Network"
+      inputs:
+        azureSubscription: 'Kunachim Azure SC'
+        ScriptType: 'FilePath'
+        ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
+        ScriptArguments: '-DefinitionPath "Environments/On-Premise/definition.json" -ModuleConfigurationName "VirtualNetwork" -Validate'
+        azurePowerShellVersion: 'LatestVersion'
+      env:
+        VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
+        VDC_TOOLKIT_SUBSCRIPTION: $(VDC_TOOLKIT_SUBSCRIPTION)
+        DEPLOYMENT_USER_ID: $(DEPLOYMENT_USER_ID)
+        ADMIN_USER_PWD: $(ADMIN_USER_PWD)
+        DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
+        TENANT_ID: $(TENANT_ID)
+  - job: VirtualNetworkGateway
+    pool:
+      name: 'vdc-self-hosted'
+    dependsOn: SetupValidationResourceGroup
+    steps:
+    - task: PowerShell@2
+      displayName: "Pester Tests for Module - Virtual Network Gateway"
+      inputs:
+        targetType: 'inline'
+        script: '# Write your powershell commands here.
+          
+          Invoke-Pester -Script "./Modules/VirtualNetworkGateway/2.0/Tests";
+          
+          # Use the environment variables input below to pass secret variables to this script.'
+        pwsh: true
+    - task: AzurePowerShell@4
+      displayName: "ARM Validation - Virtual Network Gateway"
+      inputs:
+        azureSubscription: 'Kunachim Azure SC'
+        ScriptType: 'FilePath'
+        ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
+        ScriptArguments: '-DefinitionPath "Environments/On-Premise/definition.json" -ModuleConfigurationName "VirtualNetworkGateway" -Validate'
+        azurePowerShellVersion: 'LatestVersion'
+      env:
+        VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
+        VDC_TOOLKIT_SUBSCRIPTION: $(VDC_TOOLKIT_SUBSCRIPTION)
+        DEPLOYMENT_USER_ID: $(DEPLOYMENT_USER_ID)
+        ADMIN_USER_PWD: $(ADMIN_USER_PWD)
+        DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
+        TENANT_ID: $(TENANT_ID)
+  - job: ActiveDirectory
+    pool:
+      name: 'vdc-self-hosted'
+    dependsOn: SetupValidationResourceGroup
+    steps:
+    - task: PowerShell@2
+      displayName: "Pester Tests for Module - Active Directory"
+      inputs:
+        targetType: 'inline'
+        script: '# Write your powershell commands here.
+          
+          Invoke-Pester -Script "./Modules/ActiveDirectory/2.0/Tests";
+          
+          # Use the environment variables input below to pass secret variables to this script.'
+        pwsh: true
+    - task: AzurePowerShell@4
+      displayName: "ARM Validation - Active Directory"
+      inputs:
+        azureSubscription: 'Kunachim Azure SC'
+        ScriptType: 'FilePath'
+        ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
+        ScriptArguments: '-DefinitionPath "Environments/On-Premise/definition.json" -ModuleConfigurationName "ActiveDirectory" -Validate'
+        azurePowerShellVersion: 'LatestVersion'
+      env:
+        VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
+        VDC_TOOLKIT_SUBSCRIPTION: $(VDC_TOOLKIT_SUBSCRIPTION)
+        DEPLOYMENT_USER_ID: $(DEPLOYMENT_USER_ID)
+        ADMIN_USER_PWD: $(ADMIN_USER_PWD)
+        DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
+        TENANT_ID: $(TENANT_ID)
+  - job: TearDownValidationResourceGroup
+    pool: 
+      name: 'vdc-self-hosted'
+    dependsOn: [ StorageAccounts, LogAnalytics, NetworkSecurityGroups, ApplicationSecurityGroups, vNet, VirtualNetworkGateway, ActiveDirectory ]
+    steps:
+    - task: AzurePowerShell@4
+      displayName: "Teardown Validation Resource Group"
+      inputs:
+        azureSubscription: 'Kunachim Azure SC'
+        ScriptType: 'FilePath'
+        ScriptPath: 'Orchestration/OrchestrationService/ValidationResourceGroupSetup.ps1'
+        ScriptArguments: '-TearDownResourceGroup'
+        azurePowerShellVersion: 'LatestVersion'
+- stage: Deploy
+  jobs:
+  - job: DiagnosticStorageAccount
+    timeoutInMinutes: 0
+    pool:
+      name: 'vdc-self-hosted'
+    steps:
+    - task: AzurePowerShell@4
+      displayName: [ "Diagnostic Storage Account" ]
+      inputs:
+        azureSubscription: 'Kunachim Azure SC'
+        ScriptType: 'FilePath'
+        ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
+        ScriptArguments: '-DefinitionPath "Environments/On-Premise/definition.json" -ModuleConfigurationName "DiagnosticStorageAccount"'
+        azurePowerShellVersion: 'LatestVersion'
+      env:
+        VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
+        VDC_TOOLKIT_SUBSCRIPTION: $(VDC_TOOLKIT_SUBSCRIPTION)
+        DEPLOYMENT_USER_ID: $(DEPLOYMENT_USER_ID)
+        ADMIN_USER_PWD: $(ADMIN_USER_PWD)
+        DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
+        TENANT_ID: $(TENANT_ID)
+  - job: LogAnalytics
+    timeoutInMinutes: 0
+    pool:
+      name: 'vdc-self-hosted'
+    dependsOn: DiagnosticStorageAccount
+    steps:
+    - task: AzurePowerShell@4
+      displayName: "Log Analytics"
+      inputs:
+        azureSubscription: 'Kunachim Azure SC'
+        ScriptType: 'FilePath'
+        ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
+        ScriptArguments: '-DefinitionPath "Environments/On-Premise/definition.json" -ModuleConfigurationName "LogAnalytics"'
+        azurePowerShellVersion: 'LatestVersion'
+      env:
+        VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
+        VDC_TOOLKIT_SUBSCRIPTION: $(VDC_TOOLKIT_SUBSCRIPTION)
+        DEPLOYMENT_USER_ID: $(DEPLOYMENT_USER_ID)
+        ADMIN_USER_PWD: $(ADMIN_USER_PWD)
+        DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
+        TENANT_ID: $(TENANT_ID)
+  - job: OnPremisesNSG
+    timeoutInMinutes: 0
+    pool:
+      name: 'vdc-self-hosted'
+    dependsOn: [LogAnalytics, DiagnosticStorageAccount]
+    steps:
+    - task: AzurePowerShell@4
+      displayName: "Network Security Group"
+      inputs:
+        azureSubscription: 'Kunachim Azure SC'
+        ScriptType: 'FilePath'
+        ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
+        ScriptArguments: '-DefinitionPath "Environments/On-Premise/definition.json" -ModuleConfigurationName "OnPremisesNSG"'
+        azurePowerShellVersion: 'LatestVersion'
+      env:
+        VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
+        VDC_TOOLKIT_SUBSCRIPTION: $(VDC_TOOLKIT_SUBSCRIPTION)
+        DEPLOYMENT_USER_ID: $(DEPLOYMENT_USER_ID)
+        ADMIN_USER_PWD: $(ADMIN_USER_PWD)
+        DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
+        TENANT_ID: $(TENANT_ID)
+  - job: DomainControllerASG
+    timeoutInMinutes: 0
+    pool:
+      name: 'vdc-self-hosted'
+    dependsOn: []
+    steps:
+    - task: AzurePowerShell@4
+      displayName: "Application Security Group"
+      inputs:
+        azureSubscription: 'Kunachim Azure SC'
+        ScriptType: 'FilePath'
+        ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
+        ScriptArguments: '-DefinitionPath "Environments/On-Premise/definition.json" -ModuleConfigurationName "DomainControllerASG"'
+        azurePowerShellVersion: 'LatestVersion'
+      env:
+        VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
+        VDC_TOOLKIT_SUBSCRIPTION: $(VDC_TOOLKIT_SUBSCRIPTION)
+        DEPLOYMENT_USER_ID: $(DEPLOYMENT_USER_ID)
+        ADMIN_USER_PWD: $(ADMIN_USER_PWD)
+        DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
+        TENANT_ID: $(TENANT_ID)
+  - job: VirtualNetwork
+    timeoutInMinutes: 0
+    pool:
+      name: 'vdc-self-hosted'
+    dependsOn: [OnPremisesNSG]
+    steps:
+    - task: AzurePowerShell@4
+      displayName: "Virtual Network"
+      inputs:
+        azureSubscription: 'Kunachim Azure SC'
+        ScriptType: 'FilePath'
+        ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
+        ScriptArguments: '-DefinitionPath "Environments/On-Premise/definition.json" -ModuleConfigurationName "VirtualNetwork"'
+        azurePowerShellVersion: 'LatestVersion'
+      env:
+        VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
+        VDC_TOOLKIT_SUBSCRIPTION: $(VDC_TOOLKIT_SUBSCRIPTION)
+        DEPLOYMENT_USER_ID: $(DEPLOYMENT_USER_ID)
+        ADMIN_USER_PWD: $(ADMIN_USER_PWD)
+        DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
+        TENANT_ID: $(TENANT_ID)
+  - job: VirtualNetworkGateway
+    timeoutInMinutes: 0
+    pool:
+      name: 'vdc-self-hosted'
+    dependsOn: [VirtualNetwork]
+    steps:
+    - task: AzurePowerShell@4
+      displayName: "Virtual Network Gateway"
+      inputs:
+        azureSubscription: 'Kunachim Azure SC'
+        ScriptType: 'FilePath'
+        ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
+        ScriptArguments: '-DefinitionPath "Environments/On-Premise/definition.json" -ModuleConfigurationName "VirtualNetworkGateway"'
+        azurePowerShellVersion: 'LatestVersion'
+      env:
+        VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
+        VDC_TOOLKIT_SUBSCRIPTION: $(VDC_TOOLKIT_SUBSCRIPTION)
+        DEPLOYMENT_USER_ID: $(DEPLOYMENT_USER_ID)
+        ADMIN_USER_PWD: $(ADMIN_USER_PWD)
+        DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
+        TENANT_ID: $(TENANT_ID)
+  - job: ArtifactsStorageAccount
+    timeoutInMinutes: 0
+    pool:
+      name: 'vdc-self-hosted'
+    dependsOn: [ ]
+    steps:
+    - task: AzurePowerShell@4
+      displayName: "Artifacts Storage Account"
+      inputs:
+        azureSubscription: 'Kunachim Azure SC'
+        ScriptType: 'FilePath'
+        ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
+        ScriptArguments: '-DefinitionPath "Environments/On-Premise/definition.json" -ModuleConfigurationName "ArtifactsStorageAccount"'
+        azurePowerShellVersion: 'LatestVersion'
+      env:
+        VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
+        VDC_TOOLKIT_SUBSCRIPTION: $(VDC_TOOLKIT_SUBSCRIPTION)
+        DEPLOYMENT_USER_ID: $(DEPLOYMENT_USER_ID)
+        ADMIN_USER_PWD: $(ADMIN_USER_PWD)
+        DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
+        TENANT_ID: $(TENANT_ID)
+  - job: ActiveDirectory
+    timeoutInMinutes: 0
+    pool:
+      name: 'vdc-self-hosted'
+    dependsOn: [VirtualNetwork, DomainControllerASG]
+    steps:
+    - task: AzurePowerShell@4
+      displayName: "Active Directory"
+      inputs:
+        azureSubscription: 'Kunachim Azure SC'
+        ScriptType: 'FilePath'
+        ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
+        ScriptArguments: '-DefinitionPath "Environments/On-Premise/definition.json" -ModuleConfigurationName "ActiveDirectory"'
+        azurePowerShellVersion: 'LatestVersion'
+      env:
+        VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
+        VDC_TOOLKIT_SUBSCRIPTION: $(VDC_TOOLKIT_SUBSCRIPTION)
+        DEPLOYMENT_USER_ID: $(DEPLOYMENT_USER_ID)
+        ADMIN_USER_PWD: $(ADMIN_USER_PWD)
+        DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
+        TENANT_ID: $(TENANT_ID)

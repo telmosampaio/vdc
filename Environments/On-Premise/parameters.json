@@ -1,0 +1,134 @@
+{
+    "Organization": "file(../_Common/organizationName.txt)",
+    "DeploymentName": "onprem",
+    "InstanceName": "${Parameters.Organization}-${Parameters.DeploymentName}",
+    "Subscription": "OnPremises",
+    "Region": "West US 2",
+    "ModuleConfigurationParameters": {
+        "SharedServices": {
+            "DeploymentName": "shrdsvcs"
+        },
+        "DiagnosticStorageAccount": {
+            "Name": "${Parameters.Organization}${Parameters.DeploymentName}diag01",
+            "ResourceGroup": "${Parameters.InstanceName}-diagnostics-rg",
+            "Location": "${Parameters.Location}",
+            "Sku": "Standard_GRS",
+            "NetworkAcls": {
+                "bypass": "AzureServices",
+                "defaultAction": "Deny",
+                "virtualNetworkRules": [
+                    {
+                        "subnet": "${Parameters.ModuleConfigurationParameters.Network.Subnets[0].Name}"
+                    }
+                ],
+                "ipRules": []
+            },
+            "Policies": {
+                "Effect": "Audit"
+            }
+        },
+        "LogAnalytics": {
+            "Name": "${Parameters.InstanceName}-la",
+            "Comments": "Log Analytics and Diagnostic Storage Account must be deployed in the same region",
+            "ResourceGroup": "${Parameters.InstanceName}-diagnostics-rg",
+            "Location": "${Parameters.ModuleConfigurationParameters.DiagnosticStorageAccount.Location}",
+            "ListOfAllowedRegions": [
+                "Australia Central",
+                "Australia East",
+                "Australia Southeast",
+                "Canada Central",
+                "Central India",
+                "Central US",
+                "East Asia",
+                "East US",
+                "East US 2",
+                "France Central",
+                "Japan East",
+                "Korea Central",
+                "North Europe",
+                "South Central US",
+                "Southeast Asia",
+                "UK South",
+                "West Europe",
+                "West US",
+                "West US 2"
+            ]
+        },
+        "ArtifactsStorageAccount": "file(../_Common/artifactsStorageAccount.json)",
+        "ActiveDirectory": {
+            "ResourceGroup": "${Parameters.InstanceName}-ad-rg",
+            "ADSitename": "Cloud-Site",
+            "CloudZone": "contosocloud.com",
+            "DomainAdminUser": "contoso",
+            "DomainAdminPassword": "P@ssword2019$123",
+            "DomainName": "contoso.com",
+            "PrimaryDCIP": "192.168.1.4"
+        },
+        "ApplicationSecurityGroups": {
+            "ResourceGroup": "${Parameters.ModuleConfigurationParameters.Network.ResourceGroup}",
+            "DomainController": {
+                "Name": "dc-asg"
+            }
+        },
+        "Network": {
+            "Name": "${Parameters.InstanceName}-vnet",
+            "ResourceGroup": "${Parameters.InstanceName}-network-rg",
+            "AddressPrefix": [ "192.168.1.0/27" ],
+            "VirtualGateway": {
+                "Name": "${Parameters.InstanceName}-vgw",
+                "GatewayType": "vpn",
+                "GatewaySku": "VpnGw1",
+                "VpnType": "RouteBased"
+            },
+            "ApplicationSecurityGroups": [],
+            "NetworkSecurityGroups": [
+                {
+                    "Name": "default",
+                    "Rules": [
+                        {
+                            "name": "allow-rdp",
+                            "properties": {
+                                "access": "Allow",
+                                "destinationAddressPrefixes": [],
+                                "destinationPortRange": "3389",
+                                "destinationPortRanges": [],
+                                "destinationAddressPrefix": "VirtualNetwork",
+                                "direction": "Inbound",
+                                "priority": 100,
+                                "protocol": "*",
+                                "sourcePortRange": "*",
+                                "sourcePortRanges": [],
+                                "sourceAddressPrefix": "VirtualNetwork",
+                                "destinationApplicationSecurityGroups": [],
+                                "sourceApplicationSecurityGroups": []
+                            }
+                        }
+                    ]
+                }
+            ],
+            "UserDefinedRoutes": [],
+            "Subnets": [
+                {
+                    "name": "default",
+                    "addressPrefix": "192.168.1.0/28",
+                    "networkSecurityGroupName": "default",
+                    "routeTableName": "",
+                    "serviceEndpoints": ""
+                },
+                {
+                    "name": "GatewaySubnet",
+                    "addressPrefix": "192.168.1.16/28",
+                    "networkSecurityGroupName": "",
+                    "routeTableName": "",
+                    "serviceEndpoints": ""
+                }
+            ],
+            "EnableDdosProtection": true,
+            "EnableVmProtection": false,
+            "DnsServers": [
+                "${Parameters.ModuleConfigurationParameters.ActiveDirectory.PrimaryDCIP}",
+                "168.63.129.16"
+            ]
+        }
+    }
+}
