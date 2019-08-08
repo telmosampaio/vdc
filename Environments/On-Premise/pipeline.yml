@@ -421,12 +421,11 @@ stages:
         ADMIN_USER_PWD: $(ADMIN_USER_PWD)
         DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
         TENANT_ID: $(TENANT_ID)
-  
   - job: ActiveDirectory
     timeoutInMinutes: 0
     pool:
       name: 'vdc-self-hosted'
-    dependsOn: [VirtualNetwork, DomainControllerASG]
+    dependsOn: [VirtualNetwork, DomainControllerASG, UploadScriptsToArtifactsStorage]
     steps:
     - task: AzurePowerShell@4
       displayName: "Active Directory"
