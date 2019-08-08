@@ -433,7 +433,7 @@ stages:
     timeoutInMinutes: 0
     pool:
       name: 'vdc-self-hosted'
-    dependsOn: [VirtualNetwork, DomainControllerASG, UploadScriptsToArtifactsStorage]
+    dependsOn: [VirtualNetwork, DomainControllerASG]
     steps:
     - task: AzurePowerShell@4
       displayName: "Active Directory"
