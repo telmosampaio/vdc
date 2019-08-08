@@ -195,7 +195,7 @@
                 "ArtifactsStorageAccount"
             ],
             "Script": {
-                "Command": "Write-Host 'Adding Scripts...'; Import-Module -Name /opt/microsoft/powershell/6/Modules/az_1.6.0/Az.Storage; $ctx = New-AzStorageContext -StorageAccountName reference(ArtifactsStorageAccount.storageAccountName) -SasToken '?reference(ArtifactsStorageAccount.storageAccountSasToken)'; New-AzRmStorageContainer -Name scripts -ResourceGroupName reference(ArtifactsStorageAccount.storageAccountResourceGroup) -StorageAccountName reference(ArtifactsStorageAccount.storageAccountName); Get-ChildItem -LiteralPath ./tempgit/vdc/Scripts/Windows -File -Recurse | % { Set-AzStorageBlobContent -Context $ctx -Container scripts -Force -File $($_.FullName) -Blob Windows/$($_.Name)}",
+                "Command": "Write-Host 'Adding Scripts...'; Import-Module -Name /opt/microsoft/powershell/6/Modules/az_1.6.0/Az.Storage/; $ctx = New-AzStorageContext -StorageAccountName reference(ArtifactsStorageAccount.storageAccountName) -SasToken '?reference(ArtifactsStorageAccount.storageAccountSasToken)'; New-AzRmStorageContainer -Name scripts -ResourceGroupName reference(ArtifactsStorageAccount.storageAccountResourceGroup) -StorageAccountName reference(ArtifactsStorageAccount.storageAccountName); Get-ChildItem -LiteralPath ./tempgit/vdc/Scripts/Windows -File -Recurse | % { Set-AzStorageBlobContent -Context $ctx -Container scripts -Force -File $($_.FullName) -Blob Windows/$($_.Name)}",
                 "Arguments" : {
                 }
             }
