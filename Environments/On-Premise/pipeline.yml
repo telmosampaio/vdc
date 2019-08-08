@@ -262,6 +262,41 @@ stages:
         azurePowerShellVersion: 'LatestVersion'
 - stage: Deploy
   jobs:
+  - job: ArtifactsStorageAccount
+    timeoutInMinutes: 0
+    pool:
+      name: 'vdc-self-hosted'
+    steps:
+    - task: AzurePowerShell@4
+      displayName: "Artifacts Storage Account"
+      inputs:
+        azureSubscription: 'Kunachim Azure SC'
+        ScriptType: 'FilePath'
+        ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
+        ScriptArguments: '-DefinitionPath "Environments/On-Premise/definition.json" -ModuleConfigurationName "ArtifactsStorageAccount"'
+        azurePowerShellVersion: 'LatestVersion'
+      env:
+        VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
+        VDC_TOOLKIT_SUBSCRIPTION: $(VDC_TOOLKIT_SUBSCRIPTION)
+        DEPLOYMENT_USER_ID: $(DEPLOYMENT_USER_ID)
+        ADMIN_USER_PWD: $(ADMIN_USER_PWD)
+        DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
+        TENANT_ID: $(TENANT_ID)
+  - job: UploadScriptsToArtifactsStorage
+    timeoutInMinutes: 0
+    pool:
+      name: 'vdc-self-hosted'
+    dependsOn: ArtifactsStorageAccount
+    steps:
+    - task: AzureFileCopy@2
+      displayName: 'Upload Scripts to Artifacts Storage'
+      inputs:
+        SourcePath: scripts/windows
+        azureSubscription: 'Kunachim Azure SC'
+        Destination: AzureBlob
+        storage: $(ARTIFACTSSTORAGEACCOUNT_STORAGEACCOUNTNAME)
+        ContainerName: scripts
+        BlobPrefix: Windows
   - job: DiagnosticStorageAccount
     timeoutInMinutes: 0
     pool:
@@ -386,26 +421,7 @@ stages:
         ADMIN_USER_PWD: $(ADMIN_USER_PWD)
         DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
         TENANT_ID: $(TENANT_ID)
-  - job: ArtifactsStorageAccount
-    timeoutInMinutes: 0
-    pool:
-      name: 'vdc-self-hosted'
-    steps:
-    - task: AzurePowerShell@4
-      displayName: "Artifacts Storage Account"
-      inputs:
-        azureSubscription: 'Kunachim Azure SC'
-        ScriptType: 'FilePath'
-        ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/On-Premise/definition.json" -ModuleConfigurationName "ArtifactsStorageAccount"'
-        azurePowerShellVersion: 'LatestVersion'
-      env:
-        VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
-        VDC_TOOLKIT_SUBSCRIPTION: $(VDC_TOOLKIT_SUBSCRIPTION)
-        DEPLOYMENT_USER_ID: $(DEPLOYMENT_USER_ID)
-        ADMIN_USER_PWD: $(ADMIN_USER_PWD)
-        DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
-        TENANT_ID: $(TENANT_ID)
+  
   - job: ActiveDirectory
     timeoutInMinutes: 0
     pool:
