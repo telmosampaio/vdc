@@ -122,16 +122,14 @@
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "configuration": {
-                        "url": "[concat('https://', parameters('artifactsStorageAccountName'), '.blob.core.windows.net/scripts/Windows/adds_without_reboot.zip')]",
+                        "url": "[concat('https://', parameters('artifactsStorageAccountName'), '.blob.core.windows.net/scripts/Windows/install_ADDS_No_Disk_Format.zip')]",
                         "script": "azure.ps1",
                         "function": "CreateDomainController"
                     },
                     "configurationArguments": {
                         "DomainName": "[parameters('domainName')]",
                         "PrimaryDcIpAddress": "[parameters('primaryDCIP')]",
-                        "SiteName": "[parameters('ADSitename')]",
-                        "DriveLetter": "[parameters('domaincontrollerDriveLetter')]",
-                        "DiskId": 2
+                        "SiteName": "[parameters('ADSitename')]"
                     }
                 },
                 "protectedSettings": {
