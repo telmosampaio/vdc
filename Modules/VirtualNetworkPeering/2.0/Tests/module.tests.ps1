@@ -5,16 +5,16 @@
 
 		File:		module.tests.ps1
 
-		Purpose:	Pester - Test Automation Account ARM Templates
+		Purpose:	Pester - Test Virtual Network Peering Peering Templates
 
 		Version: 	1.0.0.0 - 1st April 2019 - Azure Virtual Datacenter Development Team
 		==============================================================================================
 
 	.SYNOPSIS
-		This script contains functionality used to test Network Security Groups ARM template synatax.
+		This script contains functionality used to test vNet Peering ARM template syntax.
 
 	.DESCRIPTION
-		This script contains functionality used to test Network Security Groups ARM template synatax.
+		This script contains functionality used to test vNet Peering ARM template syntax.
 
 		Deployment steps of the script are outlined below.
         1) Test Template File Syntax
@@ -55,7 +55,7 @@ ForEach ( $File in (Get-ChildItem (Join-Path "$here" "deploy.json") ) ) {
 #endregion
 
 #region Run Pester Test Script
-Describe "Template: $template - Automation Account" -Tags Unit {
+Describe "Template: $template - Virtual Network Peering" -Tags Unit {
 
     Context "Template File Syntax" {
 
