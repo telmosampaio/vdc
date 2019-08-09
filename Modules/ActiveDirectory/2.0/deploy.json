@@ -24,7 +24,7 @@
             }
         },
         "artifactsStorageAccountSasKey": {
-            "type": "securestring",
+            "type": "string",
             "metadata": {
                 "description": "Required. Shared Access Signature Key used to download custom scripts"
             }

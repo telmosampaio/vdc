@@ -8,9 +8,6 @@ variables:
 trigger:
 - master
 stages:
-- stage: Temporary
-  jobs:
-  
 - stage: Validate
   jobs:
   - job: SetupValidationResourceGroup
