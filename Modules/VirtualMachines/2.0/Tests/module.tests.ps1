@@ -34,7 +34,7 @@ ForEach ( $File in (Get-ChildItem (Join-Path "$here" "deploy.json") -Recurse | S
     $TemplateFileTestCases += @{ TemplateFile = $File }
 }
 $ParameterFileTestCases = @()
-ForEach ( $File in (Get-ChildItem (Join-Path "$here" "*.parameters.json") -Recurse | Select-Object  -ExpandProperty Name) ) {
+ForEach ( $File in (Get-ChildItem (Join-Path "$here" "*parameters.json") -Recurse | Select-Object  -ExpandProperty Name) ) {
 	$ParameterFileTestCases += @{ ParameterFile = Join-Path "Tests" $File }
 }
 $Modules = @();
@@ -45,7 +45,7 @@ ForEach ( $File in (Get-ChildItem (Join-Path "$here" "deploy.json") ) ) {
 	}
 	$Module.Template = $File.FullName;
 	$Parameters = @();
-	ForEach ( $ParameterFile in (Get-ChildItem (Join-Path "$here" "*.parameters.json") -Recurse | Select-Object  -ExpandProperty Name) ) {
+	ForEach ( $ParameterFile in (Get-ChildItem (Join-Path "$here" "*parameters.json") -Recurse | Select-Object  -ExpandProperty Name) ) {
 		$Parameters += (Join-Path "$here" "Tests" -AdditionalChildPath @("$ParameterFile") )
 	}
 	$Module.Parameters = $Parameters;

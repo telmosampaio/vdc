@@ -76,6 +76,7 @@
                 "[resourceId('Microsoft.Network/publicIPAddresses', variables('azureFirewallPipName'))]"
             ],
             "properties": {
+                "threatIntelMode": "Deny",
                 "ipConfigurations": [
                     {
                         "name": "IpConf",

@@ -288,7 +288,7 @@
                         "name": "ipconfig1",
                         "properties": {
                             "privateIPAllocationMethod": "[if(empty(parameters('vmIPAddress')), 'Dynamic', 'Static')]",
-                            "privateIPAddress": "[if(empty(parameters('vmIPAddress')), json('null'), vdc.nextIP(parameters('vmIPAddress'), copyIndex(parameters('virtualMachineOffset'))))]",
+                            "privateIPAddress": "[if(empty(parameters('vmIPAddress')), json('null'), vdc.nextIP(parameters('vmIPAddress'), copyIndex()))]",
                             "subnet": {
                                 "id": "[variables('subnetId')]"
                             },
@@ -1794,19 +1794,20 @@
                 }
             ]
         },
+
         {
             "type": "Microsoft.Compute/virtualMachines/extensions",
             "name": "[concat(parameters('virtualMachineName'), copyIndex(parameters('virtualMachineOffset')), '/', variables('DSCExtensionName'))]",
             "apiVersion": "2017-03-30",
             "location": "[parameters('location')]",
-            "condition": "[and(not(empty(parameters('virtualMachineDataDisks'))), equals(parameters('virtualMachineOSType'), 'Windows'))]",
-            "copy": {
-                "name": "vmFormatDataDiskLoop",
-                "count": "[if(empty(parameters('virtualMachineDataDisks')), 1, length(parameters('virtualMachineDataDisks')))]"
-            },
+            "condition": "[not(empty(parameters('virtualMachineDataDisks')))]",
             "dependsOn": [
                 "vmLoop"
             ],
+            "copy": {
+                "name": "vmFormatDataDiskLoop",
+                "count": "[parameters('virtualMachineCount')]"
+            },
             "properties": {
                 "publisher": "Microsoft.Powershell",
                 "type": "DSC",
@@ -1814,13 +1815,12 @@
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "configuration": {
-                        "url": "[concat('https://', parameters('artifactsStorageAccountName'), '.blob.core.windows.net/scripts/Windows/formatDisk.zip')]",
+                        "url": "[concat('https://', parameters('artifactsStorageAccountName'), '.blob.core.windows.net/scripts/Windows/formatDataDisks.zip')]",
                         "script": "formatDisk.ps1",
                         "function": "FormatDisk"
                     },
                     "configurationArguments": {
-                        "DriveLetter": "[if(empty(parameters('virtualMachineDataDisks')), 'F', parameters('virtualMachineDataDisks')[copyIndex('vmFormatDataDiskLoop')].driveLetter)]",
-                        "DiskId": "[if(empty(parameters('virtualMachineDataDisks')), 1, parameters('virtualMachineDataDisks')[copyIndex('vmFormatDataDiskLoop')].diskId)]"
+                        "DataDisks": "[string(parameters('virtualMachineDataDisks'))]"
                     }
                 },
                 "protectedSettings": {
