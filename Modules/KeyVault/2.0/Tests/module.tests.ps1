@@ -34,7 +34,7 @@ ForEach ( $File in (Get-ChildItem (Join-Path "$here" "deploy.json") -Recurse | S
     $TemplateFileTestCases += @{ TemplateFile = $File }
 }
 $ParameterFileTestCases = @()
-ForEach ( $File in (Get-ChildItem (Join-Path "$here" "*parameters.json") -Recurse | Select-Object  -ExpandProperty Name) ) {
+ForEach ( $File in (Get-ChildItem (Join-Path "$here" "Tests" -AdditionalChildPath @("*parameters.json")) -Recurse -ErrorAction SilentlyContinue | Select-Object  -ExpandProperty Name) ) {
 	$ParameterFileTestCases += @{ ParameterFile = Join-Path "Tests" $File }
 }
 $Modules = @();
@@ -45,7 +45,7 @@ ForEach ( $File in (Get-ChildItem (Join-Path "$here" "deploy.json") ) ) {
 	}
 	$Module.Template = $File.FullName;
 	$Parameters = @();
-	ForEach ( $ParameterFile in (Get-ChildItem (Join-Path "$here" "*parameters.json") -Recurse | Select-Object  -ExpandProperty Name) ) {
+	ForEach ( $ParameterFile in (Get-ChildItem (Join-Path "$here" "Tests" -AdditionalChildPath @("*parameters.json")) -Recurse -ErrorAction SilentlyContinue| Select-Object  -ExpandProperty Name) ) {
 		$Parameters += (Join-Path "$here" "Tests" -AdditionalChildPath @("$ParameterFile") )
 	}
 	$Module.Parameters = $Parameters;
@@ -55,7 +55,7 @@ ForEach ( $File in (Get-ChildItem (Join-Path "$here" "deploy.json") ) ) {
 #endregion
 
 #region Run Pester Test Script
-Describe "Template: $template - Storage Accounts" -Tags Unit {
+Describe "Template: $template - Key Vault" -Tags Unit {
 
     Context "Template File Syntax" {
 
@@ -83,10 +83,12 @@ Describe "Template: $template - Storage Accounts" -Tags Unit {
     Context "Parameter File Syntax" {
 	   
 		It "Parameter file does not contains the expected properties" -TestCases $ParameterFileTestCases {
-			Param( $ParameterFile )
+            Param( $ParameterFile )
             $expectedProperties = '$schema',
             'contentVersion',
-            'parameters' | Sort-Object
+			'parameters' | Sort-Object
+			Write-Host $ParameterFile
+			Join-Path "$here" "$ParameterFile" | Write-Host
 			$templateFileProperties = (Get-Content (Join-Path "$here" "$ParameterFile") `
 										| ConvertFrom-Json -ErrorAction SilentlyContinue) `
 										| Get-Member -MemberType NoteProperty `
