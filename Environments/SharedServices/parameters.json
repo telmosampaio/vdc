@@ -6,7 +6,7 @@
     "ModuleConfigurationParameters": {
         "DeploymentUserId": "env(DEPLOYMENT_USER_ID)",
         "DeploymentAppId": "env(DEPLOYMENT_APP_ID)",
-        "Comments": "Deployment UserId corresponds to the AAD Object Id of the user that wants to manage Key Vault through the Portal. DeploymentAppId corresponds to a service principal (SPN) from the service connection of your Azure DevOps pipeline",
+        "Comments": "Deployment UserId corresponds to the AAD Object Id of the user that wants to manage Key Vault through the Portal. DeploymentAppId corresponds the service principal (SPN) - AAD Object Id - of your service connection from Azure DevOps pipeline",
         "DiagnosticStorageAccount": {
             "Name": "${Parameters.Organization}${Parameters.DeploymentName}diag01",
             "ResourceGroup": "${Parameters.InstanceName}-diagnostics-rg",
