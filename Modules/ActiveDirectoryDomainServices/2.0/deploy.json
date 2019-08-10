@@ -66,16 +66,10 @@
                 "description": "Required. IP address used as initial Active Directory Domain Services IP"
             }
         },
-        "domaincontrollerDriveLetter": {
-            "type": "string",
-            "metadata": {
-                "description": "Required. Drive letter to install ADDS"
-            }
-        },
         "domainAdminUsername": {
             "type": "securestring",
             "metadata": {
-                "description": "Domain user that has privileges to join a VM into a Domain"
+                "description": "Required. Domain user that has privileges to join a VM into a Domain"
             }
         },
         "domainAdminPassword": {

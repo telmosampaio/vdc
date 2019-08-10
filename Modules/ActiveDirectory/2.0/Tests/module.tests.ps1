@@ -5,7 +5,7 @@
 
 		File:		module.tests.ps1
 
-		Purpose:	Pester - Test ADDS ARM Templates
+		Purpose:	Pester - Test Active Directory ARM Templates
 
 		Version: 	1.0.0.0 - 1st April 2019 - Azure Virtual Datacenter Development Team
 		==============================================================================================
@@ -34,7 +34,7 @@ ForEach ( $File in (Get-ChildItem (Join-Path "$here" "deploy.json") -Recurse | S
     $TemplateFileTestCases += @{ TemplateFile = $File }
 }
 $ParameterFileTestCases = @()
-ForEach ( $File in (Get-ChildItem (Join-Path "$here" "*parameters.json") -Recurse | Select-Object  -ExpandProperty Name) ) {
+ForEach ( $File in (Get-ChildItem (Join-Path "$here" "Tests" -AdditionalChildPath @("*parameters.json")) -Recurse -ErrorAction SilentlyContinue | Select-Object  -ExpandProperty Name) ) {
 	$ParameterFileTestCases += @{ ParameterFile = Join-Path "Tests" $File }
 }
 $Modules = @();
@@ -45,7 +45,7 @@ ForEach ( $File in (Get-ChildItem (Join-Path "$here" "deploy.json") ) ) {
 	}
 	$Module.Template = $File.FullName;
 	$Parameters = @();
-	ForEach ( $ParameterFile in (Get-ChildItem (Join-Path "$here" "*parameters.json") -Recurse | Select-Object  -ExpandProperty Name) ) {
+	ForEach ( $ParameterFile in (Get-ChildItem (Join-Path "$here" "Tests" -AdditionalChildPath @("*parameters.json")) -Recurse -ErrorAction SilentlyContinue| Select-Object  -ExpandProperty Name) ) {
 		$Parameters += (Join-Path "$here" "Tests" -AdditionalChildPath @("$ParameterFile") )
 	}
 	$Module.Parameters = $Parameters;
@@ -55,7 +55,7 @@ ForEach ( $File in (Get-ChildItem (Join-Path "$here" "deploy.json") ) ) {
 #endregion
 
 #region Run Pester Test Script
-Describe "Template: $template - Storage Accounts" -Tags Unit {
+Describe "Template: $template - Virtual Machine KeyEncryption Key" -Tags Unit {
 
     Context "Template File Syntax" {
 
@@ -70,7 +70,6 @@ Describe "Template: $template - Storage Accounts" -Tags Unit {
             'parameters',
             'variables',
 			'resources',
-			'functions',
 			'outputs' | Sort-Object
 			$templateProperties = (Get-Content (Join-Path "$here" "$TemplateFile") `
 									| ConvertFrom-Json -ErrorAction SilentlyContinue) `
@@ -87,7 +86,9 @@ Describe "Template: $template - Storage Accounts" -Tags Unit {
             Param( $ParameterFile )
             $expectedProperties = '$schema',
             'contentVersion',
-            'parameters' | Sort-Object
+			'parameters' | Sort-Object
+			Write-Host $ParameterFile
+			Join-Path "$here" "$ParameterFile" | Write-Host
 			$templateFileProperties = (Get-Content (Join-Path "$here" "$ParameterFile") `
 										| ConvertFrom-Json -ErrorAction SilentlyContinue) `
 										| Get-Member -MemberType NoteProperty `
@@ -145,11 +146,13 @@ Describe "Template: $template - Storage Accounts" -Tags Unit {
 							| Sort-Object -Property Name `
 							| ForEach-Object Name
 			ForEach ( $Parameter in $Module.Parameters ) {
+				
 				$allParametersInParametersFile = (Get-Content $Parameter `
 								| ConvertFrom-Json -ErrorAction SilentlyContinue).Parameters.PSObject.Properties `
 								| Sort-Object -Property Name `
 								| ForEach-Object Name
-				@($requiredParametersInTemplateFile| Where-Object {$allParametersInParametersFile -notcontains $_}).Count | Should Be 0;
+				
+				@($requiredParametersInTemplateFile | Where-Object {$allParametersInParametersFile -notcontains $_}).Count | Should Be 0;
 			}
 		}
 	}

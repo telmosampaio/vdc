@@ -204,7 +204,7 @@
         },
         {
             "Name": "VirtualNetwork",
-            "ModuleDefinitionName": "vNet",
+            "ModuleDefinitionName": "VirtualNetwork",
             "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.VirtualNetwork.ResourceGroup}",
             "DependsOn": [
                 "SharedServicesNSG",
@@ -517,7 +517,7 @@
         },
         {
             "Name": "EncryptActiveDirectory",
-            "ModuleDefinitionName": "VirtualMachineKEKEncryption",
+            "ModuleDefinitionName": "VirtualMachineKeyEncryptionKey",
             "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.ActiveDirectory.ResourceGroup}",
             "DependsOn": [
                 "VirtualNetwork",
@@ -601,7 +601,7 @@
         },
         {
             "Name": "EnableDnsServersOnVirtualNetwork",
-            "ModuleDefinitionName": "vNet",
+            "ModuleDefinitionName": "VirtualNetwork",
             "Updates": "VirtualNetwork",
             "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.VirtualNetwork.ResourceGroup}",
             "DependsOn": [
@@ -718,7 +718,7 @@
         },
         {
             "Name": "EncryptWindowsJumpbox",
-            "ModuleDefinitionName": "VirtualMachineKEKEncryption",
+            "ModuleDefinitionName": "VirtualMachineKeyEncryptionKey",
             "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.Jumpbox.ResourceGroup}",
             "DependsOn": [
                 "VirtualNetwork",
@@ -837,7 +837,7 @@
         },
         {
             "Name": "EncryptLinuxJumpbox",
-            "ModuleDefinitionName": "VirtualMachineKEKEncryption",
+            "ModuleDefinitionName": "VirtualMachineKeyEncryptionKey",
             "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.Jumpbox.ResourceGroup}",
             "DependsOn": [
                 "VirtualNetwork",
@@ -956,7 +956,7 @@
         },
         {
             "Name": "EncryptActiveDirectoryDomainServices",
-            "ModuleDefinitionName": "VirtualMachineKEKEncryption",
+            "ModuleDefinitionName": "VirtualMachineKeyEncryptionKey",
             "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.ActiveDirectoryDomainServices.ResourceGroup}",
             "DependsOn": [
                 "VirtualNetwork",
