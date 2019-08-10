@@ -650,7 +650,7 @@
                 },
                 {
                     "tenantId": "${Parameters.TenantId}",
-                    "applicationId": "${Parameters.ModuleConfigurationParameters.DeploymentAppId}",
+                    "objectId": "${Parameters.ModuleConfigurationParameters.DeploymentAppId}",
                     "permissions": {
                         "certificates": [
                             "All"

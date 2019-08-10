@@ -11,9 +11,9 @@
         },
         "accessPolicies": {
             "type": "array",
-            "defaultValue": "{}",
+            "defaultValue": [],
             "metadata": {
-                "description": "Optional. Access policies object"
+                "description": "Optional. Array of access policies object"
             }
         },
         "secretsObject": {
