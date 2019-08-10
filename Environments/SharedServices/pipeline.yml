@@ -463,7 +463,7 @@ stages:
         azureSubscription: 'vdc2-hub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "ActiveDirectory" -Validate'
+        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "InstallActiveDirectory" -Validate'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -493,7 +493,7 @@ stages:
         azureSubscription: 'vdc2-hub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "ActiveDirectoryDomainServices" -Validate'
+        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "InstallActiveDirectoryDomainServices" -Validate'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
