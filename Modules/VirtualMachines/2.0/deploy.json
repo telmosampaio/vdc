@@ -198,9 +198,15 @@
         "availabilitySet": {
             "id": "[if(not(empty(parameters('availabilitySetId'))), parameters('availabilitySetId'), resourceId('Microsoft.Compute/availabilitySets', variables('availabilitySetName')))]"
         },
-        "zones": [
-            "[string(add(mod(copyIndex(), 3), 1))]"
-        ],
+        "allZones": {
+            "copy": [
+                {
+                    "name": "zones",
+                    "count": "[parameters('virtualMachineCount')]",
+                    "input": "[string(add(mod(copyIndex('zones'), 3), 1))]"
+                }
+            ]
+        },
         "linuxConfiguration": {
             "disablePasswordAuthentication": true,
             "ssh": {
@@ -335,7 +341,7 @@
                 "name": "vmLoop",
                 "count": "[parameters('virtualMachineCount')]"
             },
-            "zones": "[if(variables('availabilityZonesEnabled'), variables('zones'), json('null'))]",
+            "zones": "[if(not(variables('availabilityZonesEnabled')), json('null'), variables('allZones').zones[copyIndex()])]",
             "tags": {
                 "computerName": "[concat(parameters('virtualMachineName'), copyIndex(parameters('virtualMachineOffset')))]",
                 "UpdateManagement": "[variables('tagPatching')]"
