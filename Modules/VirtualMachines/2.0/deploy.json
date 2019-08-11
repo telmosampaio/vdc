@@ -341,7 +341,7 @@
                 "name": "vmLoop",
                 "count": "[parameters('virtualMachineCount')]"
             },
-            "zones": "[if(variables('availabilityZonesEnabled'), variables('allZones').zones[copyIndex()], json('null'))]",
+            "zones": "[if(variables('availabilityZonesEnabled'), array(variables('allZones').zones[copyIndex()]), json('null'))]",
             "tags": {
                 "computerName": "[concat(parameters('virtualMachineName'), copyIndex(parameters('virtualMachineOffset')))]",
                 "UpdateManagement": "[variables('tagPatching')]"
