@@ -563,7 +563,7 @@
                         "value": "${Parameters.ModuleConfigurationParameters.ActiveDirectory.OSType}"
                     },
                     "keyEncryptionKeyURL": {
-                        "value": "reference(ActiveDirectoryKek.Output)"
+                        "value": "reference(ActiveDirectoryKek.output)"
                     },
                     "keyVaultUri": {
                         "value": "reference(KeyVault.keyVaultUrl)"
@@ -766,7 +766,7 @@
                         "value": "${Parameters.ModuleConfigurationParameters.Jumpbox.Windows.OSType}"
                     },
                     "keyEncryptionKeyURL": {
-                        "value": "reference(WindowsJumpboxKek.Output)"
+                        "value": "reference(WindowsJumpboxKek.output)"
                     },
                     "keyVaultUri": {
                         "value": "reference(KeyVault.keyVaultUrl)"
@@ -885,7 +885,7 @@
                         "value": "${Parameters.ModuleConfigurationParameters.Jumpbox.Linux.OSType}"
                     },
                     "keyEncryptionKeyURL": {
-                        "value": "reference(LinuxJumpboxKek.Output)"
+                        "value": "reference(LinuxJumpboxKek.output)"
                     },
                     "keyVaultUri": {
                         "value": "reference(KeyVault.keyVaultUrl)"
@@ -1007,7 +1007,7 @@
                         "value": "${Parameters.ModuleConfigurationParameters.ActiveDirectoryDomainServices.VMCount}"
                     },
                     "keyEncryptionKeyURL": {
-                        "value": "reference(ActiveDirectoryDomainServicesKek.Output)"
+                        "value": "reference(ActiveDirectoryDomainServicesKek.output)"
                     },
                     "keyVaultUri": {
                         "value": "reference(KeyVault.keyVaultUrl)"
