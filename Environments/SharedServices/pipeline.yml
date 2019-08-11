@@ -898,7 +898,7 @@ stages:
     dependsOn: [KeyVault, ActiveDirectoryDomainServicesKek, WindowsJumpboxKek, LinuxJumpboxKek, ActiveDirectoryKek]
     steps:
     - task: AzurePowerShell@4
-      displayName: "Creates Active Directory KEK"
+      displayName: "Enables Service Endpoint on Key Vault"
       inputs:
         azureSubscription: 'vdc2-hub'
         ScriptType: 'FilePath'
