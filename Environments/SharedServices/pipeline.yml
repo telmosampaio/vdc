@@ -895,7 +895,7 @@ stages:
     timeoutInMinutes: 0
     pool:
       name: 'vdc-self-hosted'
-    dependsOn: [KeyVault, ActiveDirectoryDomainServicesKek, WindowsJumpboxKek, LinuxJumpboxKek, ActiveDirectoryKek]
+    dependsOn: [KeyVault, WindowsJumpbox, LinuxJumpbox, ActiveDirectory, ActiveDirectoryDomainServices, ActiveDirectoryDomainServicesKek, WindowsJumpboxKek, LinuxJumpboxKek, ActiveDirectoryKek]
     steps:
     - task: AzurePowerShell@4
       displayName: "Enables Service Endpoint on Key Vault"
