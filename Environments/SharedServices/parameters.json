@@ -695,7 +695,7 @@
         "ArtifactsStorageAccount": "file(../_Common/artifactsStorageAccount.json)",
         "AzureBastion": {
             "Name": "sharedsvcs-bastion",
-            "ResourceGroup": "${Parameters.ModuleConfigurationParameters.VirtualNetwork.ResourceGroup}",
+            "ResourceGroup": "${Parameters.ModuleConfigurationParameters.VirtualNetwork.ResourceGroup}"
         },
         "Jumpbox": {
             "ResourceGroup": "${Parameters.InstanceName}-jumpbox-rg",
