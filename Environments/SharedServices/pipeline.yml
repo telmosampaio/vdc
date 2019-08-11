@@ -9,6 +9,7 @@ trigger:
 - master
 stages:
 - stage: Validate
+  condition: false
   jobs:
   - job: SetupValidationResourceGroup
     pool: 
