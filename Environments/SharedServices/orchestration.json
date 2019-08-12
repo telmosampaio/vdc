@@ -1064,9 +1064,6 @@
                     "ADSitename": {
                         "value": "${Parameters.ModuleConfigurationParameters.ActiveDirectoryDomainServices.ADSitename}"
                     },
-                    "domaincontrollerDriveLetter": {
-                        "value": "${Parameters.ModuleConfigurationParameters.ActiveDirectoryDomainServices.DomaincontrollerDriveLetter}"
-                    },
                     "domainAdminUsername": {
                         "value": "${Parameters.ModuleConfigurationParameters.ActiveDirectoryDomainServices.DomainAdminUsername}"
                     },
