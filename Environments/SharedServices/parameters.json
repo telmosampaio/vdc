@@ -716,14 +716,7 @@
                     "Name": "WindowsJumpboxKey",
                     "Comments": "Destination can be HSM or Software. Use HSM to create Production keys.",
                     "Destination": "HSM"
-                },
-                "DataDisks": [
-                    {
-                        "size": 127,
-                        "driveLetter": "F",
-                        "diskId": 2
-                    }
-                ]
+                }
             },
             "Linux": {
                 "Comments": "Linux VM name cannot exceed 63 characters",
