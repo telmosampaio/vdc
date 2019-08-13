@@ -352,6 +352,7 @@
                     "networkAcls": {
                         "bypass": "AzureServices",
                         "defaultAction": "Deny",
+                        "virtualNetworkRules": [],
                         "ipRules": [
                             "reference(GetPublicIP.output)"
                         ]
@@ -433,10 +434,15 @@
             "Updates": "KeyVault",
             "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.KeyVault.ResourceGroup}",
             "DependsOn": [
-                "VirtualNetwork",
-                "DiagnosticStorageAccount",
-                "LogAnalytics",
-                "KeyVault"
+                "KeyVault", 
+                "WindowsJumpbox", 
+                "LinuxJumpbox", 
+                "ActiveDirectory", 
+                "ActiveDirectoryDomainServices", 
+                "ActiveDirectoryDomainServicesKek", 
+                "WindowsJumpboxKek", 
+                "LinuxJumpboxKek", 
+                "ActiveDirectoryKek"
             ],
             "Deployment": {
                 "OverrideParameters": {

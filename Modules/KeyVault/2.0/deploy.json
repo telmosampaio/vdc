@@ -115,7 +115,7 @@
             "copy": [
                 {
                     "name": "virtualNetworkRules",
-                    "count": "[if(equals(variables('deployServiceEndpoint'), bool('false')), 1, if(equals(length(parameters('networkAcls').virtualNetworkRules), 0), 1, length(parameters('networkAcls').virtualNetworkRules)))]",
+                    "count": "[length(parameters('networkAcls').virtualNetworkRules)]",
                     "input": {
                         "id": "[if(equals(variables('deployServiceEndpoint'), bool('false')), json('null'), if(equals(length(parameters('networkAcls').virtualNetworkRules), 0), json('null'), concat(parameters('vNetId'), '/subnets/', parameters('networkAcls').virtualNetworkRules[copyIndex('virtualNetworkRules')].subnet)))]"
                     }
