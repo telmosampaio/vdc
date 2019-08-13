@@ -41,7 +41,7 @@
             "Name": "GetPublicIP",
             "DependsOn": [],
             "Script": {
-                "Command": "../../Scripts/getPublicIP.ps1",
+                "Command": "../../Scripts/Windows/getPublicIP.ps1",
                 "Arguments": {}
             }
         },
