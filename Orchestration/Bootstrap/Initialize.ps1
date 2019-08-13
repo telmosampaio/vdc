@@ -115,63 +115,84 @@ Class Initialize {
                 # account name validations are not performed in this function
                 $this.dataStoreName = $this.dataStoreName.ToLower();
             }
-    
-            Set-AzContext `
-                -Tenant $this.dataStoreTenantId `
-                -Subscription $this.dataStoreSubscriptionId
 
-            $storageResourceGroup = Get-AzResourceGroup `
-                -Name $this.dataStoreResourceGroupName `
-                -ErrorAction SilentlyContinue;
-
-            if($null -eq $storageResourceGroup) {
-                # Create a storage account resource group
-                New-AzResourceGroup -Name $this.dataStoreResourceGroupName `
-                                    -Location $this.dataStoreLocation `
-                                    -Force;
-            }
-             
-            $storageAccountExists = `
-                !(Get-AzStorageAccountNameAvailability -Name $this.dataStoreName).NameAvailable
-            Write-Host "Storage Account Exists: $storageAccountExists"
+            $bootstrapVariable = `
+                Get-PowershellEnvironmentVariable `
+                    -Key "BOOTSTRAP_INITIALIZED";
             
-            if ($storageAccountExists -eq $false) {
-                # Creates a storage account
-                New-AzStorageAccount `
-                -ResourceGroupName $this.dataStoreResourceGroupName `
-                -Name $this.dataStoreName `
-                -Location $this.dataStoreLocation `
-                -EnableHttpsTrafficOnly $true `
-                -Tag @{ 'layer' = 'audit' } `
-                -SkuName "Standard_GRS" `
-                -Kind "StorageV2";
-             }
-            
-             # Create containers
-             $this.dataStoreSubFolders | ForEach-Object { 
+            if (![string]::IsNullOrEmpty($bootstrapVariable) -and `
+                $bootstrapVariable -eq $false) {
+                Set-AzContext `
+                    -Tenant $this.dataStoreTenantId `
+                    -Subscription $this.dataStoreSubscriptionId
 
-                # Check if the container exists before attempting
-                # to create one
-                $container = Get-AzRmStorageContainer `
-                    -ResourceGroupName $this.dataStoreResourceGroupName `
-                    -StorageAccountName $this.dataStoreName `
-                    -ContainerName $_.Name `
+                $storageResourceGroup = Get-AzResourceGroup `
+                    -Name $this.dataStoreResourceGroupName `
                     -ErrorAction SilentlyContinue;
 
-                if($null -eq $container) {
-                    New-AzRmStorageContainer `
-                    -Name $_.Name `
+                if($null -eq $storageResourceGroup) {
+                    # Create a storage account resource group
+                    New-AzResourceGroup -Name $this.dataStoreResourceGroupName `
+                                        -Location $this.dataStoreLocation `
+                                        -Force;
+                }
+                
+                $storageAccountExists = `
+                    !(Get-AzStorageAccountNameAvailability -Name $this.dataStoreName).NameAvailable
+                Write-Host "Storage Account Exists: $storageAccountExists"
+                
+                if ($storageAccountExists -eq $false) {
+                    # Creates a storage account
+                    New-AzStorageAccount `
                     -ResourceGroupName $this.dataStoreResourceGroupName `
-                    -StorageAccountName $this.dataStoreName;
-                    
-                    if ($_.IsImmutable) {
-                        # Enable immutable storage
-                        Add-AzRmStorageContainerLegalHold `
-                            -ResourceGroupName $this.dataStoreResourceGroupName `
-                            -StorageAccountName $this.dataStoreName `
-                            -ContainerName $_.Name `
-                            -Tag "audit";
+                    -Name $this.dataStoreName `
+                    -Location $this.dataStoreLocation `
+                    -EnableHttpsTrafficOnly $true `
+                    -Tag @{ 'layer' = 'audit' } `
+                    -SkuName "Standard_GRS" `
+                    -Kind "StorageV2";
+                }
+                
+                # Create containers
+                $this.dataStoreSubFolders | ForEach-Object { 
+
+                    # Check if the container exists before attempting
+                    # to create one
+                    $container = Get-AzRmStorageContainer `
+                        -ResourceGroupName $this.dataStoreResourceGroupName `
+                        -StorageAccountName $this.dataStoreName `
+                        -ContainerName $_.Name `
+                        -ErrorAction SilentlyContinue;
+
+                    if($null -eq $container) {
+                        New-AzRmStorageContainer `
+                        -Name $_.Name `
+                        -ResourceGroupName $this.dataStoreResourceGroupName `
+                        -StorageAccountName $this.dataStoreName;
+                        
+                        if ($_.IsImmutable) {
+                            # Enable immutable storage
+                            Add-AzRmStorageContainerLegalHold `
+                                -ResourceGroupName $this.dataStoreResourceGroupName `
+                                -StorageAccountName $this.dataStoreName `
+                                -ContainerName $_.Name `
+                                -Tag "audit";
+                        }
                     }
+                }
+
+                # Setting bootstrap_initialized variable, this variable
+                # is used to prevent the creation of storage account and 
+                # containers, this value is only set if the variable exists,
+                # this is a workaround to prevent initializing the storage account
+                # multiple times in an Azure DevOps pipeline, the assumption
+                # is that this variable exists as a pipeline variable in Azure
+                # DevOps and is set to false. 
+                # In a local executions, this value won't exists, therefore the 
+                # storage account initialization will get executed on every 
+                # module deployment
+                if([string]::IsNullOrEmpty($bootstrapVariable)){
+                    $ENV:BOOTSTRAP_INITIALIZED = $true;
                 }
             }
 
