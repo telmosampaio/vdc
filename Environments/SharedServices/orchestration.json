@@ -348,14 +348,6 @@
                     },
                     "workspaceId": {
                         "value": "reference(LogAnalytics.logAnalyticsWorkspaceResourceId)"
-                    },
-                    "networkAcls": {
-                        "bypass": "AzureServices",
-                        "defaultAction": "Deny",
-                        "virtualNetworkRules": [],
-                        "ipRules": [
-                            "reference(GetPublicIP.output)"
-                        ]
                     }
                 }
             }

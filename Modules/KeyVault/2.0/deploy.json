@@ -115,12 +115,18 @@
             "copy": [
                 {
                     "name": "virtualNetworkRules",
-                    "count": "[length(parameters('networkAcls').virtualNetworkRules)]",
+                    "count": "[if(not(variables('deployServiceEndpoint')), 0, length(parameters('networkAcls').virtualNetworkRules))]",
                     "input": {
-                        "id": "[if(equals(variables('deployServiceEndpoint'), bool('false')), json('null'), if(equals(length(parameters('networkAcls').virtualNetworkRules), 0), json('null'), concat(parameters('vNetId'), '/subnets/', parameters('networkAcls').virtualNetworkRules[copyIndex('virtualNetworkRules')].subnet)))]"
+                        "id": "[concat(parameters('vNetId'), '/subnets/', parameters('networkAcls').virtualNetworkRules[copyIndex('virtualNetworkRules')].subnet)]"
                     }
                 }
             ]
+        },
+        "networkAcls": {
+            "bypass": "[if(not(variables('deployServiceEndpoint')), json('null'), parameters('networkAcls').bypass)]",
+            "defaultAction": "[if(not(variables('deployServiceEndpoint')), json('null'), parameters('networkAcls').defaultAction)]",
+            "virtualNetworkRules": "[if(not(variables('deployServiceEndpoint')), json('null'), if(equals(length(parameters('networkAcls').virtualNetworkRules), 0), variables('emptyArray'), variables('virtualNetworkRules').virtualNetworkRules))]",
+            "ipRules": "[if(not(variables('deployServiceEndpoint')), json('null'), if(equals(length(parameters('networkAcls').ipRules), 0), variables('emptyArray'), parameters('networkAcls').ipRules))]"
         },
         "emptyArray": []
     },
@@ -144,12 +150,7 @@
                     "name": "[parameters('vaultSku')]",
                     "family": "A"
                 },
-                "networkAcls": {
-                    "bypass": "[if(not(variables('deployServiceEndpoint')), json('null'), parameters('networkAcls').bypass)]",
-                    "defaultAction": "[if(not(variables('deployServiceEndpoint')), json('null'), parameters('networkAcls').defaultAction)]",
-                    "virtualNetworkRules": "[if(not(variables('deployServiceEndpoint')), json('null'), if(equals(length(parameters('networkAcls').virtualNetworkRules), 0), variables('emptyArray'), variables('virtualNetworkRules').virtualNetworkRules))]",
-                    "ipRules": "[if(not(variables('deployServiceEndpoint')), json('null'), if(equals(length(parameters('networkAcls').ipRules), 0), variables('emptyArray'), parameters('networkAcls').ipRules))]"
-                }
+                "networkAcls": "[if(not(variables('deployServiceEndpoint')), json('null'), variables('networkAcls'))]"
             },
             "resources": [
                 {
