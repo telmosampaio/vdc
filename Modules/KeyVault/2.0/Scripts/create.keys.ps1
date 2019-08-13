@@ -8,14 +8,37 @@
         $KeyName,
         [Parameter(Mandatory=$false)]
         [string]
-        $Destination
+        $Destination,
+        [Parameter(Mandatory=$false)]
+        [bool]
+        $ReplaceExistingKey = $false
     )
 if ($null -eq $Destination) {
     $Destination = "HSM";
 }
-$result = (Add-AzKeyVaultKey `
-    -VaultName $VaultName `
-    -Name $KeyName `
-    -Destination $Destination).Id;
 
-return $result
+try {
+
+    $result = `
+        (Get-AzKeyVaultKey `
+            -VaultName $VaultName `
+            -Name $KeyName `
+            -ErrorAction SilentlyContinue).Id;
+
+    if (($null -eq $result) -or `
+        $ReplaceExistingKey) {
+        $result = (Add-AzKeyVaultKey `
+            -VaultName $VaultName `
+            -Name $KeyName `
+            -Destination $Destination).Id;
+    }
+
+    return $result
+}
+catch {
+    throw $_;
+}
+finally {
+    
+}
+

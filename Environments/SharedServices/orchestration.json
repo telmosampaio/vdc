@@ -38,6 +38,14 @@
             }
         },
         {
+            "Name": "GetPublicIP",
+            "DependsOn": [],
+            "Script": {
+                "Command": "../../Scripts/getPublicIP.ps1",
+                "Arguments": {}
+            }
+        },
+        {
             "Name": "LogAnalytics",
             "ModuleDefinitionName": "LogAnalytics",
             "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.LogAnalytics.ResourceGroup}",
@@ -307,7 +315,8 @@
             "DependsOn": [
                 "VirtualNetwork",
                 "DiagnosticStorageAccount",
-                "LogAnalytics"
+                "LogAnalytics",
+                "GetPublicIP"
             ],
             "Deployment": {
                 "OverrideParameters": {
@@ -339,6 +348,13 @@
                     },
                     "workspaceId": {
                         "value": "reference(LogAnalytics.logAnalyticsWorkspaceResourceId)"
+                    },
+                    "networkAcls": {
+                        "bypass": "AzureServices",
+                        "defaultAction": "Deny",
+                        "ipRules": [
+                            "reference(GetPublicIP.output)"
+                        ]
                     }
                 }
             }
