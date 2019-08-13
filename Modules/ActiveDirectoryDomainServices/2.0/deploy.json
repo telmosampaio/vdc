@@ -54,6 +54,12 @@
                 "description": "Required. On-premises domain IP"
             }
         },
+        "addsInstallDriveLetter": {
+            "type": "string",
+            "metadata": {
+                "description": "Required. Drive letter where to install Active Directory Domain Services"
+            }
+        },
         "ADSitename": {
             "type": "string",
             "metadata": {
@@ -123,6 +129,7 @@
                     "configurationArguments": {
                         "DomainName": "[parameters('domainName')]",
                         "PrimaryDcIpAddress": "[parameters('primaryDCIP')]",
+                        "DriveLetter": "[parameters('addsInstallDriveLetter')]",
                         "SiteName": "[parameters('ADSitename')]"
                     }
                 },
