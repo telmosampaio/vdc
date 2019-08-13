@@ -690,6 +690,9 @@
                     "virtualMachineCount": {
                         "value": "${Parameters.ModuleConfigurationParameters.Jumpbox.Windows.VMCount}"
                     },
+                    "virtualMachineDataDisks": {
+                        "value": "${Parameters.ModuleConfigurationParameters.Jumpbox.Windows.DataDisks}"
+                    },
                     "workspaceId": {
                         "value": "reference(LogAnalytics.logAnalyticsWorkspaceId)"
                     },
