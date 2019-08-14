@@ -210,6 +210,7 @@ Class Initialize {
                 $storageAccountDetails = `
                     ConvertFrom-Json $cachedStorageAccountDetails `
                     -AsHashtable;
+                Write-Host "Here: $cachedStorageAccountDetails";
                 $oneHourDuration = New-TimeSpan -Hours 1;
 
                 # Let's check if the life of the sas token expires within an hour
