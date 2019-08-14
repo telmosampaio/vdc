@@ -1,5 +1,13 @@
+[CmdletBinding()] 
+param(
+    [Parameter(Mandatory=$true)]
+    [string]$CertData,
+    [Parameter(Mandatory=$true)]
+    [string]$Password
+)
 
 $certPath = "Cert:\CurrentUser\My";
+$CertData > C:\certs\rootCert.cer;
 $file = ( Get-ChildItem -Path C:\certs\rootCert.cer );
 $file | Import-Certificate -CertStoreLocation $certPath;
 if($null -eq $clientCert) {
@@ -11,5 +19,5 @@ if($null -eq $clientCert) {
 }
 $rootCert = (Get-ChildItem -Path $certPath) | Where-Object { $_.Subject -eq "CN=VPN CA" };
 $clientCert = (Get-ChildItem -Path $certPath) | Where-Object { $_.Subject -eq "CN=VPN Client" };
-$mypwd = ConvertTo-SecureString -String "password" -Force -AsPlainText;
+$mypwd = ConvertTo-SecureString -String $Password -Force -AsPlainText;
 Export-PfxCertificate -Cert $clientCert -FilePath c:\certs\clientCert.pfx -Password $mypwd;

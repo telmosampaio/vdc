@@ -178,24 +178,10 @@
             }
         },
         {
-            "Name": "CreateCACertificate",
-            "Comments": "CreateCACertificate",
+            "Name": "CreateRootCertificate",
+            "Comments": "Create Root Certificate",
             "Script": {
-                "Command": "../../Modules/VirtualNetworkGateway/2.0/Scripts/ClientCert.sh",
-                "Arguments" : {
-                    "1_TENANT": "${Subscriptions.OnPremises.TenantId}",
-                    "2_SP_ID": "env(SCRIPT_EXECUTION_SP_ID)",
-                    "3_SP_KEY": "env(SCRIPT_EXECUTION_SP_KEY)",
-                    "4_KEY_VAULT_NAME" : "${Parameters.ModuleConfigurationParameters.KeyVault.Name}",
-                    "5_KEY_VAULT_SECRET_NAME" : "CACert"
-                }
-            }
-        },
-        {
-            "Name": "CreateCACertificate2",
-            "Comments": "CreateCACertificate Using PowerShell",
-            "Script": {
-                "Command": "../../Modules/VirtualNetworkGateway/2.0/Scripts/RootCert.ps1",
+                "Command": "../../Modules/VirtualNetworkGateway/2.0/Scripts/virtual.network.gateway.rootcert.ps1",
                 "Arguments" : {
                     "TenantId": "${Subscriptions.OnPremises.TenantId}",
                     "ServicePrincipal_ID": "env(SCRIPT_EXECUTION_SP_ID)",
