@@ -9,11 +9,15 @@ param(
     [Parameter(Mandatory=$true)]
     [string]$KeyVaultName,
     [Parameter(Mandatory=$true)]
-    [string]$KeyName
+    [string]$KeyName,
+    [Parameter(Mandatory=$true)]
+    [string]$BashScriptPath
 )
 
-if($IsWindows -eq $true) {
-    $keyExists = Get-AzKeyVaultSecret -VaultName $KeyVaultName -Name $KeyName -SecretValue
+Import-Module -Name Az
+
+if($Env:OS -like "*windows*" -or $IsWindows -eq $true) {
+    $keyExists = Get-AzKeyVaultSecret -VaultName $KeyVaultName -Name $KeyName
 
     if($null -ne $keyExists) {
         Write-Host "Generating Root Cert for Windows";
@@ -28,11 +32,13 @@ if($IsWindows -eq $true) {
         $rootCertPublicKey = $rootCert.GetPublicKeyString();
         Export-Certificate -Cert $rootCert.PSPath -FilePath C:\certs\rootCert.cer
         $rootCertPublicKey = $rootCert.GetRawCertDataString();
-        
-        Set-AzKeyVaultSecret -VaultName $KeyVaultName -Name $KeyName -SecretValue $rootCertPublicKey;
+        $rootCertPublicKey = [Convert]::ToBase64String($rootCertPublicKey);
+        $secureString = ConvertTo-SecureString -String $rootCertPublicKey -AsPlainText -Force;
+        Set-AzKeyVaultSecret -VaultName $KeyVaultName -Name $KeyName -SecretValue $secureString;
     }
 }
-elseif($IsLinux -eq $true) {
+else {
     Write-Host "Generating Root Cert for Linux";
-    bash -c "./Modules/VirtualNetworkGateway/2.0/Scripts/virtual.network.gateway.rootcert.sh $TenantId $ServicePrincipal_ID $ServicePrincipal_Secret $KeyVaultName $KeyName";
+    Get-Location | Write-Host;
+    bash -c "$BashScriptPath $TenantId $ServicePrincipal_ID $ServicePrincipal_Secret $KeyVaultName $KeyName";
 }

@@ -187,7 +187,8 @@
                     "ServicePrincipal_ID": "env(SCRIPT_EXECUTION_SP_ID)",
                     "ServicePrincipal_Secret": "env(SCRIPT_EXECUTION_SP_KEY)",
                     "KeyVaultName" : "${Parameters.ModuleConfigurationParameters.KeyVault.Name}",
-                    "KeyName" : "CACert"
+                    "KeyName" : "CACert",
+                    "BashScriptPath": "../../Modules/VirtualNetworkGateway/2.0/Scripts/virtual.network.gateway.rootcert.sh"
                 }
             }
         },
