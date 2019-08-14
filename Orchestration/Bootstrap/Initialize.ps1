@@ -116,12 +116,17 @@ Class Initialize {
                 $this.dataStoreName = $this.dataStoreName.ToLower();
             }
 
-            $bootstrapVariable = `
+            $cachedStorageAccountDetails = `
                 Get-PowershellEnvironmentVariable `
                     -Key "BOOTSTRAP_INITIALIZED";
             
-            if (![string]::IsNullOrEmpty($bootstrapVariable) -and `
-                $bootstrapVariable -eq $false) {
+            $validJson = `
+                Test-Json $cachedStorageAccountDetails -ErrorAction SilentlyContinue;
+
+            $storageAccountDetails = $null;
+
+            if ([string]::IsNullOrEmpty($cachedStorageAccountDetails) -or 
+                !$validJson) {
                 Set-AzContext `
                     -Tenant $this.dataStoreTenantId `
                     -Subscription $this.dataStoreSubscriptionId
@@ -181,27 +186,73 @@ Class Initialize {
                     }
                 }
 
-                # Setting bootstrap_initialized variable, this variable
-                # is used to prevent the creation of storage account and 
-                # containers, this value is only set if the variable exists,
-                # this is a workaround to prevent initializing the storage account
-                # multiple times in an Azure DevOps pipeline, the assumption
-                # is that this variable exists as a pipeline variable in Azure
-                # DevOps and is set to false. 
-                # In a local executions, this value won't exists, therefore the 
-                # storage account initialization will get executed on every 
-                # module deployment
-                if([string]::IsNullOrEmpty($bootstrapVariable)){
-                    $ENV:BOOTSTRAP_INITIALIZED = $true;
+                $sasToken = `
+                        $this.GetSASToken(
+                            $this.dataStoreName,
+                            $this.dataStoreResourceGroupName);
+
+                $storageAccountDetails = @{
+                    StorageAccountName = $this.dataStoreName
+                    StorageAccountResourceGroup = $this.dataStoreResourceGroupName
+                    StorageAccountSasToken = $sasToken.SASToken
+                    ExpiryTime = $sasToken.ExpiryTime
                 }
             }
+            elseif($validJson) {
+                $storageAccountDetails = ConvertFrom-Json $cachedStorageAccountDetails;
+                $oneHourDuration = New-TimeSpan -Hours 1;
 
+                # Let's check if the life of the sas token expires within an hour
+                # if it does, let's get a new sas token
+                if($storageAccountDetails.ExpiryTime -le `
+                   ((Get-Date) - $oneHourDuration)) {
+                    $sasToken = `
+                        $this.GetSASToken(
+                            $this.dataStoreName,
+                            $this.dataStoreResourceGroupName);
+
+                    $storageAccountDetails.StorageAccountSasToken = `
+                        $sasToken.SASToken;
+                    $storageAccountDetails.ExpiryTime = `
+                        $sasToken.ExpiryTime;
+                }
+            }
+            else {
+                Throw "Could not retrieve the Storage Account Access Keys. Please `
+                make sure you have logged in using 'Login-AzAccount' and you have
+                the correct subscription and tenant id in the toolkit subscription json";
+            }
+            # Let's set the storage account details as an environment variable.
+            # For this variable to be shared across different agents, make sure to
+            # create an Azure DevOps pipeline variable (or a variable in a variable
+            # group) with the name BOOTSTRAP_INITIALIZED and set it to empty.
+            # In a local deployment, this value will be set only once 
+            # and the code will check if the token  expires within an hour, if it does
+            # the code creates a new SAS Token.
+            $ENV:BOOTSTRAP_INITIALIZED = (ConvertTo-Json $storageAccountDetails);
+            Write-Host "Bootstrap process completed successfully";
+            return (ConvertFrom-Json $storageAccountDetails)
+        }
+        catch {
+            Write-Host "An error ocurred while running VDC Bootstrap";
+            Write-Host $_;
+            throw $_;
+        }
+    }
+
+    hidden [string] GetSASToken(
+        [string] $storageAccountName,
+        [string] $storageAccountResourceGroup) {
+        try {
             $storageAccountAccessKey = $null;
 
             $storageAccountAccessKeys = `
                 (Get-AzStorageAccountKey `
                     -ResourceGroupName $this.dataStoreResourceGroupName `
                     -Name $this.dataStoreName).Value;
+            # Set SAS Token expiration of 2 hours
+            $twoHoursDuration = New-TimeSpan -Hours 2;
+            $expiryTime = (Get-Date) + $twoHoursDuration;
 
             if($null -ne $storageAccountAccessKeys) {
                 $storageAccountAccessKey = `
@@ -212,10 +263,6 @@ Class Initialize {
                         -StorageAccountName $this.dataStoreName `
                         -StorageAccountKey $storageAccountAccessKey;
                 
-                # Set SAS Token expiration of 2 hours
-                $twoHoursDuration = New-TimeSpan -Hours 2;
-                $expiryTime = (Get-Date) + $twoHoursDuration;
-
                 # SAS Token permission does not have any delete or update permissions
                 $sasToken = `
                     New-AzStorageAccountSASToken `
@@ -225,23 +272,18 @@ Class Initialize {
                         -Protocol HttpsOnly `
                         -ExpiryTime $expiryTime `
                         -Context $storageAccountContext;
-
-                Write-Host "Bootstrap process completed successfully";
-
-                return @{
-                    StorageAccountName = $this.dataStoreName
-                    StorageAccountResourceGroup = $this.dataStoreResourceGroupName
-                    StorageAccountSasToken = $sasToken
-                }
             }
             else {
-                Throw "Could not retrieve the Storage Account Access Keys. Please `
-                make sure you have logged in using 'Login-AzAccount' and you have
-                the correct subscription and tenant id in the toolkit subscription json";
+                throw "Invalid Storage Account Access key found";
+            }
+            
+            return @{ 
+                SASToken = $sasToken
+                ExpiryTime = $expiryTime
             }
         }
         catch {
-            Write-Host "An error ocurred while running VDC Bootstrap";
+            Write-Host "An error ocurred while running VDC Bootstrap.GetSASToken";
             Write-Host $_;
             throw $_;
         }
