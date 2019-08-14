@@ -120,7 +120,7 @@ Class Initialize {
                 Get-PowershellEnvironmentVariable `
                     -Key "BOOTSTRAP_INITIALIZED";
             Write-Debug "Storage Account details found: $cachedStorageAccountDetails";
-            
+
             if ($null -eq $cachedStorageAccountDetails){
                 $validJson = $false;
             }
@@ -239,7 +239,13 @@ Class Initialize {
             # In a local deployment, this value will be set only once 
             # and the code will check if the token  expires within an hour, if it does
             # the code creates a new SAS Token.
-            $ENV:BOOTSTRAP_INITIALIZED = (ConvertTo-Json $storageAccountDetails);
+            $storageAccountDetailsJson = (ConvertTo-Json $storageAccountDetails);
+
+            # Local syntax to set a variable
+            $ENV:BOOTSTRAP_INITIALIZED = $storageAccountDetailsJson;
+
+            # Azure DevOps syntax to set a pipeline variable
+            Write-Host "##vso[task.setvariable variable=BOOTSTRAP_INITIALIZED;]$storageAccountDetailsJson";
             Write-Host "Bootstrap process completed successfully";
             return $storageAccountDetails;
         }
