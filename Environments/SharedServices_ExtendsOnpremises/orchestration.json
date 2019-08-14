@@ -343,6 +343,12 @@
             "Name": "KeyVault",
             "ModuleDefinitionName": "KeyVault",
             "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.KeyVault.ResourceGroup}",
+            "DependsOn": [
+                "VirtualNetwork",
+                "DiagnosticStorageAccount",
+                "LogAnalytics",
+                "GetPublicIP"
+            ],
             "Deployment": {
                 "OverrideParameters": {
                     "keyVaultName": {
@@ -375,10 +381,12 @@
                         "value": "reference(LogAnalytics.logAnalyticsWorkspaceResourceId)"
                     },
                     "networkAcls": {
-                        "value": "${Parameters.ModuleConfigurationParameters.KeyVault.NetworkAcls}"
-                    },
-                    "vNetId": {
-                        "value": "reference(VirtualNetwork.vNetResourceId)"
+                        "value": {
+                            "bypass": "AzureServices",
+                            "defaultAction": "Allow",
+                            "virtualNetworkRules": [],
+                            "ipRules": []
+                        }
                     }
                 }
             }
