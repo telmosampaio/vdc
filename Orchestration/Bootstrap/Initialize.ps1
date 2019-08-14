@@ -231,7 +231,7 @@ Class Initialize {
             # the code creates a new SAS Token.
             $ENV:BOOTSTRAP_INITIALIZED = (ConvertTo-Json $storageAccountDetails);
             Write-Host "Bootstrap process completed successfully";
-            return (ConvertFrom-Json $storageAccountDetails)
+            return $storageAccountDetails;
         }
         catch {
             Write-Host "An error ocurred while running VDC Bootstrap";
