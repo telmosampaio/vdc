@@ -125,8 +125,7 @@ Class Initialize {
             }
             else {
                 $validJson = `
-                    Test-Json $cachedStorageAccountDetails `
-                        -ErrorAction SilentlyContinue;
+                    Test-JsonContent $cachedStorageAccountDetails;
             }
 
             $storageAccountDetails = $null;
