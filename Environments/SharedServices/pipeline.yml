@@ -19,7 +19,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "Setup Validation Resource Group"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'vdc2-testsub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ValidationResourceGroupSetup.ps1'
         ScriptArguments: '-ResourceGroupName vdc-validation-rg -SetupResourceGroup'
@@ -42,7 +42,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "ARM Validation - Diagnostic Storage Account"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'vdc2-testsub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "DiagnosticStorageAccount" -Validate'
@@ -57,7 +57,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "ARM Validation - Enable Service Endpoint On Diagnostic Storage Account"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'vdc2-testsub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "EnableServiceEndpointOnDiagnosticStorageAccount" -Validate'
@@ -72,7 +72,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "ARM Validation - Artifacts Storage Account"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'vdc2-testsub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "ArtifactsStorageAccount" -Validate'
@@ -114,7 +114,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "ARM Validation - Log Analytics"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'vdc2-testsub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "LogAnalytics" -Validate'
@@ -129,7 +129,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "ARM Validation - Link Log Analytics With Automation Account"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'vdc2-testsub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "LinkLogAnalyticsWithAutomationAccount" -Validate'
@@ -159,7 +159,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "ARM Validation - Automation Accounts"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'vdc2-testsub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "AutomationAccounts" -Validate'
@@ -189,7 +189,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "ARM Validation - Jumpbox ASG"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'vdc2-testsub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "JumpboxASG" -Validate'
@@ -204,7 +204,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "ARM Validation - Domain Controller ASG"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'vdc2-testsub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "DomainControllerASG" -Validate'
@@ -246,7 +246,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "ARM Validation - Shared Services NSG"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'vdc2-testsub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "SharedServicesNSG" -Validate'
@@ -261,7 +261,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "ARM Validation - DMZ NSG"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'vdc2-testsub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "DMZNSG" -Validate'
@@ -291,7 +291,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "ARM Validation - Shared Services Route Table"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'vdc2-testsub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "SharedServicesRouteTable" -Validate'
@@ -321,7 +321,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "ARM Validation - Virtual Network"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'vdc2-testsub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "VirtualNetwork" -Validate'
@@ -351,7 +351,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "ARM Validation - Azure Firewall"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'vdc2-testsub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "AzureFirewall" -Validate'
@@ -381,7 +381,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "ARM Validation - Key Vault"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'vdc2-testsub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "KeyVault" -Validate'
@@ -411,7 +411,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "ARM Validation - Windows Jumpbox"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'vdc2-testsub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "WindowsJumpbox" -Validate'
@@ -426,7 +426,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "ARM Validation - Linux Jumpbox"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'vdc2-testsub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "LinuxJumpbox" -Validate'
@@ -441,7 +441,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "ARM Validation - Active Directory"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'vdc2-testsub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "ActiveDirectoryVM" -Validate'
@@ -456,7 +456,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "ARM Validation - Active Directory Domain Services"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'vdc2-testsub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "ActiveDirectoryDomainServicesVMs" -Validate'
@@ -486,7 +486,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "ARM Validation - ActiveDirectory"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'vdc2-testsub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "InstallActiveDirectory" -Validate'
@@ -516,7 +516,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "ARM Validation - ActiveDirectoryDomainServices"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'vdc2-testsub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "InstallActiveDirectoryDomainServices" -Validate'
@@ -536,7 +536,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "Teardown Validation Resource Group"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'vdc2-testsub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ValidationResourceGroupSetup.ps1'
         ScriptArguments: '-TearDownResourceGroup'
@@ -551,7 +551,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "Diagnostic Storage Account" 
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'vdc2-testsub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "DiagnosticStorageAccount"'
@@ -572,7 +572,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "Creates Linux Jumpbox KEK"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'vdc2-testsub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "GetPublicIP"'
@@ -593,7 +593,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "Log Analytics"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'vdc2-testsub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "LogAnalytics"'
@@ -614,7 +614,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "Automation Accounts"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'vdc2-testsub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "AutomationAccounts"'
@@ -635,7 +635,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "Link Log Analytics With Automation Account"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'vdc2-testsub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "LinkLogAnalyticsWithAutomationAccount"'
@@ -655,7 +655,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "JumpboxASG"
       inputs: 
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'vdc2-testsub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "JumpboxASG"'
@@ -675,7 +675,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "Domain Controller ASG"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'vdc2-testsub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "DomainControllerASG"'
@@ -696,7 +696,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "Shared Services NSG"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'vdc2-testsub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "SharedServicesNSG"'
@@ -717,7 +717,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "DMZ NSG"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'vdc2-testsub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "DMZNSG"'
@@ -737,7 +737,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "Shared Services Route Table"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'vdc2-testsub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "SharedServicesRouteTable"'
@@ -758,7 +758,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "Virtual Network"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'vdc2-testsub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "VirtualNetwork"'
@@ -779,7 +779,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "Enable Service Endpoint On Diagnostic Storage Account"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'vdc2-testsub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "EnableServiceEndpointOnDiagnosticStorageAccount"'
@@ -800,7 +800,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "Azure Firewall"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'vdc2-testsub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "AzureFirewall"'
@@ -821,7 +821,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "Add Routes to Shared Services Route Table"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'vdc2-testsub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "AddRoutesToSharedServicesRouteTable"'
@@ -842,7 +842,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "Key Vault"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'vdc2-testsub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "KeyVault"'
@@ -863,7 +863,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "Creates Windows Jumpbox KEK"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'vdc2-testsub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "WindowsJumpboxKek"'
@@ -884,7 +884,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "Creates Linux Jumpbox KEK"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'vdc2-testsub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "LinuxJumpboxKek"'
@@ -905,7 +905,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "Creates Active Directory KEK"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'vdc2-testsub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "ActiveDirectoryKek"'
@@ -926,7 +926,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "Creates Active Directory Domain Services Kek"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'vdc2-testsub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "ActiveDirectoryDomainServicesKek"'
@@ -947,7 +947,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "Enables Service Endpoint on Key Vault"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'vdc2-testsub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "EnableServiceEndpointOnKeyVault"'
@@ -967,7 +967,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "Artifacts Storage Account"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'vdc2-testsub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "ArtifactsStorageAccount"'
@@ -982,7 +982,7 @@ stages:
     - task: turtlesystems-azure-storage@1
       displayName: "Upload Scripts to Artifacts Storage"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'vdc2-testsub'
         action: 'create'
         resourceGroupName: $(vdc_cache_ArtifactsStorageAccount_StorageAccountResourceGroup)
         location: $(vdc_cache_ArtifactsStorageAccount_StorageAccountRegion)
@@ -1000,7 +1000,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "Create Active Directory Virtual Machine"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'vdc2-testsub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "ActiveDirectoryVM"'
@@ -1015,7 +1015,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "Encrypt Active Directory Virtual Machine"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'vdc2-testsub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "EncryptActiveDirectory" -Debug'
@@ -1030,7 +1030,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "Install Active Directory"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'vdc2-testsub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "InstallActiveDirectory"'
@@ -1051,7 +1051,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "Enable DNS Server on Virtual Network"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'vdc2-testsub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "EnableDnsServersOnVirtualNetwork"'
@@ -1072,7 +1072,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "Windows Jumpbox"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'vdc2-testsub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "WindowsJumpbox"'
@@ -1093,7 +1093,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "Linux Jumpbox"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'vdc2-testsub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "LinuxJumpbox"'
@@ -1114,7 +1114,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "Create Active Directory Domain Services Virtual Machines"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'vdc2-testsub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "ActiveDirectoryDomainServicesVMs"'
@@ -1129,7 +1129,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "Encrypt Active Directory Domain Services Virtual Machines"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'vdc2-testsub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "EncryptActiveDirectoryDomainServices"'
@@ -1144,7 +1144,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "Install Active Directory Domain Services"
       inputs:
-        azureSubscription: 'vdc2-hub'
+        azureSubscription: 'vdc2-testsub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "InstallActiveDirectoryDomainServices"'
