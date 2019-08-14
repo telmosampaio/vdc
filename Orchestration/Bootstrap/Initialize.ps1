@@ -118,7 +118,7 @@ Class Initialize {
 
             $cachedStorageAccountDetails = `
                 Get-PowershellEnvironmentVariable `
-                    -Key "BOOTSTRAPINITIALIZED";
+                    -Key "BOOTSTRAP_INITIALIZED";
             Write-Debug "Storage Account details found: $cachedStorageAccountDetails";
 
             if ($null -eq $cachedStorageAccountDetails){
@@ -242,10 +242,10 @@ Class Initialize {
             $storageAccountDetailsJson = (ConvertTo-Json $storageAccountDetails -Compress);
 
             # Local syntax to set a variable
-            $ENV:BOOTSTRAPINITIALIZED = $storageAccountDetailsJson;
+            $ENV:BOOTSTRAP_INITIALIZED = $storageAccountDetailsJson;
 
             # Azure DevOps syntax to set a pipeline variable
-            Write-Host "##vso[task.setvariable variable=bootstrapInitialized]$storageAccountDetailsJson";
+            Write-Host "##vso[task.setvariable variable=BOOTSTRAP_INITIALIZED]$storageAccountDetailsJson";
             Write-Host "Bootstrap process completed successfully";
             return $storageAccountDetails;
         }
