@@ -43,7 +43,7 @@ stages:
         azureSubscription: 'vdc2-hub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "DiagnosticStorageAccount" -Validate'
+        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "DiagnosticStorageAccount" -Validate -Debug'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -58,7 +58,7 @@ stages:
         azureSubscription: 'vdc2-hub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "EnableServiceEndpointOnDiagnosticStorageAccount" -Validate'
+        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "EnableServiceEndpointOnDiagnosticStorageAccount" -Validate -Debug'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -73,7 +73,7 @@ stages:
         azureSubscription: 'vdc2-hub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "ArtifactsStorageAccount" -Validate'
+        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "ArtifactsStorageAccount" -Validate -Debug'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -103,7 +103,7 @@ stages:
         azureSubscription: 'vdc2-hub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "LogAnalytics" -Validate'
+        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "LogAnalytics" -Validate -Debug'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -118,7 +118,7 @@ stages:
         azureSubscription: 'vdc2-hub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "LinkLogAnalyticsWithAutomationAccount" -Validate'
+        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "LinkLogAnalyticsWithAutomationAccount" -Validate -Debug'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -148,7 +148,7 @@ stages:
         azureSubscription: 'vdc2-hub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "AutomationAccounts" -Validate'
+        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "AutomationAccounts" -Validate -Debug'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -178,7 +178,7 @@ stages:
         azureSubscription: 'vdc2-hub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "JumpboxASG" -Validate'
+        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "JumpboxASG" -Validate -Debug'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -193,7 +193,7 @@ stages:
         azureSubscription: 'vdc2-hub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "DomainControllerASG" -Validate'
+        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "DomainControllerASG" -Validate -Debug'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -223,7 +223,7 @@ stages:
         azureSubscription: 'vdc2-hub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "SharedServicesNSG" -Validate'
+        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "SharedServicesNSG" -Validate -Debug'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -238,7 +238,7 @@ stages:
         azureSubscription: 'vdc2-hub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "DMZNSG" -Validate'
+        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "DMZNSG" -Validate -Debug'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -268,7 +268,7 @@ stages:
         azureSubscription: 'vdc2-hub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "SharedServicesRouteTable" -Validate'
+        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "SharedServicesRouteTable" -Validate -Debug'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -298,7 +298,7 @@ stages:
         azureSubscription: 'vdc2-hub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "VirtualNetwork" -Validate'
+        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "VirtualNetwork" -Validate -Debug'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -328,7 +328,7 @@ stages:
         azureSubscription: 'vdc2-hub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "AzureFirewall" -Validate'
+        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "AzureFirewall" -Validate -Debug'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -358,7 +358,7 @@ stages:
         azureSubscription: 'vdc2-hub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "KeyVault" -Validate'
+        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "KeyVault" -Validate -Debug'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -388,7 +388,7 @@ stages:
         azureSubscription: 'vdc2-hub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "WindowsJumpbox" -Validate'
+        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "WindowsJumpbox" -Validate -Debug'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -403,7 +403,7 @@ stages:
         azureSubscription: 'vdc2-hub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "LinuxJumpbox" -Validate'
+        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "LinuxJumpbox" -Validate -Debug'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -418,7 +418,7 @@ stages:
         azureSubscription: 'vdc2-hub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "ActiveDirectoryVM" -Validate'
+        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "ActiveDirectoryVM" -Validate -Debug'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -433,7 +433,7 @@ stages:
         azureSubscription: 'vdc2-hub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "ActiveDirectoryDomainServicesVMs" -Validate'
+        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "ActiveDirectoryDomainServicesVMs" -Validate -Debug'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -463,7 +463,7 @@ stages:
         azureSubscription: 'vdc2-hub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "InstallActiveDirectory" -Validate'
+        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "InstallActiveDirectory" -Validate -Debug'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -493,7 +493,7 @@ stages:
         azureSubscription: 'vdc2-hub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
-        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "InstallActiveDirectoryDomainServices" -Validate'
+        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "InstallActiveDirectoryDomainServices" -Validate -Debug'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)

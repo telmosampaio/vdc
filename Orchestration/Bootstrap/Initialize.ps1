@@ -119,6 +119,7 @@ Class Initialize {
             $cachedStorageAccountDetails = `
                 Get-PowershellEnvironmentVariable `
                     -Key "BOOTSTRAP_INITIALIZED";
+            Write-Debug "Storage Account details found: $cachedStorageAccountDetails";
             
             if ($null -eq $cachedStorageAccountDetails){
                 $validJson = $false;
@@ -126,12 +127,14 @@ Class Initialize {
             else {
                 $validJson = `
                     Test-JsonContent $cachedStorageAccountDetails;
+                Write-Debug "Is valid JSON: $validJson";
             }
 
             $storageAccountDetails = $null;
 
             if ([string]::IsNullOrEmpty($cachedStorageAccountDetails) -or 
                 !$validJson) {
+                Write-Debug "No valid JSON found, running Storage Account bootstrap";
                 Set-AzContext `
                     -Tenant $this.dataStoreTenantId `
                     -Subscription $this.dataStoreSubscriptionId
