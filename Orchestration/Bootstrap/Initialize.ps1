@@ -120,8 +120,14 @@ Class Initialize {
                 Get-PowershellEnvironmentVariable `
                     -Key "BOOTSTRAP_INITIALIZED";
             
-            $validJson = `
-                Test-Json $cachedStorageAccountDetails -ErrorAction SilentlyContinue;
+            if ($null -eq $cachedStorageAccountDetails){
+                $validJson = $false;
+            }
+            else {
+                $validJson = `
+                    Test-Json $cachedStorageAccountDetails `
+                        -ErrorAction SilentlyContinue;
+            }
 
             $storageAccountDetails = $null;
 
@@ -240,7 +246,7 @@ Class Initialize {
         }
     }
 
-    hidden [string] GetSASToken(
+    hidden [hashtable] GetSASToken(
         [string] $storageAccountName,
         [string] $storageAccountResourceGroup) {
         try {
