@@ -352,13 +352,9 @@
                     "networkAcls": {
                         "value": {
                             "bypass": "AzureServices",
-                            "defaultAction": "Deny",
+                            "defaultAction": "Allow",
                             "virtualNetworkRules": [],
-                            "ipRules": [
-                                {
-                                    "value": "reference(GetPublicIP.output)"
-                                }
-                            ]
+                            "ipRules": []
                         }
                     }
                 }
