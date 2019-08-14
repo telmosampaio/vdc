@@ -37,7 +37,6 @@
                 }
             }
         },
-        
         {
             "Name": "LogAnalytics",
             "ModuleDefinitionName": "LogAnalytics",
@@ -130,6 +129,83 @@
             }
         },
         {
+            "Name": "KeyVault",
+            "ModuleDefinitionName": "KeyVault",
+            "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.KeyVault.ResourceGroup}",
+            "DependsOn":[
+                "VirtualNetwork", 
+                "DiagnosticStorageAccount", 
+                "LogAnalytics"
+            ],
+            "Deployment": {
+                "OverrideParameters": {
+                    "keyVaultName": {
+                        "value": "${Parameters.ModuleConfigurationParameters.KeyVault.Name}"
+                    },
+                    "accessPolicies": {
+                        "value": "${Parameters.ModuleConfigurationParameters.KeyVault.AccessPolicies}"
+                    },
+                    "secretsObject": {
+                        "value": {
+                            "secrets": "${Parameters.ModuleConfigurationParameters.KeyVault.SecretsObject.Secrets}"
+                        }
+                    },
+                    "enableVaultForDeployment": {
+                        "value": "${Parameters.ModuleConfigurationParameters.KeyVault.EnableVaultForDeployment}"
+                    },
+                    "enableVaultForDiskEncryption": {
+                        "value": "${Parameters.ModuleConfigurationParameters.KeyVault.EnableVaultForDiskEncryption}"
+                    },
+                    "enableVaultForTemplateDeployment": {
+                        "value": "${Parameters.ModuleConfigurationParameters.KeyVault.EnableVaultForTemplateDeployment}"
+                    },
+                    "vaultSku": {
+                        "value": "${Parameters.ModuleConfigurationParameters.KeyVault.Sku}"
+                    },
+                    "diagnosticStorageAccountId": {
+                        "value": "reference(DiagnosticStorageAccount.storageAccountResourceId)"
+                    },
+                    "workspaceId": {
+                        "value": "reference(LogAnalytics.logAnalyticsWorkspaceResourceId)"
+                    },
+                    "networkAcls": {
+                        "value": "${Parameters.ModuleConfigurationParameters.KeyVault.NetworkAcls}"
+                    },
+                    "vNetId": {
+                        "value": "reference(VirtualNetwork.vNetResourceId)"
+                    }
+                }
+            }
+        },
+        {
+            "Name": "CreateCACertificate",
+            "Comments": "CreateCACertificate",
+            "Script": {
+                "Command": "../../Modules/VirtualNetworkGateway/2.0/Scripts/ClientCert.sh",
+                "Arguments" : {
+                    "1_TENANT": "${Subscriptions.OnPremises.TenantId}",
+                    "2_SP_ID": "env(SCRIPT_EXECUTION_SP_ID)",
+                    "3_SP_KEY": "env(SCRIPT_EXECUTION_SP_KEY)",
+                    "4_KEY_VAULT_NAME" : "${Parameters.ModuleConfigurationParameters.KeyVault.Name}",
+                    "5_KEY_VAULT_SECRET_NAME" : "CACert"
+                }
+            }
+        },
+        {
+            "Name": "CreateCACertificate2",
+            "Comments": "CreateCACertificate Using PowerShell",
+            "Script": {
+                "Command": "../../Modules/VirtualNetworkGateway/2.0/Scripts/RootCert.ps1",
+                "Arguments" : {
+                    "TenantId": "${Subscriptions.OnPremises.TenantId}",
+                    "ServicePrincipal_ID": "env(SCRIPT_EXECUTION_SP_ID)",
+                    "ServicePrincipal_Secret": "env(SCRIPT_EXECUTION_SP_KEY)",
+                    "KeyVaultName" : "${Parameters.ModuleConfigurationParameters.KeyVault.Name}",
+                    "KeyName" : "CACert"
+                }
+            }
+        },
+        {
             "Name": "VirtualNetworkGateway",
             "ModuleDefinitionName": "VirtualNetworkGateway",
             "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.Network.ResourceGroup}",
@@ -152,6 +228,13 @@
                     },
                     "vNetId": {
                         "value": "reference(VirtualNetwork.vNetResourceId)"
+                    },
+                    "vpnClientAddressPoolPrefix": {
+                        "value": "10.10.8.0/24"
+                    },
+                    "clientRootCertData": "${Parameters.ModuleConfigurationParameters.Network.VirtualGateway.VpnClientConfiguration.VpnClientRootCertificateData}",
+                    "clientRevokedCertThumbprint": {
+                        "value": "${Parameters.ModuleConfigurationParameters.Network.VirtualGateway.VpnClientConfiguration.VpnClientRevokedCertificateThumbprint}"
                     }
                 }
             }

@@ -3,8 +3,10 @@
     "DeploymentName": "onprem",
     "InstanceName": "${Parameters.Organization}-${Parameters.DeploymentName}",
     "Subscription": "OnPremises",
-    "Region": "West US 2",
+    "Location": "West US 2",
+    "TenantId": "${Subscriptions.OnPremises.TenantId}",
     "ModuleConfigurationParameters": {
+        "DeploymentUserId": "env(Deployment_User_Id)",
         "SharedServices": {
             "DeploymentName": "shrdsvcs"
         },
@@ -54,6 +56,50 @@
                 "West US 2"
             ]
         },
+        "KeyVault": {
+            "Name": "${Parameters.InstanceName}-kv",
+            "ResourceGroup": "${Parameters.InstanceName}-keyvault-rg",
+            "Sku": "Premium",
+            "EnableVaultForDeployment": true,
+            "EnableVaultForDiskEncryption": true,
+            "EnableVaultForTemplateDeployment": true,
+            "AccessPolicies": [
+                {
+                    "tenantId": "${Parameters.TenantId}",
+                    "objectId": "${Parameters.ModuleConfigurationParameters.DeploymentUserId}",
+                    "permissions": {
+                        "certificates": [
+                            "All"
+                        ],
+                        "keys": [
+                            "All"
+                        ],
+                        "secrets": [
+                            "All"
+                        ]
+                    }
+                }
+            ],
+            "SecretsObject": {
+                "Comments": "Creating an object so we can use a secretsobject parameter type in our ARM template",
+                "Secrets": [
+                    {
+                        "secretName": "CAKey",
+                        "secretValue": "None"
+                    }
+                ]
+            },
+            "NetworkAcls": {
+                "bypass": "AzureServices",
+                "defaultAction": "Deny",
+                "virtualNetworkRules": [
+                    {
+                        "subnet": "${Parameters.ModuleConfigurationParameters.Network.Subnets[0].Name}"
+                    }
+                ],
+                "ipRules": []
+            }
+        },
         "ArtifactsStorageAccount": "file(../_Common/artifactsStorageAccount.json)",
         "ActiveDirectory": {
             "ResourceGroup": "${Parameters.InstanceName}-ad-rg",
@@ -78,7 +124,18 @@
                 "Name": "${Parameters.InstanceName}-vgw",
                 "GatewayType": "vpn",
                 "GatewaySku": "VpnGw1",
-                "VpnType": "RouteBased"
+                "VpnType": "RouteBased",
+                "VpnClientConfiguration": {
+                    "VpnClientRootCertificateData": {
+                        "reference": {
+                            "keyVault": {
+                                "id": "reference(KeyVault.keyVaultResourceId)"
+                            },
+                            "secretName": "CACert"
+                        }
+                    },
+                    "VpnClientRevokedCertificateThumbprint": ""
+                }
             },
             "ApplicationSecurityGroups": [],
             "NetworkSecurityGroups": [
@@ -113,7 +170,20 @@
                     "addressPrefix": "192.168.1.0/28",
                     "networkSecurityGroupName": "default",
                     "routeTableName": "",
-                    "serviceEndpoints": ""
+                    "serviceEndpoints": [
+                        {
+                            "service": "Microsoft.EventHub"
+                        },
+                        {
+                            "service": "Microsoft.Sql"
+                        },
+                        {
+                            "service": "Microsoft.Storage"
+                        },
+                        {
+                            "service": "Microsoft.KeyVault"
+                        }
+                    ]
                 },
                 {
                     "name": "GatewaySubnet",
