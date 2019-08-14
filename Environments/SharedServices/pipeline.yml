@@ -5,8 +5,6 @@
 # Set variables once
 variables:
 - group: VDC_SECRETS
-- name: bootstrap_initialized
-  value: 'sample'    # this is available to all jobs
 trigger:
 - master
 stages:
