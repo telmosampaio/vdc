@@ -205,7 +205,9 @@ Class Initialize {
                 }
             }
             elseif($validJson) {
-                $storageAccountDetails = ConvertFrom-Json $cachedStorageAccountDetails;
+                $storageAccountDetails = `
+                    ConvertFrom-Json $cachedStorageAccountDetails `
+                    -AsHashtable;
                 $oneHourDuration = New-TimeSpan -Hours 1;
 
                 # Let's check if the life of the sas token expires within an hour
