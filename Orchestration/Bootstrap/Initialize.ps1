@@ -239,7 +239,7 @@ Class Initialize {
             # In a local deployment, this value will be set only once 
             # and the code will check if the token  expires within an hour, if it does
             # the code creates a new SAS Token.
-            $storageAccountDetailsJson = (ConvertTo-Json $storageAccountDetails);
+            $storageAccountDetailsJson = (ConvertTo-Json $storageAccountDetails -Compress);
 
             # Local syntax to set a variable
             $ENV:BOOTSTRAPINITIALIZED = $storageAccountDetailsJson;
