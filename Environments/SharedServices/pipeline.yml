@@ -84,6 +84,18 @@ stages:
         ADMIN_USER_PWD: $(ADMIN_USER_PWD)
         DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
         TENANT_ID: $(TENANT_ID)
+  - job: Environments1
+    pool:
+      name: 'vdc-self-hosted'
+    dependsOn: [SetupValidationResourceGroup, StorageAccounts]
+    steps:
+    - task: PowerShell@2
+      inputs:
+        targetType: 'inline'
+        script: |
+          # Write your PowerShell commands here.
+          
+          Get-ChildItem ENV:
   - job: LogAnalytics
     pool:
       name: 'vdc-self-hosted'
@@ -204,6 +216,18 @@ stages:
         ADMIN_USER_PWD: $(ADMIN_USER_PWD)
         DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
         TENANT_ID: $(TENANT_ID)
+  - job: Environments2
+    pool:
+      name: 'vdc-self-hosted'
+    dependsOn: [SetupValidationResourceGroup, ApplicationSecurityGroups]
+    steps:
+    - task: PowerShell@2
+      inputs:
+        targetType: 'inline'
+        script: |
+          # Write your PowerShell commands here.
+          
+          Get-ChildItem ENV:
   - job: NetworkSecurityGroups
     pool:
       name: 'vdc-self-hosted'
