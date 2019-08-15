@@ -89,12 +89,13 @@ stages:
       name: "bootstratInitializedOutput"
       inputs:
         targetType: 'inline'
-        script: '# Write your powershell commands here.
+        script: '
+        
           $bootstrapInitialized = $ENV:BOOTSTRAP_INITIALIZED;
+
           Write-Host "Value is: $bootstrapInitialized";
-          Write-Host "##vso[task.setvariable variable=BOOTSTRAP_INITIALIZED;isOutput=true]$bootstrapInitialized";
-          
-          # Use the environment variables input below to pass secret variables to this script.'
+
+          Write-Host "##vso[task.setvariable variable=BOOTSTRAP_INITIALIZED;isOutput=true]$bootstrapInitialized";'
         pwsh: true
   - job: LogAnalytics
     pool:
