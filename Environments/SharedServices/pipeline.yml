@@ -89,6 +89,8 @@ stages:
         targetType: 'inline'
         script: '
         
+          $bootstrapInitialized = $ENV:BOOTSTRAP_INITIALIZED;
+
           Write-Host "##vso[task.setvariable variable=BOOTSTRAP_INITIALIZED;isOutput=true]$bootstrapInitialized";'
         pwsh: true
   - job: LogAnalytics
@@ -590,7 +592,9 @@ stages:
       inputs:
         targetType: 'inline'
         script: '
-        
+          
+          $bootstrapInitialized = $ENV:BOOTSTRAP_INITIALIZED;
+
           Write-Host "##vso[task.setvariable variable=BOOTSTRAP_INITIALIZED;isOutput=true]$bootstrapInitialized";'
         pwsh: true
   - job: LogAnalytics
