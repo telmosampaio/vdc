@@ -210,7 +210,7 @@ Class Initialize {
                 $storageAccountDetails = `
                     ConvertFrom-Json $cachedStorageAccountDetails `
                     -AsHashtable;
-                Write-Host "Here: $cachedStorageAccountDetails";
+                
                 $oneHourDuration = New-TimeSpan -Hours 1;
 
                 # Let's check if the life of the sas token expires within an hour
@@ -269,7 +269,7 @@ Class Initialize {
                     -ResourceGroupName $this.dataStoreResourceGroupName `
                     -Name $this.dataStoreName).Value;
             # Set SAS Token expiration of 2 hours
-            $twoHoursDuration = New-TimeSpan -Hours 2;
+            $twoHoursDuration = New-TimeSpan -Hours 3;
             $expiryTime = (Get-Date) + $twoHoursDuration;
 
             if($null -ne $storageAccountAccessKeys) {
