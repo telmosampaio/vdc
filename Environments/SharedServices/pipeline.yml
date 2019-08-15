@@ -317,8 +317,7 @@ stages:
       inputs:
         targetType: 'inline'
         script: '
-          Write-Host $ENV:BOOTSTRAP_INITIALIZED;
-
+          
           Invoke-Pester -Script "./Modules/VirtualNetwork/2.0/Tests";'
         pwsh: true
     - task: AzurePowerShell@4
@@ -349,10 +348,7 @@ stages:
       inputs:
         targetType: 'inline'
         script: '
-          Write-Host $ENV:BOOTSTRAP_INITIALIZED;
-
-          Write-Host $(BOOTSTRAP_INITIALIZED);
-
+          
           Invoke-Pester -Script "./Modules/AzureFirewall/2.0/Tests";'
         pwsh: true
     - task: AzurePowerShell@4
@@ -592,7 +588,7 @@ stages:
       inputs:
         targetType: 'inline'
         script: '
-          
+
           $bootstrapInitialized = $ENV:BOOTSTRAP_INITIALIZED;
 
           Write-Host "##vso[task.setvariable variable=BOOTSTRAP_INITIALIZED;isOutput=true]$bootstrapInitialized";'
