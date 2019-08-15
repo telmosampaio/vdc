@@ -432,8 +432,12 @@
                 "KeyVault", 
                 "WindowsJumpbox", 
                 "LinuxJumpbox", 
-                "ActiveDirectory", 
-                "ActiveDirectoryDomainServices", 
+                "ActiveDirectoryVM",
+                "EncryptActiveDirectory",
+                "InstallActiveDirectory",
+                "ActiveDirectoryDomainServicesVMs",
+                "EncryptActiveDirectoryDomainServices",
+                "InstallActiveDirectoryDomainServices",
                 "ActiveDirectoryDomainServicesKek", 
                 "WindowsJumpboxKek", 
                 "LinuxJumpboxKek", 
@@ -564,11 +568,10 @@
                 "VirtualNetwork",
                 "DiagnosticStorageAccount",
                 "LogAnalytics",
-                "ActiveDirectory",
-                "EnableDNSServerOnVirtualNetwork",
+                "EnableDnsServersOnVirtualNetwork",
                 "KeyVault",
                 "ArtifactsStorageAccount",
-                "ActiveDirectory"
+                "ActiveDirectoryVM"
             ],
             "Comments": "Encrypts VMs using bitlocker",
             "Deployment": {
@@ -646,7 +649,9 @@
             "Updates": "VirtualNetwork",
             "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.VirtualNetwork.ResourceGroup}",
             "DependsOn": [
-                "ActiveDirectory",
+                "InstallActiveDirectory",
+                "ActiveDirectoryVM",
+                "EncryptActiveDirectory",
                 "VirtualNetwork"
             ],
             "Deployment": {
@@ -683,11 +688,12 @@
                 "VirtualNetwork",
                 "DiagnosticStorageAccount",
                 "LogAnalytics",
-                "ActiveDirectory",
-                "EnableDNSServerOnVirtualNetwork",
+                "InstallActiveDirectory",
+                "ActiveDirectoryVM",
+                "EncryptActiveDirectory",
+                "EnableDnsServersOnVirtualNetwork",
                 "KeyVault",
-                "ArtifactsStorageAccount",
-                "AzureBastion"
+                "ArtifactsStorageAccount"
             ],
             "Comments": "Creates Windows Jumpbox",
             "Deployment": {
@@ -765,13 +771,14 @@
                 "VirtualNetwork",
                 "DiagnosticStorageAccount",
                 "LogAnalytics",
-                "ActiveDirectory",
-                "EnableDNSServerOnVirtualNetwork",
+                "InstallActiveDirectory",
+                "ActiveDirectoryVM",
+                "EncryptActiveDirectory",
+                "EnableDnsServersOnVirtualNetwork",
                 "KeyVault",
                 "ArtifactsStorageAccount",
                 "ActiveDirectoryDomainServicesVMs",
-                "WindowsJumpbox",
-                "AzureBastion"
+                "WindowsJumpbox"
             ],
             "Comments": "Encrypts VMs using bitlocker",
             "Deployment": {
@@ -802,8 +809,10 @@
                 "VirtualNetwork",
                 "DiagnosticStorageAccount",
                 "LogAnalytics",
-                "ActiveDirectory",
-                "EnableDNSServerOnVirtualNetwork",
+                "InstallActiveDirectory",
+                "ActiveDirectoryVM",
+                "EncryptActiveDirectory",
+                "EnableDnsServersOnVirtualNetwork",
                 "KeyVault",
                 "ArtifactsStorageAccount",
                 "AzureBastion"
@@ -884,13 +893,13 @@
                 "VirtualNetwork",
                 "DiagnosticStorageAccount",
                 "LogAnalytics",
-                "ActiveDirectory",
-                "EnableDNSServerOnVirtualNetwork",
+                "InstallActiveDirectory",
+                "ActiveDirectoryVM",
+                "EncryptActiveDirectory",
+                "EnableDnsServersOnVirtualNetwork",
                 "KeyVault",
                 "ArtifactsStorageAccount",
-                "ActiveDirectoryDomainServicesVMs",
-                "LinuxJumpbox",
-                "AzureBastion"
+                "LinuxJumpbox"
             ],
             "Comments": "Encrypts VMs using bitlocker",
             "Deployment": {
@@ -921,9 +930,8 @@
                 "VirtualNetwork",
                 "DiagnosticStorageAccount",
                 "LogAnalytics",
-                "ActiveDirectory",
                 "WindowsJumpbox",
-                "EnableDNSServerOnVirtualNetwork",
+                "EnableDnsServersOnVirtualNetwork",
                 "KeyVault",
                 "ArtifactsStorageAccount"
             ],
@@ -1004,9 +1012,11 @@
                 "VirtualNetwork",
                 "DiagnosticStorageAccount",
                 "LogAnalytics",
-                "ActiveDirectory",
+                "InstallActiveDirectory",
+                "ActiveDirectoryVM",
+                "EncryptActiveDirectory",
                 "WindowsJumpbox",
-                "EnableDNSServerOnVirtualNetwork",
+                "EnableDnsServersOnVirtualNetwork",
                 "KeyVault",
                 "ArtifactsStorageAccount",
                 "ActiveDirectoryDomainServicesVMs"
@@ -1040,8 +1050,10 @@
             "ModuleDefinitionName": "ActiveDirectoryDomainServices",
             "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.ActiveDirectoryDomainServices.ResourceGroup}",
             "DependsOn": [
-                "ActiveDirectory",
-                "EnableDNSServerOnVirtualNetwork",
+                "InstallActiveDirectory",
+                "ActiveDirectoryVM",
+                "EncryptActiveDirectory",
+                "EnableDnsServersOnVirtualNetwork",
                 "WindowsJumpbox",
                 "VirtualNetwork",
                 "DiagnosticStorageAccount",
