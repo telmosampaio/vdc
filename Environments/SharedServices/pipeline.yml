@@ -599,7 +599,7 @@ stages:
       name: 'vdc-self-hosted'
     dependsOn: DiagnosticStorageAccount
     variables: 
-      BOOTSTRAP_INITIALIZED: $[dependencies.StorageAccounts.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
+      BOOTSTRAP_INITIALIZED: $[dependencies.DiagnosticStorageAccount.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
     steps:
     - task: AzurePowerShell@4
       displayName: "Log Analytics"
@@ -622,7 +622,7 @@ stages:
       name: 'vdc-self-hosted'
     dependsOn: [LogAnalytics, DiagnosticStorageAccount]
     variables: 
-      BOOTSTRAP_INITIALIZED: $[dependencies.StorageAccounts.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
+      BOOTSTRAP_INITIALIZED: $[dependencies.DiagnosticStorageAccount.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
     steps:
     - task: AzurePowerShell@4
       displayName: "Automation Accounts"
@@ -660,7 +660,7 @@ stages:
       name: 'vdc-self-hosted'
     dependsOn: DiagnosticStorageAccount
     variables: 
-      BOOTSTRAP_INITIALIZED: $[dependencies.StorageAccounts.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
+      BOOTSTRAP_INITIALIZED: $[dependencies.DiagnosticStorageAccount.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
     steps:
     - task: AzurePowerShell@4
       displayName: "JumpboxASG"
@@ -698,7 +698,7 @@ stages:
       name: 'vdc-self-hosted'
     dependsOn: [ApplicationSecurityGroups, LogAnalytics, DiagnosticStorageAccount]
     variables: 
-      BOOTSTRAP_INITIALIZED: $[dependencies.StorageAccounts.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
+      BOOTSTRAP_INITIALIZED: $[dependencies.DiagnosticStorageAccount.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
     steps:
     - task: AzurePowerShell@4
       displayName: "Shared Services NSG"
@@ -736,7 +736,7 @@ stages:
       name: 'vdc-self-hosted'
     dependsOn: DiagnosticStorageAccount
     variables: 
-      BOOTSTRAP_INITIALIZED: $[dependencies.StorageAccounts.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
+      BOOTSTRAP_INITIALIZED: $[dependencies.DiagnosticStorageAccount.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
     steps:
     - task: AzurePowerShell@4
       displayName: "Shared Services Route Table"
@@ -759,7 +759,7 @@ stages:
       name: 'vdc-self-hosted'
     dependsOn: [NetworkSecurityGroups, RouteTables, DiagnosticStorageAccount]
     variables: 
-      BOOTSTRAP_INITIALIZED: $[dependencies.StorageAccounts.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
+      BOOTSTRAP_INITIALIZED: $[dependencies.DiagnosticStorageAccount.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
     steps:
     - task: AzurePowerShell@4
       displayName: "Virtual Network"
@@ -797,7 +797,7 @@ stages:
       name: 'vdc-self-hosted'
     dependsOn: [VirtualNetwork, DiagnosticStorageAccount, LogAnalytics, RouteTables]
     variables: 
-      BOOTSTRAP_INITIALIZED: $[dependencies.StorageAccounts.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
+      BOOTSTRAP_INITIALIZED: $[dependencies.DiagnosticStorageAccount.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
     steps:
     - task: AzurePowerShell@4
       displayName: "Azure Firewall"
@@ -835,7 +835,7 @@ stages:
       name: 'vdc-self-hosted'
     dependsOn: [VirtualNetwork, DiagnosticStorageAccount, LogAnalytics]
     variables: 
-      BOOTSTRAP_INITIALIZED: $[dependencies.StorageAccounts.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
+      BOOTSTRAP_INITIALIZED: $[dependencies.DiagnosticStorageAccount.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
     steps:
     - task: AzurePowerShell@4
       displayName: "Key Vault"
@@ -933,7 +933,7 @@ stages:
       name: 'vdc-self-hosted'
     dependsOn: DiagnosticStorageAccount
     variables: 
-      BOOTSTRAP_INITIALIZED: $[dependencies.StorageAccounts.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
+      BOOTSTRAP_INITIALIZED: $[dependencies.DiagnosticStorageAccount.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
     steps:
     - task: AzurePowerShell@4
       displayName: "Artifacts Storage Account"
@@ -968,7 +968,7 @@ stages:
       name: 'vdc-self-hosted'
     dependsOn: [VirtualNetwork, DiagnosticStorageAccount, LogAnalytics, KeyVault, ArtifactsStorageAccount]
     variables: 
-      BOOTSTRAP_INITIALIZED: $[dependencies.StorageAccounts.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
+      BOOTSTRAP_INITIALIZED: $[dependencies.DiagnosticStorageAccount.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
     steps:
     - task: AzurePowerShell@4
       displayName: "Create Active Directory Virtual Machine"
@@ -1036,7 +1036,7 @@ stages:
       name: 'vdc-self-hosted'
     dependsOn: [VirtualNetwork, DiagnosticStorageAccount, LogAnalytics, ActiveDirectory, KeyVault, ArtifactsStorageAccount]
     variables: 
-      BOOTSTRAP_INITIALIZED: $[dependencies.StorageAccounts.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
+      BOOTSTRAP_INITIALIZED: $[dependencies.DiagnosticStorageAccount.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
     steps:
     - task: AzurePowerShell@4
       displayName: "Windows Jumpbox"
@@ -1074,7 +1074,7 @@ stages:
       name: 'vdc-self-hosted'
     dependsOn: [ActiveDirectory, Jumpboxes, VirtualNetwork, DiagnosticStorageAccount, LogAnalytics, KeyVault, ArtifactsStorageAccount]
     variables: 
-      BOOTSTRAP_INITIALIZED: $[dependencies.StorageAccounts.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
+      BOOTSTRAP_INITIALIZED: $[dependencies.DiagnosticStorageAccount.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
     steps:
     - task: AzurePowerShell@4
       displayName: "Create Active Directory Domain Services Virtual Machines"
