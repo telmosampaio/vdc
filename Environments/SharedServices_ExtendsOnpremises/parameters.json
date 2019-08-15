@@ -1,5 +1,5 @@
 {
-    "Organization": "file(../_Common/organizationName.txt)",
+    "Organization": "env(ORGANIZATION_NAME)",
     "DeploymentName": "shrdsvcs",
     "InstanceName": "${Parameters.Organization}-${Parameters.DeploymentName}",
     "Subscription": "SharedServices",
@@ -8,16 +8,16 @@
         "OnPremisesInformation": {
             "ActiveDirectory": {
                 "PrimaryDomainControllerIP": "192.168.1.4",
-                "DomainName": "fontoso.com",
+                "DomainName": "contoso.com",
                 "ADSitename": "Cloud-Site",
-                "DomainAdminUserName": "fontoso"
+                "DomainAdminUserName": "contoso"
             },
             "Network": {
                 "AddressPrefix": "192.168.1.0/28"
             },
             "VirtualNetworkGateway": {
-                "Name": "fontoso-onprem-gw",
-                "ResourceGroup": "fontoso-onprem-net-rg"
+                "Name": "jch-onprem-gw",
+                "ResourceGroup": "jch-onprem-net-rg"
             },
             "SubscriptionId": "${Subscriptions.OnPremises.SubscriptionId}"
         },
