@@ -90,8 +90,8 @@ stages:
       inputs:
         targetType: 'inline'
         script: '# Write your powershell commands here.
-          $bootstrapInitialized = $(BOOTSTRAP_INITIALIZED);
-          Write-Host $bootstrapInitialized;
+          $bootstrapInitialized = $ENV:BOOTSTRAP_INITIALIZED;
+          Write-Host "Value is: $bootstrapInitialized";
           Write-Host "##vso[task.setvariable variable=BOOTSTRAP_INITIALIZED;isOutput=true]$bootstrapInitialized";
           
           # Use the environment variables input below to pass secret variables to this script.'
@@ -108,8 +108,6 @@ stages:
       inputs:
         targetType: 'inline'
         script: '# Write your powershell commands here.
-          $bootstrapInitialized = $(BOOTSTRAP_INITIALIZED);
-          Write-Host $bootstrapInitialized;
           
           Invoke-Pester -Script "./Modules/LogAnalytics/2.0/Tests";
           
@@ -322,7 +320,7 @@ stages:
       inputs:
         targetType: 'inline'
         script: '# Write your powershell commands here.
-          
+          Write-Host $ENV:BOOTSTRAP_INITIALIZED;
           Invoke-Pester -Script "./Modules/VirtualNetwork/2.0/Tests";
           
           # Use the environment variables input below to pass secret variables to this script.'
@@ -354,6 +352,7 @@ stages:
         targetType: 'inline'
         script: '# Write your powershell commands here.
           Write-Host $ENV:BOOTSTRAP_INITIALIZED;
+          Write-Host $(BOOTSTRAP_INITIALIZED)
           Invoke-Pester -Script "./Modules/AzureFirewall/2.0/Tests";
           
           # Use the environment variables input below to pass secret variables to this script.'
