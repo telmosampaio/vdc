@@ -91,7 +91,8 @@ stages:
         targetType: 'inline'
         script: '# Write your powershell commands here.
           $bootstrapInitialized = $(BOOTSTRAP_INITIALIZED);
-          Write-Host "##vso[task.setvariable variable=BOOTSTRAP_INITIALIZED;isOutput=true;isSecret=true]$bootstrapInitialized";
+          Write-Host $bootstrapInitialized;
+          Write-Host "##vso[task.setvariable variable=BOOTSTRAP_INITIALIZED;isOutput=true]$bootstrapInitialized";
           
           # Use the environment variables input below to pass secret variables to this script.'
         pwsh: true
@@ -99,12 +100,16 @@ stages:
     pool:
       name: 'vdc-self-hosted'
     dependsOn: [SetupValidationResourceGroup, StorageAccounts]
+    variables: 
+      BOOTSTRAP_INITIALIZED: $[dependencies.StorageAccounts.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
     steps:
     - task: PowerShell@2
       displayName: "Pester Tests for Module - Log Analytics"
       inputs:
         targetType: 'inline'
         script: '# Write your powershell commands here.
+          $bootstrapInitialized = $(BOOTSTRAP_INITIALIZED);
+          Write-Host $bootstrapInitialized;
           
           Invoke-Pester -Script "./Modules/LogAnalytics/2.0/Tests";
           
@@ -125,7 +130,6 @@ stages:
         ADMIN_USER_PWD: $(ADMIN_USER_PWD)
         DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
         TENANT_ID: $(TENANT_ID)
-        BOOTSTRAP_INITIALIZED: $[dependencies.StorageAccounts.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
     - task: AzurePowerShell@4
       displayName: "ARM Validation - Link Log Analytics With Automation Account"
       inputs:
@@ -141,11 +145,13 @@ stages:
         ADMIN_USER_PWD: $(ADMIN_USER_PWD)
         DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
         TENANT_ID: $(TENANT_ID)
-        BOOTSTRAP_INITIALIZED: $[dependencies.StorageAccounts.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
+        
   - job: AutomationAccounts
     pool:
       name: 'vdc-self-hosted'
     dependsOn: [SetupValidationResourceGroup, StorageAccounts]
+    variables: 
+      BOOTSTRAP_INITIALIZED: $[dependencies.StorageAccounts.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
     steps:
     - task: PowerShell@2
       displayName: "Pester Tests for Module - Automation Accounts"
@@ -172,11 +178,13 @@ stages:
         ADMIN_USER_PWD: $(ADMIN_USER_PWD)
         DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
         TENANT_ID: $(TENANT_ID)
-        BOOTSTRAP_INITIALIZED: $[dependencies.StorageAccounts.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
+        
   - job: ApplicationSecurityGroups
     pool:
       name: 'vdc-self-hosted'
     dependsOn: [SetupValidationResourceGroup, StorageAccounts]
+    variables: 
+      BOOTSTRAP_INITIALIZED: $[dependencies.StorageAccounts.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
     steps:
     - task: PowerShell@2
       displayName: "Pester Tests for Module - Application Security Groups"
@@ -203,7 +211,7 @@ stages:
         ADMIN_USER_PWD: $(ADMIN_USER_PWD)
         DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
         TENANT_ID: $(TENANT_ID)
-        BOOTSTRAP_INITIALIZED: $[dependencies.StorageAccounts.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
+        
     - task: AzurePowerShell@4
       displayName: "ARM Validation - Domain Controller ASG"
       inputs:
@@ -219,11 +227,13 @@ stages:
         ADMIN_USER_PWD: $(ADMIN_USER_PWD)
         DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
         TENANT_ID: $(TENANT_ID)
-        BOOTSTRAP_INITIALIZED: $[dependencies.StorageAccounts.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
+        
   - job: NetworkSecurityGroups
     pool:
       name: 'vdc-self-hosted'
     dependsOn: [SetupValidationResourceGroup, StorageAccounts]
+    variables: 
+      BOOTSTRAP_INITIALIZED: $[dependencies.StorageAccounts.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
     steps:
     - task: PowerShell@2
       displayName: "Pester Tests for Module - Network Security Groups"
@@ -250,7 +260,7 @@ stages:
         ADMIN_USER_PWD: $(ADMIN_USER_PWD)
         DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
         TENANT_ID: $(TENANT_ID)
-        BOOTSTRAP_INITIALIZED: $[dependencies.StorageAccounts.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
+        
     - task: AzurePowerShell@4
       displayName: "ARM Validation - DMZ NSG"
       inputs:
@@ -266,11 +276,13 @@ stages:
         ADMIN_USER_PWD: $(ADMIN_USER_PWD)
         DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
         TENANT_ID: $(TENANT_ID)
-        BOOTSTRAP_INITIALIZED: $[dependencies.StorageAccounts.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
+        
   - job: RouteTables
     pool:
       name: 'vdc-self-hosted'
     dependsOn: [SetupValidationResourceGroup, StorageAccounts]
+    variables: 
+      BOOTSTRAP_INITIALIZED: $[dependencies.StorageAccounts.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
     steps:
     - task: PowerShell@2
       displayName: "Pester Tests for Module - Route Tables"
@@ -297,11 +309,13 @@ stages:
         ADMIN_USER_PWD: $(ADMIN_USER_PWD)
         DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
         TENANT_ID: $(TENANT_ID)
-        BOOTSTRAP_INITIALIZED: $[dependencies.StorageAccounts.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
+        
   - job: VirtualNetwork
     pool:
       name: 'vdc-self-hosted'
     dependsOn: [SetupValidationResourceGroup, StorageAccounts]
+    variables: 
+      BOOTSTRAP_INITIALIZED: $[dependencies.StorageAccounts.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
     steps:
     - task: PowerShell@2
       displayName: "Pester Tests for Module - VirtualNetwork"
@@ -328,7 +342,7 @@ stages:
         ADMIN_USER_PWD: $(ADMIN_USER_PWD)
         DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
         TENANT_ID: $(TENANT_ID)
-        BOOTSTRAP_INITIALIZED: $[dependencies.StorageAccounts.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
+        
   - job: AzureFirewall
     pool:
       name: 'vdc-self-hosted'
@@ -339,11 +353,13 @@ stages:
       inputs:
         targetType: 'inline'
         script: '# Write your powershell commands here.
-          
+          Write-Host $ENV:BOOTSTRAP_INITIALIZED;
           Invoke-Pester -Script "./Modules/AzureFirewall/2.0/Tests";
           
           # Use the environment variables input below to pass secret variables to this script.'
         pwsh: true
+      env:
+        BOOTSTRAP_INITIALIZED: $[dependencies.StorageAccounts.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
     - task: AzurePowerShell@4
       displayName: "ARM Validation - Azure Firewall"
       inputs:
@@ -390,7 +406,7 @@ stages:
         ADMIN_USER_PWD: $(ADMIN_USER_PWD)
         DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
         TENANT_ID: $(TENANT_ID)
-        BOOTSTRAP_INITIALIZED: $[dependencies.StorageAccounts.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
+        
   - job: VirtualMachines
     pool:
       name: 'vdc-self-hosted'
@@ -421,7 +437,7 @@ stages:
         ADMIN_USER_PWD: $(ADMIN_USER_PWD)
         DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
         TENANT_ID: $(TENANT_ID)
-        BOOTSTRAP_INITIALIZED: $[dependencies.StorageAccounts.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
+        
     - task: AzurePowerShell@4
       displayName: "ARM Validation - Linux Jumpbox"
       inputs:
@@ -437,7 +453,7 @@ stages:
         ADMIN_USER_PWD: $(ADMIN_USER_PWD)
         DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
         TENANT_ID: $(TENANT_ID)
-        BOOTSTRAP_INITIALIZED: $[dependencies.StorageAccounts.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
+        
     - task: AzurePowerShell@4
       displayName: "ARM Validation - Active Directory"
       inputs:
@@ -453,7 +469,7 @@ stages:
         ADMIN_USER_PWD: $(ADMIN_USER_PWD)
         DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
         TENANT_ID: $(TENANT_ID)
-        BOOTSTRAP_INITIALIZED: $[dependencies.StorageAccounts.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
+        
     - task: AzurePowerShell@4
       displayName: "ARM Validation - Active Directory Domain Services"
       inputs:
@@ -469,7 +485,7 @@ stages:
         ADMIN_USER_PWD: $(ADMIN_USER_PWD)
         DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
         TENANT_ID: $(TENANT_ID)
-        BOOTSTRAP_INITIALIZED: $[dependencies.StorageAccounts.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
+        
   - job: ActiveDirectory
     pool:
       name: 'vdc-self-hosted'
@@ -500,7 +516,7 @@ stages:
         ADMIN_USER_PWD: $(ADMIN_USER_PWD)
         DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
         TENANT_ID: $(TENANT_ID)
-        BOOTSTRAP_INITIALIZED: $[dependencies.StorageAccounts.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
+        
   - job: ActiveDirectoryDomainServices
     pool:
       name: 'vdc-self-hosted'
@@ -531,7 +547,7 @@ stages:
         ADMIN_USER_PWD: $(ADMIN_USER_PWD)
         DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
         TENANT_ID: $(TENANT_ID)
-        BOOTSTRAP_INITIALIZED: $[dependencies.StorageAccounts.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
+        
   - job: TearDownValidationResourceGroup
     pool: 
       name: 'vdc-self-hosted'
