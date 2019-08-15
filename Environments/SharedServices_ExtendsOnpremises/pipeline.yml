@@ -475,12 +475,57 @@ stages:
         DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
         TENANT_ID: $(TENANT_ID)
     - task: AzurePowerShell@4
+      displayName: "ARM Validation - Active Directory"
+      inputs:
+        azureSubscription: 'vdc2-testsub'
+        ScriptType: 'FilePath'
+        ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
+        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "ActiveDirectoryVM" -Validate'
+        azurePowerShellVersion: 'LatestVersion'
+      env:
+        VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
+        VDC_TOOLKIT_SUBSCRIPTION: $(VDC_TOOLKIT_SUBSCRIPTION)
+        DEPLOYMENT_USER_ID: $(DEPLOYMENT_USER_ID)
+        ADMIN_USER_PWD: $(ADMIN_USER_PWD)
+        DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
+        TENANT_ID: $(TENANT_ID)
+    - task: AzurePowerShell@4
       displayName: "ARM Validation - Active Directory Domain Services"
       inputs:
         azureSubscription: 'vdc2-testsub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "ActiveDirectoryDomainServicesVMs" -Validate'
+        azurePowerShellVersion: 'LatestVersion'
+      env:
+        VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
+        VDC_TOOLKIT_SUBSCRIPTION: $(VDC_TOOLKIT_SUBSCRIPTION)
+        DEPLOYMENT_USER_ID: $(DEPLOYMENT_USER_ID)
+        ADMIN_USER_PWD: $(ADMIN_USER_PWD)
+        DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
+        TENANT_ID: $(TENANT_ID)
+  - job: ActiveDirectory
+    pool:
+      name: 'vdc-self-hosted'
+    dependsOn: SetupValidationResourceGroup
+    steps:
+    - task: PowerShell@2
+      displayName: "Pester Tests for Module - ActiveDirectory"
+      inputs:
+        targetType: 'inline'
+        script: '# Write your powershell commands here.
+          
+          Invoke-Pester -Script "./Modules/ActiveDirectory/2.0/Tests";
+          
+          # Use the environment variables input below to pass secret variables to this script.'
+        pwsh: true
+    - task: AzurePowerShell@4
+      displayName: "ARM Validation - ActiveDirectory"
+      inputs:
+        azureSubscription: 'vdc2-testsub'
+        ScriptType: 'FilePath'
+        ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
+        ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "InstallActiveDirectory" -Validate'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
@@ -522,7 +567,7 @@ stages:
   - job: TearDownValidationResourceGroup
     pool: 
       name: 'vdc-self-hosted'
-    dependsOn: [ StorageAccounts, LogAnalytics, AutomationAccounts, ApplicationSecurityGroups, NetworkSecurityGroups, RouteTables, VirtualNetwork, AzureFirewall, VirtualMachines, ActiveDirectoryDomainServices ]
+    dependsOn: [ StorageAccounts, LogAnalytics, AutomationAccounts, ApplicationSecurityGroups, NetworkSecurityGroups, RouteTables, VirtualNetwork, AzureFirewall, VirtualMachines, ActiveDirectory, ActiveDirectoryDomainServices ]
     steps:
     - task: AzurePowerShell@4
       displayName: "Teardown Validation Resource Group"
@@ -596,12 +641,6 @@ stages:
         ADMIN_USER_PWD: $(ADMIN_USER_PWD)
         DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
         TENANT_ID: $(TENANT_ID)
-  - job: LinkLogAnalyticsWithAutomationAccount
-    timeoutInMinutes: 0
-    pool:
-      name: 'vdc-self-hosted'
-    dependsOn: [LogAnalytics, AutomationAccounts]
-    steps:
     - task: AzurePowerShell@4
       displayName: "Link Log Analytics With Automation Account"
       inputs:
@@ -617,7 +656,7 @@ stages:
         ADMIN_USER_PWD: $(ADMIN_USER_PWD)
         DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
         TENANT_ID: $(TENANT_ID)
-  - job: JumpboxASG
+  - job: ApplicationSecurityGroups
     timeoutInMinutes: 0
     pool:
       name: 'vdc-self-hosted'
@@ -637,11 +676,6 @@ stages:
         ADMIN_USER_PWD: $(ADMIN_USER_PWD)
         DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
         TENANT_ID: $(TENANT_ID)
-  - job: DomainControllerASG
-    timeoutInMinutes: 0
-    pool:
-      name: 'vdc-self-hosted'
-    steps:
     - task: AzurePowerShell@4
       displayName: "Domain Controller ASG"
       inputs:
@@ -657,11 +691,11 @@ stages:
         ADMIN_USER_PWD: $(ADMIN_USER_PWD)
         DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
         TENANT_ID: $(TENANT_ID)
-  - job: SharedServicesNSG
+  - job: NetworkSecurityGroups
     timeoutInMinutes: 0
     pool:
       name: 'vdc-self-hosted'
-    dependsOn: [JumpboxASG, DomainControllerASG, LogAnalytics, DiagnosticStorageAccount]
+    dependsOn: [ApplicationSecurityGroups, LogAnalytics, DiagnosticStorageAccount]
     steps:
     - task: AzurePowerShell@4
       displayName: "Shared Services NSG"
@@ -678,12 +712,6 @@ stages:
         ADMIN_USER_PWD: $(ADMIN_USER_PWD)
         DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
         TENANT_ID: $(TENANT_ID)
-  - job: DMZNSG
-    timeoutInMinutes: 0
-    pool:
-      name: 'vdc-self-hosted'
-    dependsOn: [JumpboxASG, DomainControllerASG, LogAnalytics, DiagnosticStorageAccount]
-    steps:
     - task: AzurePowerShell@4
       displayName: "DMZ NSG"
       inputs:
@@ -699,7 +727,7 @@ stages:
         ADMIN_USER_PWD: $(ADMIN_USER_PWD)
         DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
         TENANT_ID: $(TENANT_ID)
-  - job: SharedServicesRouteTable
+  - job: RouteTables
     timeoutInMinutes: 0
     pool:
       name: 'vdc-self-hosted'
@@ -723,7 +751,7 @@ stages:
     timeoutInMinutes: 0
     pool:
       name: 'vdc-self-hosted'
-    dependsOn: [SharedServicesNSG, DMZNSG, SharedServicesRouteTable]
+    dependsOn: [NetworkSecurityGroups, RouteTables]
     steps:
     - task: AzurePowerShell@4
       displayName: "Virtual Network"
@@ -740,12 +768,6 @@ stages:
         ADMIN_USER_PWD: $(ADMIN_USER_PWD)
         DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
         TENANT_ID: $(TENANT_ID)
-  - job: EnableServiceEndpointOnDiagnosticStorage
-    timeoutInMinutes: 0
-    pool:
-      name: 'vdc-self-hosted'
-    dependsOn: [DiagnosticStorageAccount, VirtualNetwork]
-    steps:
     - task: AzurePowerShell@4
       displayName: "Enable Service Endpoint On Diagnostic Storage Account"
       inputs:
@@ -765,12 +787,12 @@ stages:
     timeoutInMinutes: 0
     pool:
       name: 'vdc-self-hosted'
-    dependsOn: [DiagnosticStorageAccount, VirtualNetwork]
+    dependsOn: [NetworkSecurityGroups, RouteTables]
     steps:
     - task: AzurePowerShell@4
       displayName: "Virtual Network Gateway"
       inputs:
-        azureSubscription: 'vdc-self-hosted'
+        azureSubscription: 'vdc2-testsub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "VirtualNetworkGateway"'
@@ -785,7 +807,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "Local Virtual Network Gateway Connection"
       inputs:
-        azureSubscription: 'vdc-self-hosted'
+        azureSubscription: 'vdc2-testsub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "LocalVirtualNetworkGatewayConnection"'
@@ -800,7 +822,7 @@ stages:
     - task: AzurePowerShell@4
       displayName: "Remote Virtual Network Gateway Connection"
       inputs:
-        azureSubscription: 'vdc-self-hosted'
+        azureSubscription: 'vdc2-testsub'
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/SharedServices/definition.json" -ModuleConfigurationName "RemoteVirtualNetworkGatewayConnection"'
@@ -816,7 +838,7 @@ stages:
     timeoutInMinutes: 0
     pool:
       name: 'vdc-self-hosted'
-    dependsOn: [VirtualNetwork, DiagnosticStorageAccount, LogAnalytics]
+    dependsOn: [VirtualNetwork, DiagnosticStorageAccount, LogAnalytics, RouteTables]
     steps:
     - task: AzurePowerShell@4
       displayName: "Azure Firewall"
@@ -833,14 +855,8 @@ stages:
         ADMIN_USER_PWD: $(ADMIN_USER_PWD)
         DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
         TENANT_ID: $(TENANT_ID)
-  - job: AddRoutesToSharedServicesRouteTable
-    timeoutInMinutes: 0
-    pool:
-      name: 'vdc-self-hosted'
-    dependsOn: [SharedServicesRouteTable, AzureFirewall]
-    steps:
     - task: AzurePowerShell@4
-      displayName: "Add Routes to Shared Services Route Table"
+      displayName: "Add default route to Shared Services Route Table"
       inputs:
         azureSubscription: 'vdc2-testsub'
         ScriptType: 'FilePath'
@@ -858,7 +874,7 @@ stages:
     timeoutInMinutes: 0
     pool:
       name: 'vdc-self-hosted'
-    dependsOn: [VirtualNetwork, DiagnosticStorageAccount, LogAnalytics ]
+    dependsOn: [VirtualNetwork, DiagnosticStorageAccount, LogAnalytics]
     steps:
     - task: AzurePowerShell@4
       displayName: "Key Vault"
@@ -875,12 +891,6 @@ stages:
         ADMIN_USER_PWD: $(ADMIN_USER_PWD)
         DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
         TENANT_ID: $(TENANT_ID)
-  - job: WindowsJumpboxKek
-    timeoutInMinutes: 0
-    pool:
-      name: 'vdc-self-hosted'
-    dependsOn: [KeyVault, VirtualNetwork, DiagnosticStorageAccount, LogAnalytics]
-    steps:
     - task: AzurePowerShell@4
       displayName: "Creates Windows Jumpbox KEK"
       inputs:
@@ -896,12 +906,6 @@ stages:
         ADMIN_USER_PWD: $(ADMIN_USER_PWD)
         DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
         TENANT_ID: $(TENANT_ID)
-  - job: LinuxJumpboxKek
-    timeoutInMinutes: 0
-    pool:
-      name: 'vdc-self-hosted'
-    dependsOn: [KeyVault, VirtualNetwork, DiagnosticStorageAccount, LogAnalytics]
-    steps:
     - task: AzurePowerShell@4
       displayName: "Creates Linux Jumpbox KEK"
       inputs:
@@ -917,12 +921,6 @@ stages:
         ADMIN_USER_PWD: $(ADMIN_USER_PWD)
         DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
         TENANT_ID: $(TENANT_ID)
-  - job: ActiveDirectoryDomainServicesKek
-    timeoutInMinutes: 0
-    pool:
-      name: 'vdc-self-hosted'
-    dependsOn: [KeyVault, VirtualNetwork, DiagnosticStorageAccount, LogAnalytics]
-    steps:
     - task: AzurePowerShell@4
       displayName: "Creates Active Directory Domain Services Kek"
       inputs:
@@ -938,12 +936,6 @@ stages:
         ADMIN_USER_PWD: $(ADMIN_USER_PWD)
         DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
         TENANT_ID: $(TENANT_ID)
-  - job: EnableServiceEndpointOnKeyVault
-    timeoutInMinutes: 0
-    pool:
-      name: 'vdc-self-hosted'
-    dependsOn: [KeyVault, WindowsJumpbox, LinuxJumpbox, ActiveDirectory, ActiveDirectoryDomainServices, ActiveDirectoryDomainServicesKek, WindowsJumpboxKek, LinuxJumpboxKek]
-    steps:
     - task: AzurePowerShell@4
       displayName: "Enables Service Endpoint on Key Vault"
       inputs:
@@ -991,12 +983,11 @@ stages:
         uploadDirectory: 'Scripts'
         sasTokenStartTime: '1m'
         sasTokenExpiryTime: '1h'
-  
-  - job: WindowsJumpbox
+  - job: Jumpboxes
     timeoutInMinutes: 0
     pool:
       name: 'vdc-self-hosted'
-    dependsOn: [VirtualNetwork, DiagnosticStorageAccount, LogAnalytics, ActiveDirectory, EnableDNSServerOnVirtualNetwork, KeyVault, ArtifactsStorageAccount]
+    dependsOn: [VirtualNetwork, AzureFirewall, DiagnosticStorageAccount, LogAnalytics, KeyVault, ArtifactsStorageAccount]
     steps:
     - task: AzurePowerShell@4
       displayName: "Windows Jumpbox"
@@ -1013,12 +1004,6 @@ stages:
         ADMIN_USER_PWD: $(ADMIN_USER_PWD)
         DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
         TENANT_ID: $(TENANT_ID)
-  - job: LinuxJumpbox
-    timeoutInMinutes: 0
-    pool:
-      name: 'vdc-self-hosted'
-    dependsOn: [VirtualNetwork, DiagnosticStorageAccount, LogAnalytics, ActiveDirectory, EnableDNSServerOnVirtualNetwork, KeyVault, ArtifactsStorageAccount]
-    steps:
     - task: AzurePowerShell@4
       displayName: "Linux Jumpbox"
       inputs:
@@ -1038,7 +1023,7 @@ stages:
     timeoutInMinutes: 0
     pool:
       name: 'vdc-self-hosted'
-    dependsOn: [WindowsJumpbox, VirtualNetwork, DiagnosticStorageAccount, LogAnalytics, KeyVault, ArtifactsStorageAccount, ActiveDirectoryDomainServicesKek]
+    dependsOn: [VirtualNetworkGateway, Jumpboxes, VirtualNetwork, DiagnosticStorageAccount, LogAnalytics, KeyVault, ArtifactsStorageAccount, AzureFirewall]
     steps:
     - task: AzurePowerShell@4
       displayName: "Create Active Directory Domain Services Virtual Machines"
