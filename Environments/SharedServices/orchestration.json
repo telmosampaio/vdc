@@ -441,7 +441,8 @@
                 "ActiveDirectoryDomainServicesKek", 
                 "WindowsJumpboxKek", 
                 "LinuxJumpboxKek", 
-                "ActiveDirectoryKek"
+                "ActiveDirectoryKek",
+                "VirtualNetwork"
             ],
             "Deployment": {
                 "OverrideParameters": {
