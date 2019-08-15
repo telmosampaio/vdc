@@ -38,14 +38,6 @@
             }
         },
         {
-            "Name": "GetPublicIP",
-            "DependsOn": [],
-            "Script": {
-                "Command": "../../Scripts/Windows/getPublicIP.ps1",
-                "Arguments": {}
-            }
-        },
-        {
             "Name": "LogAnalytics",
             "ModuleDefinitionName": "LogAnalytics",
             "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.LogAnalytics.ResourceGroup}",
@@ -315,8 +307,7 @@
             "DependsOn": [
                 "VirtualNetwork",
                 "DiagnosticStorageAccount",
-                "LogAnalytics",
-                "GetPublicIP"
+                "LogAnalytics"
             ],
             "Deployment": {
                 "OverrideParameters": {
