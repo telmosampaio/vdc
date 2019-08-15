@@ -89,16 +89,18 @@ stages:
       name: "bootstratInitializedOutput"
       inputs:
         targetType: 'inline'
-        script: '# Write your powershell commands here.
-          $bootstrapInitialized = $(BOOTSTRAP_INITIALIZED);
-          Write-Host "##vso[task.setvariable variable=BOOTSTRAP_INITIALIZED;isOutput=true;isSecret=true]$bootstrapInitialized";
-          
-          # Use the environment variables input below to pass secret variables to this script.'
+        script: '
+        
+          $bootstrapInitialized = $ENV:BOOTSTRAP_INITIALIZED;
+
+          Write-Host "##vso[task.setvariable variable=BOOTSTRAP_INITIALIZED;isOutput=true]$bootstrapInitialized";'
         pwsh: true
   - job: LogAnalytics
     pool:
       name: 'vdc-self-hosted'
     dependsOn: [SetupValidationResourceGroup, StorageAccounts]
+    variables: 
+      BOOTSTRAP_INITIALIZED: $[dependencies.StorageAccounts.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
     steps:
     - task: PowerShell@2
       displayName: "Pester Tests for Module - Log Analytics"
@@ -146,6 +148,8 @@ stages:
     pool:
       name: 'vdc-self-hosted'
     dependsOn: [SetupValidationResourceGroup, StorageAccounts]
+    variables: 
+      BOOTSTRAP_INITIALIZED: $[dependencies.StorageAccounts.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
     steps:
     - task: PowerShell@2
       displayName: "Pester Tests for Module - Automation Accounts"
@@ -177,6 +181,8 @@ stages:
     pool:
       name: 'vdc-self-hosted'
     dependsOn: [SetupValidationResourceGroup, StorageAccounts]
+    variables: 
+      BOOTSTRAP_INITIALIZED: $[dependencies.StorageAccounts.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
     steps:
     - task: PowerShell@2
       displayName: "Pester Tests for Module - Application Security Groups"
@@ -224,6 +230,8 @@ stages:
     pool:
       name: 'vdc-self-hosted'
     dependsOn: [SetupValidationResourceGroup, StorageAccounts]
+    variables: 
+      BOOTSTRAP_INITIALIZED: $[dependencies.StorageAccounts.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
     steps:
     - task: PowerShell@2
       displayName: "Pester Tests for Module - Network Security Groups"
@@ -271,6 +279,8 @@ stages:
     pool:
       name: 'vdc-self-hosted'
     dependsOn: [SetupValidationResourceGroup, StorageAccounts]
+    variables: 
+      BOOTSTRAP_INITIALIZED: $[dependencies.StorageAccounts.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
     steps:
     - task: PowerShell@2
       displayName: "Pester Tests for Module - Route Tables"
@@ -302,6 +312,8 @@ stages:
     pool:
       name: 'vdc-self-hosted'
     dependsOn: [SetupValidationResourceGroup, StorageAccounts]
+    variables: 
+      BOOTSTRAP_INITIALIZED: $[dependencies.StorageAccounts.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
     steps:
     - task: PowerShell@2
       displayName: "Pester Tests for Module - VirtualNetwork"
@@ -333,6 +345,8 @@ stages:
     pool:
       name: 'vdc-self-hosted'
     dependsOn: [SetupValidationResourceGroup, StorageAccounts]
+    variables: 
+      BOOTSTRAP_INITIALIZED: $[dependencies.StorageAccounts.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
     steps:
     - task: PowerShell@2
       displayName: "Pester Tests for Module - Virtual Network Gateway"
@@ -364,6 +378,8 @@ stages:
     pool:
       name: 'vdc-self-hosted'
     dependsOn: [SetupValidationResourceGroup, StorageAccounts]
+    variables: 
+      BOOTSTRAP_INITIALIZED: $[dependencies.StorageAccounts.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
     steps:
     - task: PowerShell@2
       displayName: "Pester Tests for Module - Virtual Network Gateway Connection"
@@ -395,6 +411,8 @@ stages:
     pool:
       name: 'vdc-self-hosted'
     dependsOn: [SetupValidationResourceGroup, StorageAccounts]
+    variables: 
+      BOOTSTRAP_INITIALIZED: $[dependencies.StorageAccounts.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
     steps:
     - task: PowerShell@2
       displayName: "Pester Tests for Module - Azure Firewall"
@@ -426,6 +444,8 @@ stages:
     pool:
       name: 'vdc-self-hosted'
     dependsOn: [SetupValidationResourceGroup, StorageAccounts]
+    variables: 
+      BOOTSTRAP_INITIALIZED: $[dependencies.StorageAccounts.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
     steps:
     - task: PowerShell@2
       displayName: "Pester Tests for Module - Key Vault"
@@ -457,6 +477,8 @@ stages:
     pool:
       name: 'vdc-self-hosted'
     dependsOn: [SetupValidationResourceGroup, StorageAccounts]
+    variables: 
+      BOOTSTRAP_INITIALIZED: $[dependencies.StorageAccounts.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
     steps:
     - task: PowerShell@2
       displayName: "Pester Tests for Module - Virtual Machines"
@@ -536,6 +558,8 @@ stages:
     pool:
       name: 'vdc-self-hosted'
     dependsOn: [SetupValidationResourceGroup, StorageAccounts]
+    variables: 
+      BOOTSTRAP_INITIALIZED: $[dependencies.StorageAccounts.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
     steps:
     - task: PowerShell@2
       displayName: "Pester Tests for Module - ActiveDirectory"
@@ -567,6 +591,8 @@ stages:
     pool:
       name: 'vdc-self-hosted'
     dependsOn: [SetupValidationResourceGroup, StorageAccounts]
+    variables: 
+      BOOTSTRAP_INITIALIZED: $[dependencies.StorageAccounts.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
     steps:
     - task: PowerShell@2
       displayName: "Pester Tests for Module - ActiveDirectoryDomainServices"
@@ -629,11 +655,24 @@ stages:
         ADMIN_USER_PWD: $(ADMIN_USER_PWD)
         DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
         TENANT_ID: $(TENANT_ID)
+    - task: PowerShell@2
+      displayName: "Sets multi-job variable"
+      name: "bootstratInitializedOutput"
+      inputs:
+        targetType: 'inline'
+        script: '
+
+          $bootstrapInitialized = $ENV:BOOTSTRAP_INITIALIZED;
+
+          Write-Host "##vso[task.setvariable variable=BOOTSTRAP_INITIALIZED;isOutput=true]$bootstrapInitialized";'
+        pwsh: true
   - job: LogAnalytics
     timeoutInMinutes: 0
     pool:
       name: 'vdc-self-hosted'
     dependsOn: DiagnosticStorageAccount
+    variables: 
+      BOOTSTRAP_INITIALIZED: $[dependencies.DiagnosticStorageAccount.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
     steps:
     - task: AzurePowerShell@4
       displayName: "Log Analytics"
@@ -655,6 +694,8 @@ stages:
     pool:
       name: 'vdc-self-hosted'
     dependsOn: [LogAnalytics, DiagnosticStorageAccount]
+    variables: 
+      BOOTSTRAP_INITIALIZED: $[dependencies.DiagnosticStorageAccount.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
     steps:
     - task: AzurePowerShell@4
       displayName: "Automation Accounts"
@@ -690,6 +731,9 @@ stages:
     timeoutInMinutes: 0
     pool:
       name: 'vdc-self-hosted'
+    dependsOn: DiagnosticStorageAccount
+    variables: 
+      BOOTSTRAP_INITIALIZED: $[dependencies.DiagnosticStorageAccount.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
     steps:
     - task: AzurePowerShell@4
       displayName: "JumpboxASG"
@@ -726,6 +770,8 @@ stages:
     pool:
       name: 'vdc-self-hosted'
     dependsOn: [ApplicationSecurityGroups, LogAnalytics, DiagnosticStorageAccount]
+    variables: 
+      BOOTSTRAP_INITIALIZED: $[dependencies.DiagnosticStorageAccount.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
     steps:
     - task: AzurePowerShell@4
       displayName: "Shared Services NSG"
@@ -761,6 +807,9 @@ stages:
     timeoutInMinutes: 0
     pool:
       name: 'vdc-self-hosted'
+    dependsOn: DiagnosticStorageAccount
+    variables: 
+      BOOTSTRAP_INITIALIZED: $[dependencies.DiagnosticStorageAccount.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
     steps:
     - task: AzurePowerShell@4
       displayName: "Shared Services Route Table"
@@ -780,8 +829,10 @@ stages:
   - job: VirtualNetwork
     timeoutInMinutes: 0
     pool:
-      name: 'vdc-self-hosted'
-    dependsOn: [NetworkSecurityGroups, RouteTables]
+      name: 'vdc-self-hosted' 
+    dependsOn: [NetworkSecurityGroups, RouteTables, DiagnosticStorageAccount]
+    variables: 
+      BOOTSTRAP_INITIALIZED: $[dependencies.DiagnosticStorageAccount.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
     steps:
     - task: AzurePowerShell@4
       displayName: "Virtual Network"
@@ -817,7 +868,9 @@ stages:
     timeoutInMinutes: 0
     pool:
       name: 'vdc-self-hosted'
-    dependsOn: [NetworkSecurityGroups, RouteTables]
+    dependsOn: [NetworkSecurityGroups, RouteTables, DiagnosticStorageAccount]
+    variables: 
+      BOOTSTRAP_INITIALIZED: $[dependencies.DiagnosticStorageAccount.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
     steps:
     - task: AzurePowerShell@4
       displayName: "Virtual Network Gateway"
@@ -869,6 +922,8 @@ stages:
     pool:
       name: 'vdc-self-hosted'
     dependsOn: [VirtualNetwork, DiagnosticStorageAccount, LogAnalytics, RouteTables]
+    variables: 
+      BOOTSTRAP_INITIALIZED: $[dependencies.DiagnosticStorageAccount.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
     steps:
     - task: AzurePowerShell@4
       displayName: "Azure Firewall"
@@ -905,6 +960,8 @@ stages:
     pool:
       name: 'vdc-self-hosted'
     dependsOn: [VirtualNetwork, DiagnosticStorageAccount, LogAnalytics]
+    variables: 
+      BOOTSTRAP_INITIALIZED: $[dependencies.DiagnosticStorageAccount.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
     steps:
     - task: AzurePowerShell@4
       displayName: "Key Vault"
@@ -985,6 +1042,9 @@ stages:
     timeoutInMinutes: 0
     pool:
       name: 'vdc-self-hosted'
+    dependsOn: DiagnosticStorageAccount
+    variables: 
+      BOOTSTRAP_INITIALIZED: $[dependencies.DiagnosticStorageAccount.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
     steps:
     - task: AzurePowerShell@4
       displayName: "Artifacts Storage Account"
@@ -1018,6 +1078,8 @@ stages:
     pool:
       name: 'vdc-self-hosted'
     dependsOn: [VirtualNetwork, AzureFirewall, DiagnosticStorageAccount, LogAnalytics, KeyVault, ArtifactsStorageAccount]
+    variables: 
+      BOOTSTRAP_INITIALIZED: $[dependencies.DiagnosticStorageAccount.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
     steps:
     - task: AzurePowerShell@4
       displayName: "Windows Jumpbox"
@@ -1054,6 +1116,8 @@ stages:
     pool:
       name: 'vdc-self-hosted'
     dependsOn: [VirtualNetworkGateway, Jumpboxes, VirtualNetwork, DiagnosticStorageAccount, LogAnalytics, KeyVault, ArtifactsStorageAccount, AzureFirewall]
+    variables: 
+      BOOTSTRAP_INITIALIZED: $[dependencies.DiagnosticStorageAccount.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
     steps:
     - task: AzurePowerShell@4
       displayName: "Create Active Directory Domain Services Virtual Machines"
