@@ -325,3 +325,81 @@ Function Format-DeploymentOutputs {
         throw $_;
     }
 }
+
+Function UnwindError($errorObject) {
+    
+    <# Sample TooManyRequests Exception Format
+    ====================================
+    Error Details:{
+    "details": [
+        {
+        "code": "TooManyRequests",
+        "message": "{"operationGroup":"HighCostGet3Min",
+        "startTime":"2019-01-21T13:58:28.1021233+00:00\",
+        "endTime":"2019-01-21T14:01:00+00:00\",
+        "allowedRequestCount\":240,
+        "measuredRequestCount":250}",
+        "target": "HighCostGet3Min"
+        }
+    ],
+    "innererror": {
+        "internalErrorCode": "TooManyRequestsReceived"
+    },
+    "code": "OperationNotAllowed",
+    "message": "The server rejected the request because too many requests have been received for this subscription."
+    }
+    ====================================#>
+    # Inheritance Chain
+    # Object --> ErrorRecord
+    if($errorObject -is [System.Management.Automation.ErrorRecord]) {
+        # ErrorRecord Class
+        # https://docs.microsoft.com/en-us/dotnet/api/system.management.automation.errorrecord?view=pscore-6.2.0
+        Write-Host "Exception - $(GetException $errorObject)";
+        #Write-Host "Exception - $(ConvertTo-Json $($errorObject.Exception.ErrorRecord) -Depth 50)"
+        Write-Host "Error Record Found";
+    }
+    # Inheritance chain:
+    # Object --> Exception --> SystemException --> OperationCanceledException --> TaskCanceledException
+    elseif($errorObject -is [System.Threading.Tasks.TaskCanceledException]) {
+        # TaskCanceledException Class
+        # https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.taskcanceledexception?view=netframework-4.8
+        Write-Host "Exception - $(GetException $errorObject)";
+        #Write-Host "Exception - $($errorObject.InnerException.ErrorRecord)";
+        Write-Host "Too Many Requests exception encountered. Please try again.";
+    }
+    # Inheritance chain:
+    # Object --> Exception
+    elseif($errorObject -is [System.Exception]) {
+        # Exception Class
+        # https://docs.microsoft.com/en-us/dotnet/api/system.exception?view=netframework-4.8
+        Write-Host "Exception - $($errorObject.ErrorRecord)";
+        Write-Host "Generic Exception";
+    }
+    Write-Host $(ConvertTo-Json $errorObject -Depth 50);
+}
+
+Function GetException($errorObject) {
+
+
+    if($errorObject -is [System.Management.Automation.ErrorRecord] `
+        -and $null -ne $errorObject.details `
+        -and $errorObject.details.Count -gt 0) {
+            Write-Host "1";
+            return $($errorObject.details[0]);
+    }
+    elseif($errorObject -is [System.Management.Automation.ErrorRecord] `
+        -and $null -ne $errorObject.Exception) {
+            Write-Host "2";
+            return `
+                GetException $errorObject.Exception;
+    }
+    elseif($errorObject -is [System.Exception] `
+        -and $null -ne $errorObject.ErrorRecord) {
+            Write-Host "3";
+            return `
+                GetException $errorObject.ErrorRecord;
+    }
+    else {
+        return $errorObject.Message;
+    }
+}
