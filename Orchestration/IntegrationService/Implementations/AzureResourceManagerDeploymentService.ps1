@@ -540,7 +540,8 @@ Class AzureResourceManagerDeploymentService: IDeploymentService {
         $formattedResourceIds = $allResourceIds -join ",";
         
         $resourceStates = `
-                Search-AzGraph -Query "where id in ($formattedResourceIds)";
+                Start-ExponentialBackoff `
+                    -Expression { Search-AzGraph -Query "where id in ($formattedResourceIds)"; }
        
         $dataToReturn.ResourceStates = $resourceStates;
        
@@ -585,9 +586,10 @@ Class AzureResourceManagerDeploymentService: IDeploymentService {
                     -ErrorAction SilentlyContinue;
             
             if($null -eq $resourceGroupFound) {
-                New-AzResourceGroup `
-                    -Name $resourceGroupName `
-                    -Location $location -Force;
+                Start-ExponentialBackoff `
+                    - Expression { New-AzResourceGroup `
+                                    -Name $resourceGroupName `
+                                    -Location $location -Force; }
             }
         }
         catch {
@@ -600,9 +602,10 @@ Class AzureResourceManagerDeploymentService: IDeploymentService {
     [void] SetSubscriptionContext([guid] $subscriptionId,
                                   [guid] $tenantId) {
         try {
-            Select-AzSubscription `
-                -Subscription $subscriptionId `
-                -Tenant $tenantId;
+            Start-ExponentialBackoff `
+            - Expression { Select-AzSubscription `
+                            -Subscription $subscriptionId `
+                            -Tenant $tenantId; }
         }
         catch {
             Write-Host "An error ocurred while running SetSubscriptionContext";

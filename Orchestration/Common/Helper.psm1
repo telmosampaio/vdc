@@ -326,7 +326,7 @@ Function Format-DeploymentOutputs {
     }
 }
 
-Function ExponentialBackoff () {
+Function Start-ExponentialBackoff () {
     param (
         [Parameter(Mandatory)]
         #[ValidateScript({ $_.Ast.ParamBlock.Parameters.Count -eq 1 })]
@@ -339,7 +339,10 @@ Function ExponentialBackoff () {
 
     For($i = 1; $i -le $MaxRetries; $i++) {
         try {
-            Invoke-Command -ScriptBlock $Expression -ArgumentList $Arguments;
+            return `
+                Invoke-Command `
+                    -ScriptBlock $Expression `
+                    -ArgumentList $Arguments;
         }
         catch {
             $newWait = ($i * 60);
