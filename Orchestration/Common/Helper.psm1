@@ -326,59 +326,23 @@ Function Format-DeploymentOutputs {
     }
 }
 
-Function UnwindError($errorObject) {
-    
-    <# Sample TooManyRequests Exception Format
-    ====================================
-    Error Details:{
-    "details": [
-        {
-        "code": "TooManyRequests",
-        "message": "{"operationGroup":"HighCostGet3Min",
-        "startTime":"2019-01-21T13:58:28.1021233+00:00\",
-        "endTime":"2019-01-21T14:01:00+00:00\",
-        "allowedRequestCount\":240,
-        "measuredRequestCount":250}",
-        "target": "HighCostGet3Min"
-        }
-    ],
-    "innererror": {
-        "internalErrorCode": "TooManyRequestsReceived"
-    },
-    "code": "OperationNotAllowed",
-    "message": "The server rejected the request because too many requests have been received for this subscription."
-    }
-    ====================================#>
-    # Inheritance Chain
-    # Object --> ErrorRecord
-    if($errorObject -is [System.Management.Automation.ErrorRecord]) {
-        # ErrorRecord Class
-        # https://docs.microsoft.com/en-us/dotnet/api/system.management.automation.errorrecord?view=pscore-6.2.0
-        Write-Host "Exception - $(GetException $errorObject)";
-        Write-Host "Error Record Found";
-    }
-    # Inheritance chain:
-    # Object --> Exception --> SystemException --> OperationCanceledException --> TaskCanceledException
-    elseif($errorObject -is [System.Threading.Tasks.TaskCanceledException]) {
-        # TaskCanceledException Class
-        # https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.taskcanceledexception?view=netframework-4.8
-        Write-Host "Exception - $(GetException $errorObject)";
-        Write-Host "Task was canceled.";
-    }
-    # Inheritance chain:
-    # Object --> Exception
-    elseif($errorObject -is [System.Exception]) {
-        # Exception Class
-        # https://docs.microsoft.com/en-us/dotnet/api/system.exception?view=netframework-4.8
-        Write-Host "Exception - $($errorObject.ErrorRecord)";
-        Write-Host "Generic Exception";
-    }
-    Write-Host $(ConvertTo-Json $errorObject -Depth 50);
-}
 
 Function GetException($errorObject) {
 
+    # Print out stack trace information of the outer error first
+    # Example Inheritance chain for TaskCanceledException
+    # Object --> Exception --> SystemException --> OperationCanceledException --> TaskCanceledException
+    if($errorObject -is [System.Exception]) {
 
+        Write-Host "Stack Trace - $($errorObject.StackTrace)";
+    }
+    # Inheritance chain for ErrorRecord
+    # Object --> ErrorRecord
+    elseif($errorObject -is [System.Management.Automation.ErrorRecord]) {
+        Write-Host "Stack Trace - $($errorObject.ScriptStackTrace)";
+    }
+
+    # Get Inner Exception Message from the error object
     if($errorObject -is [System.Management.Automation.ErrorRecord] `
         -and $null -ne $errorObject.details `
         -and $errorObject.details.Count -gt 0) {
