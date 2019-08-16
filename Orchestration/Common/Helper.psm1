@@ -382,18 +382,15 @@ Function GetException($errorObject) {
     if($errorObject -is [System.Management.Automation.ErrorRecord] `
         -and $null -ne $errorObject.details `
         -and $errorObject.details.Count -gt 0) {
-            Write-Host "1";
             return $($errorObject.details[0]);
     }
     elseif($errorObject -is [System.Management.Automation.ErrorRecord] `
         -and $null -ne $errorObject.Exception) {
-            Write-Host "2";
             return `
                 GetException $errorObject.Exception;
     }
     elseif($errorObject -is [System.Exception] `
         -and $null -ne $errorObject.ErrorRecord) {
-            Write-Host "3";
             return `
                 GetException $errorObject.ErrorRecord;
     }
