@@ -530,17 +530,16 @@ Class AzureResourceManagerDeploymentService: IDeploymentService {
         $resourceStates = @();
 
         $allResourceIds = @();
-
-        if ($resourceIds.Count > 1) {
-            # Adding single quotes to resource ids
-            $resourceIds | % { $allResourceIds += "'$_'" }
-
-            # Adding comma in between array items
-            $formattedResourceIds = $allResourceIds -join ",";
+        
+        # Adding single quotes to resource ids
+        $resourceIds | ForEach-Object {
+            $allResourceIds += "'$_'" 
         }
-        else {
-            $formattedResourceIds = "'$resourceIds'";
-        }
+
+        # Adding comma in between array items
+        $formattedResourceIds = $allResourceIds -join ",";
+        
+        Write-Host "where id in ($formattedResourceIds)";
 
         $resourceStates = `
                 Search-AzGraph -Query "where id in ($formattedResourceIds)";
