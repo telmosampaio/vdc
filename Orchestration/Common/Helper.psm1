@@ -327,19 +327,24 @@ Function Format-DeploymentOutputs {
 }
 
 
-Function GetException($errorObject) {
+Function GetException {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory=$false)]
+        [object]
+        $ErrorObject
+    )
 
     # Print out stack trace information of the outer error first
     # Example Inheritance chain for TaskCanceledException
     # Object --> Exception --> SystemException --> OperationCanceledException --> TaskCanceledException
     if($errorObject -is [System.Exception]) {
-
-        Write-Host "Stack Trace - $($errorObject.StackTrace)";
+        Write-Debug "Stack Trace - $($errorObject.StackTrace)";
     }
     # Inheritance chain for ErrorRecord
     # Object --> ErrorRecord
     elseif($errorObject -is [System.Management.Automation.ErrorRecord]) {
-        Write-Host "Stack Trace - $($errorObject.ScriptStackTrace)";
+        Write-Debug "Stack Trace - $($errorObject.ScriptStackTrace)";
     }
 
     # Get Inner Exception Message from the error object
