@@ -802,7 +802,7 @@ stages:
     timeoutInMinutes: 0
     pool:
       name: 'vdc-self-hosted'
-    dependsOn: [NetworkSecurityGroups, RouteTables, DiagnosticStorageAccount]
+    dependsOn: [VirtualNetwork, NetworkSecurityGroups, RouteTables, DiagnosticStorageAccount]
     variables: 
       BOOTSTRAP_INITIALIZED: $[dependencies.DiagnosticStorageAccount.outputs['bootstratInitializedOutput.BOOTSTRAP_INITIALIZED']]
     steps:
