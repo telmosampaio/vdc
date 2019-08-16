@@ -539,8 +539,6 @@ Class AzureResourceManagerDeploymentService: IDeploymentService {
         # Adding comma in between array items
         $formattedResourceIds = $allResourceIds -join ",";
         
-        Write-Host "where id in ($formattedResourceIds)";
-
         $resourceStates = `
                 Search-AzGraph -Query "where id in ($formattedResourceIds)";
        

@@ -325,3 +325,28 @@ Function Format-DeploymentOutputs {
         throw $_;
     }
 }
+
+Function ExponentialBackoff () {
+    param (
+        [Parameter(Mandatory)]
+        #[ValidateScript({ $_.Ast.ParamBlock.Parameters.Count -eq 1 })]
+        [Scriptblock] $Expression,
+        [Parameter(Mandatory)]
+        [Object[]] $Arguments,
+        [Parameter(Mandatory=$false)]
+        [int] $MaxRetries = 3
+    )
+
+    For($i = 1; $i -le $MaxRetries; $i++) {
+        try {
+            Invoke-Command -ScriptBlock $Expression -ArgumentList $Arguments;
+        }
+        catch {
+            $newWait = ($i * 60);
+            Write-Host "Sleeping for: $newWait seconds";
+            Start-Sleep -Seconds ($i * 60);
+        }
+    }
+
+    throw "Maximum number of retries reached. Number of retries: $MaxRetries";
+}
