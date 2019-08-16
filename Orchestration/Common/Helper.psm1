@@ -346,7 +346,7 @@ Function Start-ExponentialBackoff () {
         }
         catch {
             $newWait = ($i * 60);
-            Write-Host "Sleeping for: $newWait seconds";
+            Write-Debug "Sleeping for: $newWait seconds";
             Start-Sleep -Seconds ($i * 60);
         }
     }
