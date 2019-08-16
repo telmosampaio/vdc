@@ -447,6 +447,7 @@
         },
         "EventHub": {
             "ResourceGroup": "${Parameters.InstanceName}-diagnostics-rg",
+            "Location": "${Parameters.ModuleConfigurationParameters.DiagnosticStorageAccount.Location}",
             "Namespace": "${Parameters.Organization}eventhubnamespace",
             "Name": "${Parameters.Organization}-diagnostics-eventhub",
             "ConsumerGroupName": "${Parameters.Organization}eventconsumergroup1",

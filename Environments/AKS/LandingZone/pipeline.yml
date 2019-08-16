@@ -218,18 +218,18 @@ stages:
         ADMIN_USER_PWD: $(ADMIN_USER_PWD)
         DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
         TENANT_ID: $(TENANT_ID)
-  - job: vNet
+  - job: VirtualNetwork
     pool:
       name: 'vdc-self-hosted'
     dependsOn: SetupValidationResourceGroup
     steps:
     - task: PowerShell@2
-      displayName: "Pester Tests for Module - vNet"
+      displayName: "Pester Tests for Module - Virtual Net"
       inputs:
         targetType: 'inline'
         script: '# Write your powershell commands here.
           
-          Invoke-Pester -Script "./Modules/vNet/2.0/Tests";
+          Invoke-Pester -Script "./Modules/VirtualNetwork/2.0/Tests";
           
           # Use the environment variables input below to pass secret variables to this script.'
         pwsh: true
@@ -356,7 +356,7 @@ stages:
   - job: TearDownValidationResourceGroup
     pool: 
       name: 'vdc-self-hosted'
-    dependsOn: [ StorageAccounts, LogAnalytics, SecurityCenter, EventHub, NetworkSecurityGroup, RouteTable, vNet, VirtualNetworkPeering, KeyVault ]
+    dependsOn: [ StorageAccounts, LogAnalytics, SecurityCenter, EventHub, NetworkSecurityGroup, RouteTable, VirtualNetwork, VirtualNetworkPeering, KeyVault ]
     steps:
     - task: AzurePowerShell@4
       displayName: "Teardown Validation Resource Group"

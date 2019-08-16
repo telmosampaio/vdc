@@ -5,7 +5,6 @@
             "Name": "DiagnosticsStorageAccount",
             "ModuleDefinitionName": "StorageAccounts",
             "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.DiagnosticStorageAccount.ResourceGroup}",
-            "Comments": "Storage Account that is used for ...",
             "Version": "2.0",
             "Policies": {
                 "Comments": "Optional - If no object is specified, no Policies deployment will occur",
@@ -41,6 +40,9 @@
             "Name": "LogAnalytics",
             "ModuleDefinitionName": "LogAnalytics",
             "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.LogAnalytics.ResourceGroup}",
+            "DependsOn": [
+                "DiagnosticsStorageAccount"
+            ],
             "Deployment": {
                 "OverrideParameters": {
                     "logAnalyticsWorkspaceName": {
@@ -65,6 +67,9 @@
             "Name": "AzureSecurityCenter",
             "ModuleDefinitionName": "SecurityCenter",
             "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.SecurityCenter.ResourceGroup}",
+            "DependsOn": [
+                "LogAnalytics"
+            ],
             "Deployment": {
                 "OverrideParameters": {
                     "logAnalyticsResourceId": {
@@ -80,7 +85,7 @@
             "Deployment": {
                 "OverrideParameters": {
                     "location": {
-                        "value": "${Parameters.ModuleConfigurationParameters.LogAnalytics.Location}"
+                        "value": "${Parameters.ModuleConfigurationParameters.EventHub.Location}"
                     },
                     "eventHubName": {
                         "value": "${Parameters.ModuleConfigurationParameters.EventHub.Name}"
@@ -101,6 +106,10 @@
             "Name": "DefaultNSG",
             "ModuleDefinitionName": "NetworkSecurityGroups",
             "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.Network.ResourceGroup}",
+            "DependsOn": [
+                "LogAnalytics",
+                "DiagnosticsStorageAccount"
+            ],
             "Deployment": {
                 "OverrideParameters": {
                     "workspaceId": {
@@ -135,8 +144,14 @@
         },
         {
             "Name": "VirtualNetwork",
-            "ModuleDefinitionName": "vNet",
+            "ModuleDefinitionName": "VirtualNetwork",
             "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.Network.ResourceGroup}",
+            "DependsOn": [
+                "LogAnalytics",
+                "DiagnosticsStorageAccount",
+                "DefaultRouteTable",
+                "DefaultNSG"
+            ],
             "Deployment": {
                 "OverrideParameters": {
                     "vnetName": {
@@ -164,6 +179,9 @@
             "Name": "VirtualNetworkPeeringToAKS",
             "ModuleDefinitionName": "vNetPeering",
             "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.Network.ResourceGroup}",
+            "DependsOn": [
+                "VirtualNetwork"
+            ],
             "Deployment": {
                 "OverrideParameters": {
                      "localVnetName": {
@@ -186,6 +204,9 @@
             "ModuleDefinitionName": "vNetPeering",
             "Subscription": "SharedServices",
             "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.SharedServices.Network.ResourceGroupName}",
+            "DependsOn": [
+                "VirtualNetworkPeeringToAKS"
+            ],
             "Deployment": {
                 "OverrideParameters": {
                      "localVnetName": {
@@ -208,6 +229,9 @@
             "ModuleDefinitionName": "StorageAccounts",
             "Updates": "DiagnosticsStorageAccount",
             "Comments": "Enables Service endpoint on the Storage Account",
+            "DependsOn": [
+                "VirtualNetwork"
+            ],
             "Deployment": {
                 "OverrideParameters": {
                     "networkAcls": {
@@ -223,6 +247,11 @@
             "Name": "KeyVault",
             "ModuleDefinitionName": "KeyVault",
             "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.KeyVault.ResourceGroup}",
+            "DependsOn": [
+                "DiagnosticsStorageAccount",
+                "LogAnalytics",
+                "VirtualNetwork"
+            ],
             "Deployment": {
                 "OverrideParameters": {
                     "keyVaultName": {
@@ -267,7 +296,6 @@
             "Name": "AddRulesToAzureFirewall",
             "ModuleDefinitionName": "UpdateAzureFirewall",
             "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.Kubernetes.ResourceGroup}",
-            "Comments": "Storage Account that is used for ...",
             "Version": "2.0",
             "Deployment": {
                 "Comments": "We need the 'update' module instance to lock this resource after the Virtual Network got created",
