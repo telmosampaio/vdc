@@ -355,7 +355,6 @@ Function UnwindError($errorObject) {
         # ErrorRecord Class
         # https://docs.microsoft.com/en-us/dotnet/api/system.management.automation.errorrecord?view=pscore-6.2.0
         Write-Host "Exception - $(GetException $errorObject)";
-        #Write-Host "Exception - $(ConvertTo-Json $($errorObject.Exception.ErrorRecord) -Depth 50)"
         Write-Host "Error Record Found";
     }
     # Inheritance chain:
@@ -364,8 +363,7 @@ Function UnwindError($errorObject) {
         # TaskCanceledException Class
         # https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.taskcanceledexception?view=netframework-4.8
         Write-Host "Exception - $(GetException $errorObject)";
-        #Write-Host "Exception - $($errorObject.InnerException.ErrorRecord)";
-        Write-Host "Too Many Requests exception encountered. Please try again.";
+        Write-Host "Task was canceled.";
     }
     # Inheritance chain:
     # Object --> Exception
