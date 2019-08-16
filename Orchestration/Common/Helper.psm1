@@ -327,7 +327,7 @@ Function Format-DeploymentOutputs {
 }
 
 
-Function GetException {
+Function Get-Exception {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory=$false)]
@@ -366,6 +366,8 @@ Function GetException {
     else {
         return $errorObject.Message;
     }
+}
+
 Function Start-ExponentialBackoff () {
     param (
         [Parameter(Mandatory)]
@@ -376,20 +378,28 @@ Function Start-ExponentialBackoff () {
         [Parameter(Mandatory=$false)]
         [int] $MaxRetries = 3
     )
-
-    For($i = 1; $i -le $MaxRetries; $i++) {
+    $innerException = "";
+    While($MaxRetries -gt 0) {
         try {
             return `
                 Invoke-Command `
                     -ScriptBlock $Expression `
                     -ArgumentList $Arguments;
         }
-        catch {
+        catch [System.Threading.Tasks.TaskCanceledException] {
             $newWait = ($i * 60);
             Write-Debug "Sleeping for: $newWait seconds";
             Start-Sleep -Seconds ($i * 60);
+            $MaxRetries--;
+            if($MaxRetries -eq 0) {
+                $innerException = Get-Exeption -ErrorObject $_;
+            }
+        }
+        catch {
+            Throw `
+                $(Get-Exeption -ErrorObject $_);
         }
     }
 
-    throw "Maximum number of retries reached. Number of retries: $MaxRetries";
+    throw "Maximum number of retries reached. Number of retries: $MaxRetries. InnerException: $innerException";
 }
