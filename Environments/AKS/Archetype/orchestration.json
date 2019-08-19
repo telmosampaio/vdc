@@ -127,6 +127,25 @@
             }
         },
         {
+            "Name": "EnableServiceEndpointOnKeyVault",
+            "ModuleDefinitionName": "KeyVault",
+            "Updates": "KeyVault",
+            "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.KeyVault.ResourceGroup}",
+            "DependsOn": [
+                "CreateCACertificate"
+            ],
+            "Deployment": {
+                "OverrideParameters": {
+                    "networkAcls": {
+                        "value": "${Parameters.ModuleConfigurationParameters.KeyVault.NetworkAcls}"
+                    },
+                    "vNetId": {
+                        "value": "reference(VirtualNetwork.vNetResourceId)"
+                    }
+                }
+            }
+        },
+        {
             "Name": "CreateClusterRBACRoleBindings",
             "Comments": "CreateClusterRBACRoleBindings",
             "Script": {

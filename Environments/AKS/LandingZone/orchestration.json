@@ -283,11 +283,16 @@
                     "workspaceId": {
                         "value": "reference(LogAnalytics.logAnalyticsWorkspaceResourceId)"
                     },
-                    "networkAcls": {
-                        "value": "${Parameters.ModuleConfigurationParameters.KeyVault.NetworkAcls}"
-                    },
                     "vNetId": {
                         "value": "reference(VirtualNetwork.vNetResourceId)"
+                    },
+                    "networkAcls": {
+                        "value": {
+                            "bypass": "AzureServices",
+                            "defaultAction": "Allow",
+                            "virtualNetworkRules": [],
+                            "ipRules": []
+                        }
                     }
                 }
             }
