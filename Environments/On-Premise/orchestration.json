@@ -385,7 +385,7 @@
             "ModuleDefinitionName": "ActiveDirectory",
             "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.ActiveDirectory.ResourceGroup}",
             "DependsOn": [
-                "VirtualNetwork", "DomainControllerASG", "UploadScriptsToArtifactsStorage"
+                "ActiveDirectoryVM"
             ],
             "Deployment": {
                 "OverrideParameters": {
