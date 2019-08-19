@@ -470,7 +470,7 @@ stages:
     timeoutInMinutes: 0
     pool:
       name: 'vdc-self-hosted'
-    dependsOn: VirtualNetwork
+    dependsOn: [ VirtualNetwork, CreateRootCertificate ]
     steps:
     - task: AzurePowerShell@4
       displayName: "Virtual Network Gateway"
