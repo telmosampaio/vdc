@@ -185,6 +185,9 @@
         {
             "Name": "CreateRootCertificate",
             "Comments": "Create Root Certificate",
+            "DependsOn": [
+                "KeyVault"
+            ],
             "Script": {
                 "Command": "../../Modules/VirtualNetworkGateway/2.0/Scripts/virtual.network.gateway.rootcert.ps1",
                 "Arguments" : {
@@ -202,6 +205,7 @@
             "ModuleDefinitionName": "VirtualNetworkGateway",
             "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.Network.ResourceGroup}",
             "DependsOn": [
+                "CreateRootCertificate",
                 "VirtualNetwork"
             ],
             "Deployment": {
