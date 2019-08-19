@@ -168,11 +168,16 @@
                     "workspaceId": {
                         "value": "reference(LogAnalytics.logAnalyticsWorkspaceResourceId)"
                     },
-                    "networkAcls": {
-                        "value": "${Parameters.ModuleConfigurationParameters.KeyVault.NetworkAcls}"
-                    },
                     "vNetId": {
                         "value": "reference(VirtualNetwork.vNetResourceId)"
+                    },
+                    "networkAcls": {
+                        "value": {
+                            "bypass": "AzureServices",
+                            "defaultAction": "Allow",
+                            "virtualNetworkRules": [],
+                            "ipRules": []
+                        }
                     }
                 }
             }
@@ -222,6 +227,25 @@
                     "clientRootCertData": "${Parameters.ModuleConfigurationParameters.Network.VirtualGateway.VpnClientConfiguration.VpnClientRootCertificateData}",
                     "clientRevokedCertThumbprint": {
                         "value": "${Parameters.ModuleConfigurationParameters.Network.VirtualGateway.VpnClientConfiguration.VpnClientRevokedCertificateThumbprint}"
+                    }
+                }
+            }
+        },
+        {
+            "Name": "EnableServiceEndpointOnKeyVault",
+            "ModuleDefinitionName": "KeyVault",
+            "Updates": "KeyVault",
+            "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.KeyVault.ResourceGroup}",
+            "DependsOn": [
+                "VirtualNetworkGateway"
+            ],
+            "Deployment": {
+                "OverrideParameters": {
+                    "networkAcls": {
+                        "value": "${Parameters.ModuleConfigurationParameters.KeyVault.NetworkAcls}"
+                    },
+                    "vNetId": {
+                        "value": "reference(VirtualNetwork.vNetResourceId)"
                     }
                 }
             }
