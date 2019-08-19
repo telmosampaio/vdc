@@ -133,7 +133,6 @@
             "ModuleDefinitionName": "KeyVault",
             "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.KeyVault.ResourceGroup}",
             "DependsOn":[
-                "VirtualNetwork", 
                 "DiagnosticStorageAccount", 
                 "LogAnalytics"
             ],
