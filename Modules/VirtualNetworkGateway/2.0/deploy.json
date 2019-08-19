@@ -63,6 +63,13 @@
             "metadata": {
               "description": "Thumbprint of the revoked certificate. This would revoke VPN client certificates matching this thumbprint from connecting to the VNet."
             }
+        },
+        "enablePip": {
+            "type": "bool",
+            "defaultValue": false,
+            "metadata": {
+                "description": "Optional. Value to specify if BGP is enabled or not"
+            }
         }
     },
     "variables": {
@@ -70,6 +77,9 @@
         "gatewayPipResourceName": "[concat('Microsoft.Network/publicIpAddresses/',variables('gatewayPipName'))]",
         "gatewaySubnetId": "[concat(parameters('vNetId'), '/subnets/GatewaySubnet')]",
         "gatewayPipId": "[resourceId('Microsoft.Network/publicIPAddresses', variables('gatewayPipName'))]",
+        "gatewayPip": {
+            "id": "[variables('gatewayPipId')]"
+        },
         "vpnClientRootCertificates": [{
             "name": "RootCert1",
             "properties": {
@@ -97,6 +107,7 @@
             "apiVersion": "2015-06-15",
             "type": "Microsoft.Network/publicIPAddresses",
             "name": "[variables('gatewayPipName')]",
+            "condition": "[parameters('enablePip')]",
             "location": "[resourceGroup().location]",
             "tags": {},
             "properties": {
@@ -119,9 +130,7 @@
                             "subnet": {
                                 "id": "[variables('gatewaySubnetId')]"
                             },
-                            "publicIPAddress": {
-                                "id": "[variables('gatewayPipId')]"
-                            }
+                            "publicIPAddress": "[if(parameters('enablePip'), json('null'), variables('gatewayPip'))]"
                         },
                         "name": "vNetGatewayConfig"
                     }
