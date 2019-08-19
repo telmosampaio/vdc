@@ -15,7 +15,25 @@
                 "sku": "2016-Datacenter"
             }
         },
-        "artifactsStorageAccountSasKey": {
+        "virtualMachineOSType": {
+            "value": "Windows"
+        },
+        "workspaceId": {
+            "value": "00000000-0000-0000-0000-000000000000"
+        },
+        "logAnalyticsWorkspaceId": {
+            "value": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/resourceGroup/providers/Microsoft.OperationalInsights/workspaces/contoso-example"
+        },
+        "logAnalyticsWorkspacePrimarySharedKey": {
+            "value": ""
+        },
+        "diagnosticsStorageAccountId": {
+            "value": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/resourceGroup/providers/Microsoft.Storage/storageAccounts/contosostrgexmpl"
+        },
+        "diagnosticsStorageAccountName": {
+            "value": "contoso-diag-storage"
+        },
+        "diagnosticsStorageAccountSasToken": {
             "value": ""
         },
         "artifactsStorageAccountName": {
@@ -24,43 +42,19 @@
         "artifactsStorageAccountKey": {
             "value": ""
         },
-        "workspaceId": {
-            "value": "00000000-0000-0000-0000-000000000000"
-        },
-        "logAnalyticsWorkspacePrimarySharedKey": {
+        "artifactsStorageAccountSasKey": {
             "value": ""
-        },
-        "diagnosticsStorageAccountName": {
-            "value": "contoso-diag-storage"
-        },
-        "diagnosticsStorageAccountSasToken": {
-            "value": ""
-        },
-        "adIpAddress": {
-            "value": "11.4.0.46"
         },
         "vNetId": {
             "value": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/resourceGroup/providers/Microsoft.Network/virtualNetworks/contoso-vnet-example"
         },
-        "domainControllerAsgId": {
-            "value": "dc"
-        },
         "subnetName": {
             "value": "sharedsvcs"
         },
-        "cloudZone": {
-            "value": "Cloud-Zone"
-        },
-        "domainName": {
-            "value": "contoso.com"
-        },
-        "adSitename": {
-            "value": "Cloud-Site"
-        },
-        "domainAdminUsername": {
+        "adminUsername": {
             "value": "contoso"
         },
-        "domainAdminPassword": {
+        "adminPassword": {
             "value": "password"
         }
     }

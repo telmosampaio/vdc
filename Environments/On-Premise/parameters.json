@@ -84,8 +84,8 @@
                 "Comments": "Creating an object so we can use a secretsobject parameter type in our ARM template",
                 "Secrets": [
                     {
-                        "secretName": "CAKey",
-                        "secretValue": "None"
+                        "secretName": "DomainAdminPassword",
+                        "secretValue": "P@ssword2019$123"
                     }
                 ]
             },
@@ -102,13 +102,27 @@
         },
         "ArtifactsStorageAccount": "file(../_Common/artifactsStorageAccount.json)",
         "ActiveDirectory": {
+            "Name": "primary-ad",
+            "VMSize": "Standard_DS3_v2",
+            "OSImage": {
+                "offer": "WindowsServer",
+                "publisher": "MicrosoftWindowsServer",
+                "sku": "2016-Datacenter"
+            },
+            "OSType": "Windows",
+            "SubnetName": "${Parameters.ModuleConfigurationParameters.Network.Subnets[0].name}",
             "ResourceGroup": "${Parameters.InstanceName}-ad-rg",
             "ADSitename": "Cloud-Site",
             "CloudZone": "contosocloud.com",
-            "DomainAdminUser": "contoso",
-            "DomainAdminPassword": "P@ssword2019$123",
+            "DomainAdminUsername": "contoso",
+            "DomainAdminPassword": {
+                "keyVault": {
+                    "id": "reference(KeyVault.keyVaultResourceId)"
+                },
+                "secretName": "${Parameters.ModuleConfigurationParameters.KeyVault.SecretsObject.Secrets[0].secretName}"
+            },
             "DomainName": "contoso.com",
-            "PrimaryDCIP": "192.168.1.4"
+            "PrimaryDomainControllerIP": "192.168.1.4"
         },
         "ApplicationSecurityGroups": {
             "ResourceGroup": "${Parameters.ModuleConfigurationParameters.Network.ResourceGroup}",
@@ -196,7 +210,7 @@
             "EnableDdosProtection": true,
             "EnableVmProtection": false,
             "DnsServers": [
-                "${Parameters.ModuleConfigurationParameters.ActiveDirectory.PrimaryDCIP}",
+                "${Parameters.ModuleConfigurationParameters.ActiveDirectory.PrimaryDomainControllerIP}",
                 "168.63.129.16"
             ]
         }

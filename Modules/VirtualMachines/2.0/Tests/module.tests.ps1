@@ -5,7 +5,7 @@
 
 		File:		module.tests.ps1
 
-		Purpose:	Pester - Test Active Directory ARM Templates
+		Purpose:	Pester - Test Virtual Machine ARM Templates
 
 		Version: 	1.0.0.0 - 1st April 2019 - Azure Virtual Datacenter Development Team
 		==============================================================================================
@@ -55,7 +55,7 @@ ForEach ( $File in (Get-ChildItem (Join-Path "$here" "deploy.json") ) ) {
 #endregion
 
 #region Run Pester Test Script
-Describe "Template: $template - Virtual Machine KeyEncryption Key" -Tags Unit {
+Describe "Template: $template - Virtual Machine" -Tags Unit {
 
     Context "Template File Syntax" {
 
@@ -70,6 +70,7 @@ Describe "Template: $template - Virtual Machine KeyEncryption Key" -Tags Unit {
             'parameters',
             'variables',
 			'resources',
+			'functions',
 			'outputs' | Sort-Object
 			$templateProperties = (Get-Content (Join-Path "$here" "$TemplateFile") `
 									| ConvertFrom-Json -ErrorAction SilentlyContinue) `

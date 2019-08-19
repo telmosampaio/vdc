@@ -295,7 +295,90 @@
             }
         },
         {
-            "Name": "ActiveDirectory",
+            "Name": "ActiveDirectoryVM",
+            "ModuleDefinitionName": "VirtualMachines",
+            "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.ActiveDirectory.ResourceGroup}",
+            "DependsOn": [
+                "VirtualNetwork",
+                "DiagnosticStorageAccount",
+                "LogAnalytics",
+                "KeyVault",
+                "ArtifactsStorageAccount"
+            ],
+            "Comments": "Creates Active Directory Domain Services VMs",
+            "Deployment": {
+                "OverrideParameters": {
+                    "virtualMachineName": {
+                        "value": "${Parameters.ModuleConfigurationParameters.ActiveDirectory.Name}"
+                    },
+                    "virtualMachineSize": {
+                        "value": "${Parameters.ModuleConfigurationParameters.ActiveDirectory.VMSize}"
+                    },
+                    "virtualMachineOSImage": {
+                        "value": "${Parameters.ModuleConfigurationParameters.ActiveDirectory.OSImage}"
+                    },
+                    "virtualMachineOSType": {
+                        "value": "${Parameters.ModuleConfigurationParameters.ActiveDirectory.OSType}"
+                    },
+                    "workspaceId": {
+                        "value": "reference(LogAnalytics.logAnalyticsWorkspaceId)"
+                    },
+                    "logAnalyticsWorkspaceId": {
+                        "value": "reference(LogAnalytics.logAnalyticsWorkspaceResourceId)"
+                    },
+                    "logAnalyticsWorkspacePrimarySharedKey": {
+                        "value": "reference(LogAnalytics.logAnalyticsPrimarySharedKey)"
+                    },
+                    "diagnosticsStorageAccountId": {
+                        "value": "reference(DiagnosticStorageAccount.storageAccountResourceId)"
+                    },
+                    "diagnosticsStorageAccountName": {
+                        "value": "reference(DiagnosticStorageAccount.storageAccountName)"
+                    },
+                    "diagnosticsStorageAccountSasToken": {
+                        "value": "reference(DiagnosticStorageAccount.storageAccountSasToken)"
+                    },
+                    "artifactsStorageAccountKey": {
+                        "value": "reference(ArtifactsStorageAccount.storageAccountAccessKey)"
+                    },
+                    "artifactsStorageAccountName": {
+                        "value": "reference(ArtifactsStorageAccount.storageAccountName)"
+                    },
+                    "artifactsStorageAccountSasKey": {
+                        "value": "reference(ArtifactsStorageAccount.storageAccountSasToken)"
+                    },
+                    "vNetId": {
+                        "value": "reference(VirtualNetwork.vNetResourceId)"
+                    },
+                    "subnetName": {
+                        "value": "${Parameters.ModuleConfigurationParameters.ActiveDirectory.SubnetName}"
+                    },
+                    "vmIPAddress": {
+                        "value": "${Parameters.ModuleConfigurationParameters.ActiveDirectory.PrimaryDomainControllerIP}"
+                    },
+                    "applicationSecurityGroupId": {
+                        "value": "reference(DomainControllerASG.applicationSecurityGroupResourceId)"
+                    },
+                    "adminUsername": {
+                        "value": "${Parameters.ModuleConfigurationParameters.ActiveDirectory.DomainAdminUsername}"
+                    },
+                    "adminPassword": {
+                        "reference": "${Parameters.ModuleConfigurationParameters.ActiveDirectory.DomainAdminPassword}"
+                    },
+                    "virtualMachineDataDisks": {
+                        "value": [
+                            {
+                                "size": 127,
+                                "driveLetter": "F",
+                                "diskId": 2
+                            }
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "Name": "InstallActiveDirectory",
             "ModuleDefinitionName": "ActiveDirectory",
             "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.ActiveDirectory.ResourceGroup}",
             "DependsOn": [
@@ -304,50 +387,19 @@
             "Deployment": {
                 "OverrideParameters": {
                     "virtualMachineName": {
-                        "value": "kn${Parameters.DeploymentName}vm"
-                    },
-                    "virtualMachineSize": {
-                        "value": "Standard_DS2_v2"
-                    },
-                    "virtualMachineOSImage": {
-                        "value": {
-                            "offer": "WindowsServer",
-                            "publisher": "MicrosoftWindowsServer",
-                            "sku": "2016-Datacenter"
-                        }
-                    },
-                    "artifactsStorageAccountSasKey": {
-                        "value": "reference(ArtifactsStorageAccount.storageAccountSasToken)"
-                    },
-                    "artifactsStorageAccountName": {
-                        "value": "reference(ArtifactsStorageAccount.storageAccountName)"
+                        "value": "${Parameters.ModuleConfigurationParameters.ActiveDirectory.Name}"
                     },
                     "artifactsStorageAccountKey": {
                         "value": "reference(ArtifactsStorageAccount.storageAccountAccessKey)"
                     },
-                    "workspaceId": {
-                        "value": "reference(LogAnalytics.logAnalyticsWorkspaceId)"
+                    "artifactsStorageAccountName": {
+                        "value": "reference(ArtifactsStorageAccount.storageAccountName)"
                     },
-                    "logAnalyticsWorkspacePrimarySharedKey": {
-                        "value": "reference(LogAnalytics.logAnalyticsPrimarySharedKey)"
-                    },
-                    "diagnosticsStorageAccountName": {
-                        "value": "reference(DiagnosticStorageAccount.storageAccountName)"
-                    },
-                    "diagnosticsStorageAccountSasToken": {
-                        "value": "reference(DiagnosticStorageAccount.storageAccountSasToken)"
+                    "artifactsStorageAccountSasKey": {
+                        "value": "reference(ArtifactsStorageAccount.storageAccountSasToken)"
                     },
                     "adIpAddress": {
-                        "value": "${Parameters.ModuleConfigurationParameters.ActiveDirectory.PrimaryDCIP}"
-                    },
-                    "vNetId": {
-                        "value": "reference(VirtualNetwork.vNetResourceId)"
-                    },
-                    "domainControllerAsgId": {
-                        "value": "reference(DomainControllerASG.applicationSecurityGroupResourceId)"
-                    },
-                    "subnetName": {
-                        "value": "default"
+                        "value": "${Parameters.ModuleConfigurationParameters.ActiveDirectory.PrimaryDomainControllerIP}"
                     },
                     "cloudZone": {
                         "value": "${Parameters.ModuleConfigurationParameters.ActiveDirectory.CloudZone}"
@@ -359,10 +411,10 @@
                         "value": "${Parameters.ModuleConfigurationParameters.ActiveDirectory.ADSitename}"
                     },
                     "domainAdminUsername": {
-                        "value": "${Parameters.ModuleConfigurationParameters.ActiveDirectory.DomainAdminUser}"
+                        "value": "${Parameters.ModuleConfigurationParameters.ActiveDirectory.DomainAdminUsername}"
                     },
                     "domainAdminPassword": {
-                        "value": "${Parameters.ModuleConfigurationParameters.ActiveDirectory.DomainAdminPassword}"
+                        "reference": "${Parameters.ModuleConfigurationParameters.ActiveDirectory.DomainAdminPassword}"
                     }
                 }
             }
