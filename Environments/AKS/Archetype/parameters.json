@@ -304,7 +304,7 @@
             "DnsServers": "${Parameters.ModuleConfigurationParameters.SharedServices.ActiveDirectory.VmIpAddressStart}"
         },
         "Kubernetes": {
-            "KubernetesVersion": "1.13.5",
+            "KubernetesVersion": "1.13.9",
             "ResourceGroup": "${Parameters.InstanceName}-aks-rg",
             "OsType": "Linux",
             "NetworkPlugin": "azure",
