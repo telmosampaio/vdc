@@ -98,7 +98,7 @@ stages:
         azurePowerShellVersion: 'LatestVersion'
 - stage: Deploy
   jobs:
-  - job: Deployment
+  - job: ACR
     timeoutInMinutes: 0
     pool:
       name: 'vdc-self-hosted'
@@ -118,6 +118,11 @@ stages:
         ADMIN_USER_PWD: $(ADMIN_USER_PWD)
         DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
         TENANT_ID: $(TENANT_ID)
+  - job: AKSCluster
+    timeoutInMinutes: 0
+    pool:
+      name: 'vdc-self-hosted'
+    steps:
     - task: AzurePowerShell@4
       displayName: "AKS Cluster"
       inputs:
@@ -133,6 +138,11 @@ stages:
         ADMIN_USER_PWD: $(ADMIN_USER_PWD)
         DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
         TENANT_ID: $(TENANT_ID)
+  - job: PermissionsScriptsPreReqs
+    timeoutInMinutes: 0
+    pool:
+      name: 'vdc-self-hosted'
+    steps:
     - task: AzurePowerShell@4
       displayName: "Permissions Scripts Pre Reqs"
       inputs:
@@ -148,6 +158,12 @@ stages:
         ADMIN_USER_PWD: $(ADMIN_USER_PWD)
         DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
         TENANT_ID: $(TENANT_ID)
+  - job: ScriptsPreReqs
+    timeoutInMinutes: 0
+    pool:
+      name: 'vdc-self-hosted'
+    dependsOn: PermissionsScriptsPreReqs
+    steps:
     - task: AzurePowerShell@4
       displayName: "Scripts Pre Reqs"
       inputs:
@@ -163,6 +179,12 @@ stages:
         ADMIN_USER_PWD: $(ADMIN_USER_PWD)
         DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
         TENANT_ID: $(TENANT_ID)
+  - job: CreateCACertificate
+    timeoutInMinutes: 0
+    pool:
+      name: 'vdc-self-hosted'
+    dependsOn: ScriptsPreReqs
+    steps:
     - task: AzurePowerShell@4
       displayName: "Create CA Certificate"
       inputs:
@@ -178,6 +200,12 @@ stages:
         ADMIN_USER_PWD: $(ADMIN_USER_PWD)
         DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
         TENANT_ID: $(TENANT_ID)
+  - job: CreateClusterRBACRoleBindings
+    timeoutInMinutes: 0
+    pool:
+      name: 'vdc-self-hosted'
+    dependsOn: [ CreateCACertificate, AKSCluster ]
+    steps:
     - task: AzurePowerShell@4
       displayName: "Create Cluster RBAC Role Bindings"
       inputs:
@@ -185,6 +213,27 @@ stages:
         ScriptType: 'FilePath'
         ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
         ScriptArguments: '-DefinitionPath "Environments/AKS/Archetype/definition.json" -ModuleConfigurationName "CreateClusterRBACRoleBindings"'
+        azurePowerShellVersion: 'LatestVersion'
+      env:
+        VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)
+        VDC_TOOLKIT_SUBSCRIPTION: $(VDC_TOOLKIT_SUBSCRIPTION)
+        DEPLOYMENT_USER_ID: $(DEPLOYMENT_USER_ID)
+        ADMIN_USER_PWD: $(ADMIN_USER_PWD)
+        DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
+        TENANT_ID: $(TENANT_ID)
+  - job: EnableServiceEndpointOnKeyVault
+    timeoutInMinutes: 0
+    pool:
+      name: 'vdc-self-hosted'
+    dependsOn: CreateClusterRBACRoleBindings
+    steps:
+    - task: AzurePowerShell@4
+      displayName: "Enable Service Endpoint On Key Vault"
+      inputs:
+        azureSubscription: 'Kunachim Azure SC'
+        ScriptType: 'FilePath'
+        ScriptPath: 'Orchestration/OrchestrationService/ModuleConfigurationDeployment.ps1'
+        ScriptArguments: '-DefinitionPath "Environments/AKS/Archetype/definition.json" -ModuleConfigurationName "EnableServiceEndpointOnKeyVault"'
         azurePowerShellVersion: 'LatestVersion'
       env:
         VDC_SUBSCRIPTIONS: $(VDC_SUBSCRIPTIONS)

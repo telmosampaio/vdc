@@ -24,7 +24,6 @@
             "Name": "AKSCluster",
             "ModuleDefinitionName": "KubernetesAKS",
             "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.Kubernetes.ResourceGroup}",
-            "Comments": "Storage Account that is used for ...",
             "Version": "2.0",
             "Deployment": {
                 "Comments": "We need the 'update' module instance to lock this resource after the Virtual Network got created",
