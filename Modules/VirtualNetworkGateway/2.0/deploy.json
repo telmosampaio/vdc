@@ -107,7 +107,6 @@
             "apiVersion": "2015-06-15",
             "type": "Microsoft.Network/publicIPAddresses",
             "name": "[variables('gatewayPipName')]",
-            "condition": "[parameters('enablePip')]",
             "location": "[resourceGroup().location]",
             "tags": {},
             "properties": {
@@ -130,7 +129,7 @@
                             "subnet": {
                                 "id": "[variables('gatewaySubnetId')]"
                             },
-                            "publicIPAddress": "[if(not(parameters('enablePip')), json('null'), variables('gatewayPip'))]"
+                            "publicIPAddress": "[variables('gatewayPip')]"
                         },
                         "name": "vNetGatewayConfig"
                     }
