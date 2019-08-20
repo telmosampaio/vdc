@@ -130,7 +130,7 @@
                             "subnet": {
                                 "id": "[variables('gatewaySubnetId')]"
                             },
-                            "publicIPAddress": "[if(parameters('enablePip'), json('null'), variables('gatewayPip'))]"
+                            "publicIPAddress": "[if(not(parameters('enablePip')), json('null'), variables('gatewayPip'))]"
                         },
                         "name": "vNetGatewayConfig"
                     }
