@@ -368,7 +368,7 @@ stages:
         azurePowerShellVersion: 'LatestVersion'
 - stage: Deploy
   jobs:
-  - job: Deployment
+  - job: DiagnosticsStorageAccount
     timeoutInMinutes: 0
     pool:
       name: 'vdc-self-hosted'
@@ -388,6 +388,12 @@ stages:
         ADMIN_USER_PWD: $(ADMIN_USER_PWD)
         DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
         TENANT_ID: $(TENANT_ID)
+  - job: LogAnalytics 
+    timeoutInMinutes: 0
+    pool:
+      name: 'vdc-self-hosted'
+    dependsOn: DiagnosticsStorageAccount
+    steps:
     - task: AzurePowerShell@4
       displayName: "Log Analytics"
       inputs:
@@ -403,6 +409,12 @@ stages:
         ADMIN_USER_PWD: $(ADMIN_USER_PWD)
         DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
         TENANT_ID: $(TENANT_ID)
+  - job: SecurityCenter
+    timeoutInMinutes: 0
+    pool:
+      name: 'vdc-self-hosted'
+    dependsOn: LogAnalytics
+    steps:
     - task: AzurePowerShell@4
       displayName: "Security Center"
       inputs:
@@ -418,8 +430,13 @@ stages:
         ADMIN_USER_PWD: $(ADMIN_USER_PWD)
         DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
         TENANT_ID: $(TENANT_ID)
+  - job: EventHub
+    timeoutInMinutes: 0
+    pool:
+      name: 'vdc-self-hosted'
+    steps:
     - task: AzurePowerShell@4
-      displayName: "EventHub"
+      displayName: "Event Hub"
       inputs:
         azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
@@ -433,8 +450,14 @@ stages:
         ADMIN_USER_PWD: $(ADMIN_USER_PWD)
         DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
         TENANT_ID: $(TENANT_ID)
+  - job: DefaultNSG
+    timeoutInMinutes: 0
+    pool:
+      name: 'vdc-self-hosted'
+    dependsOn: [ LogAnalytics, DiagnosticsStorageAccount ]
+    steps:
     - task: AzurePowerShell@4
-      displayName: "NetworkSecurityGroups"
+      displayName: "Network Security Groups"
       inputs: 
         azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
@@ -448,6 +471,11 @@ stages:
         ADMIN_USER_PWD: $(ADMIN_USER_PWD)
         DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
         TENANT_ID: $(TENANT_ID)
+  - job: DefaultRouteTable
+    timeoutInMinutes: 0
+    pool:
+      name: 'vdc-self-hosted'
+    steps:
     - task: AzurePowerShell@4
       displayName: "Route Tables"
       inputs:
@@ -463,6 +491,12 @@ stages:
         ADMIN_USER_PWD: $(ADMIN_USER_PWD)
         DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
         TENANT_ID: $(TENANT_ID)
+  - job: VirtualNetwork
+    timeoutInMinutes: 0
+    pool:
+      name: 'vdc-self-hosted'
+    dependsOn: [ LogAnalytics, DiagnosticsStorageAccount, DefaultRouteTable, DefaultNSG ]
+    steps:
     - task: AzurePowerShell@4
       displayName: "Virtual Network"
       inputs:
@@ -478,6 +512,12 @@ stages:
         ADMIN_USER_PWD: $(ADMIN_USER_PWD)
         DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
         TENANT_ID: $(TENANT_ID)
+  - job: VirtualNetworkPeering
+    timeoutInMinutes: 0
+    pool:
+      name: 'vdc-self-hosted'
+    dependsOn: VirtualNetwork
+    steps:
     - task: AzurePowerShell@4
       displayName: "Virtual Network Peering To AKS"
       inputs:
@@ -508,6 +548,12 @@ stages:
         ADMIN_USER_PWD: $(ADMIN_USER_PWD)
         DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
         TENANT_ID: $(TENANT_ID)
+  - job: EnableServiceEndPointOnDiagnosticStorageAccount
+    timeoutInMinutes: 0
+    pool:
+      name: 'vdc-self-hosted'
+    dependsOn: VirtualNetwork
+    steps:
     - task: AzurePowerShell@4
       displayName: "Enable Service Endpoint On Diagnostic Storage Account"
       inputs:
@@ -523,8 +569,14 @@ stages:
         ADMIN_USER_PWD: $(ADMIN_USER_PWD)
         DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
         TENANT_ID: $(TENANT_ID)
+  - job: KeyVault
+    timeoutInMinutes: 0
+    pool:
+      name: 'vdc-self-hosted'
+    dependsOn: [ DiagnosticsStorageAccount, LogAnalytics, VirtualNetwork ]
+    steps:
     - task: AzurePowerShell@4
-      displayName: "KeyVault"
+      displayName: "Key Vault"
       inputs:
         azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'
@@ -538,8 +590,13 @@ stages:
         ADMIN_USER_PWD: $(ADMIN_USER_PWD)
         DOMAIN_ADMIN_USER_PWD: $(DOMAIN_ADMIN_USER_PWD)
         TENANT_ID: $(TENANT_ID)
+  - job: AddRulesToAzureFirewall
+    timeoutInMinutes: 0
+    pool:
+      name: 'vdc-self-hosted'
+    steps:
     - task: AzurePowerShell@4
-      displayName: "AddRulesToAzureFirewall"
+      displayName: "Add Rules To Azure Firewall"
       inputs:
         azureSubscription: 'Kunachim Azure SC'
         ScriptType: 'FilePath'

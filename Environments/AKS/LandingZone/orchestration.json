@@ -205,7 +205,7 @@
             "Subscription": "SharedServices",
             "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.SharedServices.Network.ResourceGroupName}",
             "DependsOn": [
-                "VirtualNetworkPeeringToAKS"
+                "VirtualNetwork"
             ],
             "Deployment": {
                 "OverrideParameters": {

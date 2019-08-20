@@ -106,6 +106,9 @@
         {
             "Name": "ScriptsPreReqs",
             "Comments": "ScriptsPreReqs",
+            "DependsOn": [
+                "PermissionsScriptsPreReqs"
+            ],
             "Script": {
                 "Command": "../../../Scripts/AKS/install-kubectl.sh",
                 "Arguments" : {}
@@ -114,6 +117,9 @@
         {
             "Name": "CreateCACertificate",
             "Comments": "CreateCACertificate",
+            "DependsOn": [
+                "ScriptsPreReqs"
+            ],
             "Script": {
                 "Command": "../../../Scripts/AKS/create-and-upload-ca-cert.sh",
                 "Arguments" : {
@@ -127,27 +133,12 @@
             }
         },
         {
-            "Name": "EnableServiceEndpointOnKeyVault",
-            "ModuleDefinitionName": "KeyVault",
-            "Updates": "KeyVault",
-            "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.KeyVault.ResourceGroup}",
-            "DependsOn": [
-                "CreateCACertificate"
-            ],
-            "Deployment": {
-                "OverrideParameters": {
-                    "networkAcls": {
-                        "value": "${Parameters.ModuleConfigurationParameters.KeyVault.NetworkAcls}"
-                    },
-                    "vNetId": {
-                        "value": "reference(VirtualNetwork.vNetResourceId)"
-                    }
-                }
-            }
-        },
-        {
             "Name": "CreateClusterRBACRoleBindings",
             "Comments": "CreateClusterRBACRoleBindings",
+            "DependsOn": [
+                "CreateCACertificate",
+                "AKSCluster"
+            ],
             "Script": {
                 "Command": "../../../Scripts/AKS/create-cluster-rbac-role-bindings.sh",
                 "Arguments" : {
@@ -160,6 +151,25 @@
                     "7_RBAC_CLUSTER_VIEW_AD_GROUP" : "${Parameters.ModuleConfigurationParameters.Kubernetes.NocUserGroupId}",
                     "8_RBAC_EXTEND_VIEW_CLUSTER_ROLE" : "Y",
                     "9_RBAC_ENABLE_READ_ONLY_DASHBOARD" : "Y"
+                }
+            }
+        },
+        {
+            "Name": "EnableServiceEndpointOnKeyVault",
+            "ModuleDefinitionName": "KeyVault",
+            "Updates": "KeyVault",
+            "ResourceGroupName": "${Parameters.ModuleConfigurationParameters.KeyVault.ResourceGroup}",
+            "DependsOn": [
+                "CreateClusterRBACRoleBindings"
+            ],
+            "Deployment": {
+                "OverrideParameters": {
+                    "networkAcls": {
+                        "value": "${Parameters.ModuleConfigurationParameters.KeyVault.NetworkAcls}"
+                    },
+                    "vNetId": {
+                        "value": "reference(VirtualNetwork.vNetResourceId)"
+                    }
                 }
             }
         }
